@@ -14,7 +14,7 @@ import numpy as np
 from glaucoma_model import GlaucomaNet
 from torch.utils.data import DataLoader
 from fundus_dataset import FundusDataset, get_validation_transform
-
+from cataract_model import CataractOnlyNet
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 LABELS_FILE = PROJECT_ROOT / "labels" / "eye_labels_task7.csv"
@@ -326,6 +326,31 @@ def save_trial_calibration(trials, bin_rows):
     print(f"Saved trial settings and losses: {summary_path}")
     print(f"Saved trial probability bins: {bins_path}")
 
+
+def load_cataract_model(seed):
+    """Open a saved cataract model and check that it is the right one."""
+    path = (
+        PROJECT_ROOT / "checkpoints" / "task11" / "cataract"
+        / f"cataract_seed_{seed}_best.pt"
+    )
+
+    checkpoint = torch.load(
+        path,
+        map_location="cpu",
+        weights_only=True,
+    )
+
+    if checkpoint.get("model_type") != "cataract_only":
+        raise ValueError(f"Wrong model type: {path.name}")
+
+    if checkpoint.get("seed") != seed:
+        raise ValueError(f"Wrong seed: {path.name}")
+
+    model = CataractOnlyNet(pretrained=False)
+    model.load_state_dict(checkpoint["model_state_dict"], strict=True)
+    model.eval()
+
+    return model
 
 def main():
     rows = load_validation_labels()
