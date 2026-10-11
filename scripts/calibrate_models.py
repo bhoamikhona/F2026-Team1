@@ -10,9 +10,13 @@ from pathlib import Path
 import torch
 import numpy as np
 from glaucoma_model import GlaucomaNet
+from torch.utils.data import DataLoader
+from fundus_dataset import FundusDataset, get_validation_transform
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 LABELS_FILE = PROJECT_ROOT / "labels" / "eye_labels_task7.csv"
+IMAGE_DIR = PROJECT_ROOT / "Preprocessed" / "ODIR"
 
 # Saved glaucoma models from Task 11
 CHECKPOINT_DIR = PROJECT_ROOT / "checkpoints" / "task11" / "glaucoma"
@@ -94,9 +98,28 @@ def load_glaucoma_model(path, expected_seed):
 
     return model
 
+def make_validation_loader():
+    """Load validation photos in small batches without random changes."""
+    dataset = FundusDataset(
+        labels_csv=LABELS_FILE,
+        image_dir=IMAGE_DIR,
+        split="validation",
+        transform=get_validation_transform(),
+    )
+
+    return DataLoader(
+        dataset,
+        batch_size=8,
+        shuffle=False,
+        num_workers=0,
+    )
+
 
 def main():
     rows = load_validation_labels()
+
+    validation_loader = make_validation_loader()
+    print(f"Validation batches: {len(validation_loader)}")
 
     checkpoints = find_glaucoma_checkpoints()
 
