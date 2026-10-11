@@ -1,0 +1,13 @@
+{
+  "status": "trial",
+  "disease": "cataract",
+  "frozen": false,
+  "method": "platt",
+  "split": "validation",
+  "sample_count_per_seed": 1024,
+  "rule": "Refer when calibrated probability >= threshold",
+  "abstention_applied": false,
+  "selected_thresholds": null,
+  "calibration_source_sha256": "40752555e6e901d1c3c807b085ff43baf92765aeb0986fb6093d55ee222af096",
+  "limitations": "Same validation data used for calibration and candidate comparison; not independent test results."
+}
