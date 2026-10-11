@@ -2,7 +2,6 @@ import { useState } from "react";
 import PageHeader from "../components/PageHeader";
 import Select from "../components/Select";
 import Table from "../components/Table";
-import Chip from "../components/Chip";
 import { SCREENING_COLUMNS } from "../data/screeningColumns.js";
 import { SCREENINGS } from "../data/screenings.js";
 import { PATIENTS } from "../data/patients.js";
@@ -59,13 +58,10 @@ function History() {
         />
       )}
 
-      <div className="history__footer">
-        <p className="history__count mono-meta">
-          Showing {screenings.length}{" "}
-          {screenings.length === 1 ? "screening" : "screenings"}
-        </p>
-        <Chip mono>Demo data</Chip>
-      </div>
+      <p className="history__count mono-meta">
+        Showing {screenings.length}{" "}
+        {screenings.length === 1 ? "screening" : "screenings"}
+      </p>
     </main>
   );
 }

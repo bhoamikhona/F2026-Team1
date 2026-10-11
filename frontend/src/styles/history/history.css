@@ -14,14 +14,7 @@
   color: var(--text-secondary);
 }
 
-.history__footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  margin-top: var(--space-4);
-}
-
 .history__count {
+  margin-top: var(--space-4);
   color: var(--text-secondary);
 }
