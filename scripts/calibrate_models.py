@@ -137,6 +137,24 @@ def collect_glaucoma_predictions(model, loader):
     return predictions
 
 
+def save_glaucoma_predictions(predictions, seed):
+    """Save one model's validation scores and correct labels."""
+    output_dir = PROJECT_ROOT / "results" / "task12"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    output_file = output_dir / f"glaucoma_seed_{seed}_validation.csv"
+
+    with output_file.open("w", newline="", encoding="utf-8") as file:
+        writer = csv.DictWriter(
+            file,
+            fieldnames=["filename", "logit", "glaucoma"],
+        )
+        writer.writeheader()
+        writer.writerows(predictions)
+
+    print(f"Saved: {output_file}")
+
+
 def main():
     rows = load_validation_labels()
 
@@ -157,6 +175,9 @@ def main():
             raise ValueError("Prediction count does not match validation labels")
 
         print(f"Seed {seed}: {len(predictions)} predictions collected")
+
+        save_glaucoma_predictions(predictions, seed)
+
         del model
 
     print(f"Validation images: {len(rows)}")
