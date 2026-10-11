@@ -32,6 +32,9 @@ import RiskRing from "../components/RiskRing.jsx";
 import SegmentedControl from "../components/SegmentedControl.jsx";
 import HeatmapPanel from "../components/results/HeatmapPanel.jsx";
 import cataractHeatmap from "../assets/images/cataractHeatmap.png";
+import glaucomaHeatmap from "../assets/images/glaucomaHeatmap.png";
+import eyePhoto from "../assets/images/eye.png";
+import RiskSummary from "../components/results/RiskSummary.jsx";
 
 function StyleReference() {
   const [patientId, setPatientId] = useState("");
@@ -278,7 +281,7 @@ function StyleReference() {
 
       <div style={{ width: "70rem" }}>
         <HeatmapPanel
-          photoUrl={cataractHeatmap}
+          photoUrl={eyePhoto}
           conditions={[
             { condition: "cataract", heatmap_url: null },
             { condition: "glaucoma", heatmap_url: null },
@@ -286,12 +289,26 @@ function StyleReference() {
         />
 
         <HeatmapPanel
-          photoUrl={cataractHeatmap}
+          photoUrl={eyePhoto}
           conditions={[
             { condition: "cataract", heatmap_url: cataractHeatmap },
-            { condition: "glaucoma", heatmap_url: cataractHeatmap },
+            { condition: "glaucoma", heatmap_url: glaucomaHeatmap },
           ]}
         />
+      </div>
+
+      <div>
+        <ConditionCard condition="Cataract" result="no_concern">
+          <RiskSummary
+            score={0.14}
+            threshold={0.35}
+            result="no_concern"
+            isExample
+          />
+        </ConditionCard>
+        <ConditionCard condition="Glaucoma" result="refer">
+          <RiskSummary score={0.78} threshold={0.5} result="refer" isExample />
+        </ConditionCard>
       </div>
     </main>
   );

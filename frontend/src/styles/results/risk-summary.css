@@ -1,0 +1,17 @@
+.risk-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background-color: var(--bg-subtle);
+  border: 0.1rem solid var(--border-default);
+  border-radius: var(--radius-md);
+}
+
+.risk-summary__note {
+  color: var(--text-secondary);
+}
+
+.risk-summary__note--refer {
+  color: var(--danger);
+}
