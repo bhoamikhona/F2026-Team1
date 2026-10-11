@@ -28,6 +28,7 @@ import MetaList from "../components/MetaList.jsx";
 import Table from "../components/Table";
 import { SCREENING_COLUMNS } from "../data/screeningColumns.js";
 import { SCREENINGS } from "../data/screenings.js";
+import RiskRing from "../components/results/RiskRing.jsx";
 
 function StyleReference() {
   const [patientId, setPatientId] = useState("");
@@ -247,6 +248,14 @@ function StyleReference() {
           rows={SCREENINGS}
           rowHref={(row) => `/history/${row.id}`}
         />
+      </div>
+
+      <div style={{ display: "flex", gap: "2.4rem" }}>
+        <RiskRing value={0.14} result="no_concern" />
+        <RiskRing value={0.78} result="refer" />
+        <RiskRing value={0.5} result="uncertain" />
+        <RiskRing value={0} result="no_concern" />
+        <RiskRing value={1} result="refer" />
       </div>
     </main>
   );

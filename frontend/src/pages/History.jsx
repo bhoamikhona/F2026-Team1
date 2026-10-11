@@ -54,7 +54,7 @@ function History() {
           label="Past screenings"
           columns={SCREENING_COLUMNS}
           rows={screenings}
-          rowHref={(row) => `/history/${row.id}`}
+          rowHref={(row) => `/results/${row.id}`}
         />
       )}
 
