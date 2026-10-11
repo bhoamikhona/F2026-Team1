@@ -73,3 +73,35 @@ averaging seeds or picking the most favorable seed. No final target is selected.
 Next, define and compare an uncertainty rule separately. A referral threshold
 alone does not establish when to say "Uncertain, refer". Keep all settings
 unfrozen until the required model comparisons and review are complete.
+
+## Trial uncertainty comparison
+
+`compare_glaucoma_abstention.py` now compares a boundary-distance heuristic:
+mark an eye "Uncertain, refer" when its calibrated probability is within a
+margin of the disease threshold. Otherwise retain the ordinary decision.
+Fit each margin to include at least 5%, 10%, or 20% of validation eyes, including
+ties, and compare against no abstention. All three sensitivity targets are
+included; none is selected. The saved numeric margin, rather than a new batch
+percentile, would be applied to future images if this rule were eventually frozen.
+
+At the exploratory 95% sensitivity target:
+
+| Uncertain fraction | Uncertain eyes | Extra referrals, seeds 42 / 43 / 44 | Glaucoma still missed, seeds 42 / 43 / 44 |
+|---|---:|---|---|
+| None | 0 | 0 / 0 / 0 | 1 / 1 / 1 |
+| 5% | 52 | 28 / 32 / 25 | 1 / 1 / 0 |
+| 10% | 103 | 58 / 66 / 50 | 1 / 1 / 0 |
+| 20% | 205 | 114 / 124 / 123 | 1 / 1 / 0 |
+
+These results do not support automatically increasing the uncertainty band:
+the wider bands add referrals without catching additional glaucoma cases at
+this target on this validation set. Near-boundary uncertainty also fails to
+catch the missed positive for seeds 42 and 43. It cannot be assumed to detect
+every incorrect prediction or low-quality photo. This is an exploratory result,
+not a finalized uncertainty policy or independent performance estimate.
+
+The CSV includes coverage (fraction receiving an ordinary decision), error rate
+among those ordinary decisions, and total referral burden. Class imbalance
+makes overall retained error alone insufficient for selecting a rule.
+The 21 holdout eyes remain unused. Cataract and combined-head behavior remain
+to be evaluated before completing Task 12.

@@ -1,0 +1,20 @@
+{
+  "status": "trial",
+  "frozen": false,
+  "selected_rule": null,
+  "split": "validation",
+  "sample_count_per_seed": 1024,
+  "rule": "Uncertain, refer if abs(Platt probability - disease threshold) <= margin; otherwise refer if probability >= threshold.",
+  "margin_selection": "Order statistic covering at least 5%, 10%, or 20% of validation eyes; include ties. Zero is a no-abstention baseline.",
+  "sources_sha256": {
+    "glaucoma_calibration_trial.json": "6da95692ef95e1a4c7322ece434d6706f8c93e2d242f837430904307777a1019",
+    "glaucoma_threshold_comparison_trial.csv": "693756d57505d2d22f830d2fc3fa1ee7d1ef5bb103ecbb8c7d049dc7682d145c"
+  },
+  "limitations": [
+    "Exploratory fractions and sensitivity targets are project comparisons, not clinical standards.",
+    "Distance from the decision boundary is a heuristic, not proven uncertainty or photo quality detection.",
+    "Same validation data fit calibration and select thresholds and margins; these are not independent test results.",
+    "Retained error rate is dominated by the majority class; inspect missed glaucoma and referral burden as well.",
+    "No holdout or external images used. No cataract or combined-head rule evaluated."
+  ]
+}
