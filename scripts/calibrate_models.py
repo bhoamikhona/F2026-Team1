@@ -326,6 +326,7 @@ def save_trial_calibration(trials, bin_rows):
     print(f"Saved trial settings and losses: {summary_path}")
     print(f"Saved trial probability bins: {bins_path}")
 
+################### CATARACT #######################
 
 def load_cataract_model(seed):
     """Open a saved cataract model and check that it is the right one."""
@@ -351,6 +352,50 @@ def load_cataract_model(seed):
     model.eval()
 
     return model
+
+def collect_cataract_predictions(model, loader):
+    """Collect cataract scores and correct labels for validation photos."""
+    predictions = []
+    model.eval()
+
+    with torch.inference_mode():
+        for batch in loader:
+            logits = model(batch["image"]).reshape(-1)
+
+            if not torch.isfinite(logits).all():
+                raise ValueError("Model produced an invalid score")
+
+            for filename, logit, label in zip(
+                batch["filename"],
+                logits.tolist(),
+                batch["cataract"].tolist(),
+                strict=True,
+            ):
+                predictions.append({
+                    "filename": filename,
+                    "logit": logit,
+                    "cataract": int(label),
+                })
+
+    return predictions
+
+def save_cataract_predictions(predictions, seed):
+    """Save one cataract model's validation scores and correct labels."""
+    output_dir = PROJECT_ROOT / "results" / "calibration"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    output_file = output_dir / f"cataract_seed_{seed}_validation.csv"
+
+    with output_file.open("w", newline="", encoding="utf-8") as file:
+        writer = csv.DictWriter(
+            file,
+            fieldnames=["filename", "logit", "cataract"],
+        )
+        writer.writeheader()
+        writer.writerows(predictions)
+
+    print(f"Saved: {output_file}")
+
 
 def main():
     rows = load_validation_labels()
