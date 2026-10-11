@@ -21,28 +21,12 @@
   justify-self: start;
 }
 
-.table-row__cell svg {
-  display: block;
-}
-
 .table-row__cell--end {
   justify-self: end;
 }
 
-.table-row__link {
-  color: var(--accent);
-  text-decoration: none;
-}
-
-.table-row__link::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-}
-
-.table-row__link:focus-visible::after {
-  outline: 0.2rem solid var(--accent);
-  outline-offset: -0.2rem;
+.table-row__cell svg {
+  display: block;
 }
 
 @media (max-width: 40em) {

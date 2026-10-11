@@ -1,0 +1,27 @@
+.table-cell__link {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.table-cell__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.table-cell__link:focus-visible::after {
+  outline: 0.2rem solid var(--accent);
+  outline-offset: -0.2rem;
+}
+
+.table-cell__id {
+  color: var(--text-secondary);
+}
+
+.table-cell__name {
+  color: var(--accent);
+}
+
+.table-cell__empty {
+  color: var(--text-secondary);
+}
