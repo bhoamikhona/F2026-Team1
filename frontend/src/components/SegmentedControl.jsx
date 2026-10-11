@@ -1,6 +1,9 @@
+import { useId } from "react";
 import "../styles/segmented-control.css";
 
-function SegmentedControl({ label, name, options, value, onChange }) {
+function SegmentedControl({ label, options, value, onChange }) {
+  const groupName = useId();
+
   return (
     <div className="segmented-control" role="radiogroup" aria-label={label}>
       {options.map((option) => (
@@ -8,7 +11,7 @@ function SegmentedControl({ label, name, options, value, onChange }) {
           <input
             className="segmented-control__input sr-only"
             type="radio"
-            name={name}
+            name={groupName}
             value={option.value}
             checked={value === option.value}
             onChange={() => onChange(option.value)}

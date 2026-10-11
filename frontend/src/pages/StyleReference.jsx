@@ -30,6 +30,8 @@ import { SCREENING_COLUMNS } from "../data/screeningColumns.js";
 import { SCREENINGS } from "../data/screenings.js";
 import RiskRing from "../components/RiskRing.jsx";
 import SegmentedControl from "../components/SegmentedControl.jsx";
+import HeatmapPanel from "../components/results/HeatmapPanel.jsx";
+import cataractHeatmap from "../assets/images/cataractHeatmap.png";
 
 function StyleReference() {
   const [patientId, setPatientId] = useState("");
@@ -271,6 +273,24 @@ function StyleReference() {
           ]}
           value={condition}
           onChange={setCondition}
+        />
+      </div>
+
+      <div style={{ width: "70rem" }}>
+        <HeatmapPanel
+          photoUrl={cataractHeatmap}
+          conditions={[
+            { condition: "cataract", heatmap_url: null },
+            { condition: "glaucoma", heatmap_url: null },
+          ]}
+        />
+
+        <HeatmapPanel
+          photoUrl={cataractHeatmap}
+          conditions={[
+            { condition: "cataract", heatmap_url: cataractHeatmap },
+            { condition: "glaucoma", heatmap_url: cataractHeatmap },
+          ]}
         />
       </div>
     </main>
