@@ -6,6 +6,8 @@ to choose these settings.
 """
 
 import csv
+import hashlib
+import json
 from pathlib import Path
 import torch
 import numpy as np
@@ -219,6 +221,112 @@ def fit_temperature(logits, labels):
     return log_temperature.exp().detach().item()
 
 
+def fit_platt_scaling(logits, labels):
+    """Fit a positive scale and offset using validation log loss."""
+    logits = logits.detach().to(dtype=torch.float64)
+    labels = labels.detach().to(dtype=torch.float64)
+
+    if logits.ndim != 1 or logits.shape != labels.shape or logits.numel() == 0:
+        raise ValueError("Scores and labels must be matching nonempty vectors")
+    if not torch.isfinite(logits).all() or not torch.isfinite(labels).all():
+        raise ValueError("Scores and labels must be finite")
+    if not ((labels == 0) | (labels == 1)).all() or labels.unique().numel() != 2:
+        raise ValueError("Calibration requires both binary label classes")
+
+    # A positive scale preserves the model's ordering of photos.
+    log_scale = torch.zeros((), dtype=logits.dtype, requires_grad=True)
+    offset = torch.zeros((), dtype=logits.dtype, requires_grad=True)
+    optimizer = torch.optim.LBFGS(
+        [log_scale, offset],
+        lr=0.1,
+        max_iter=200,
+        line_search_fn="strong_wolfe",
+    )
+
+    def closure():
+        optimizer.zero_grad()
+        adjusted_logits = log_scale.exp() * logits + offset
+        loss = torch.nn.functional.binary_cross_entropy_with_logits(
+            adjusted_logits, labels
+        )
+        loss.backward()
+        return loss
+
+    optimizer.step(closure)
+    scale = log_scale.exp().detach().item()
+    bias = offset.detach().item()
+    adjusted_logits = scale * logits + bias
+    if not np.isfinite(scale) or scale <= 0 or not np.isfinite(bias):
+        raise ValueError("Platt scaling produced invalid parameters")
+    if not torch.isfinite(adjusted_logits).all():
+        raise ValueError("Platt scaling produced invalid scores")
+    if calculate_log_loss(adjusted_logits, labels) > calculate_log_loss(logits, labels) + 1e-8:
+        raise ValueError("Platt fitting increased validation loss")
+
+    return scale, bias
+
+def show_calibration_bins(probabilities, labels):
+    """Compare predicted probabilities with actual rates in ten ranges."""
+    for index in range(10):
+        lower = index / 10
+        upper = (index + 1) / 10
+
+        if index == 9:
+            mask = (probabilities >= lower) & (probabilities <= upper)
+        else:
+            mask = (probabilities >= lower) & (probabilities < upper)
+
+        count = int(mask.sum().item())
+
+        if count == 0:
+            continue
+
+        predicted = probabilities[mask].mean().item()
+        actual = labels[mask].mean().item()
+
+        print(
+            f"  {lower:.0%}–{upper:.0%}: {count} photos, "
+            f"average prediction {predicted:.1%}, "
+            f"actual glaucoma {actual:.1%}"
+        )
+
+def save_trial_calibration(trials, bin_rows):
+    """Save unfrozen settings and descriptive results from the fitting data."""
+    output_dir = PROJECT_ROOT / "results" / "task12"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    summary = {
+        "status": "trial",
+        "frozen": False,
+        "model_type": "glaucoma_only",
+        "fit_split": "validation",
+        "evaluation_split": "validation",
+        "evaluation_note": "Same data used for fitting; not an independent test.",
+        "decision_threshold": None,
+        "abstention_cutoff": None,
+        "probability_formulas": {
+            "uncalibrated": "sigmoid(logit)",
+            "temperature": "sigmoid(logit / temperature)",
+            "platt": "sigmoid(scale * logit + offset)",
+        },
+        "bin_definition": "Ten equal-width bins, lower inclusive, upper exclusive except 1.0.",
+        "runs": trials,
+    }
+    summary_path = output_dir / "glaucoma_calibration_trial.json"
+    summary_path.write_text(
+        json.dumps(summary, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    bins_path = output_dir / "glaucoma_calibration_trial_bins.csv"
+    with bins_path.open("w", newline="", encoding="utf-8") as file:
+        writer = csv.DictWriter(file, fieldnames=[
+            "status", "seed", "method", "lower", "upper", "count",
+            "glaucoma_count", "mean_probability", "observed_rate",
+        ])
+        writer.writeheader()
+        writer.writerows(bin_rows)
+    print(f"Saved trial settings and losses: {summary_path}")
+    print(f"Saved trial probability bins: {bins_path}")
+
+
 def main():
     rows = load_validation_labels()
 
@@ -226,6 +334,8 @@ def main():
     print(f"Validation batches: {len(validation_loader)}")
 
     checkpoints = find_glaucoma_checkpoints()
+    trials = []
+    bin_rows = []
 
     for seed in SEEDS:
         logits, labels = load_saved_glaucoma_predictions(seed)
@@ -239,10 +349,81 @@ def main():
         print(f"  Loss before: {before_loss:.6f}")
         print(f"  Loss after:  {after_loss:.6f}")
 
+        before_probabilities = torch.sigmoid(logits)
+        after_probabilities = torch.sigmoid(logits / temperature)
+
+        print(f"  Actual glaucoma rate: {labels.mean().item():.2%}")
+        print(
+            f"  Average probability before: "
+            f"{before_probabilities.mean().item():.2%}"
+        )
+        print(
+            f"  Average probability after: "
+            f"{after_probabilities.mean().item():.2%}"
+        )
+
+        scale, offset = fit_platt_scaling(logits, labels)
+        platt_logits = scale * logits + offset
+        platt_loss = calculate_log_loss(platt_logits, labels)
+        platt_probabilities = torch.sigmoid(platt_logits)
+        print(f"  Platt scale: {scale:.6f}, offset: {offset:.6f}")
+        print(f"  Loss after Platt scaling: {platt_loss:.6f}")
+        print(f"  Average probability after Platt: {platt_probabilities.mean().item():.2%}")
+
+        show_calibration_bins(platt_probabilities, labels)
+
+        prediction_path = (
+            PROJECT_ROOT / "results" / "task12"
+            / f"glaucoma_seed_{seed}_validation.csv"
+        )
+        trials.append({
+            "seed": seed,
+            "prediction_file": prediction_path.relative_to(PROJECT_ROOT).as_posix(),
+            "prediction_sha256": hashlib.sha256(prediction_path.read_bytes()).hexdigest(),
+            "sample_count": len(labels),
+            "glaucoma_count": int(labels.sum().item()),
+            "observed_rate": labels.mean().item(),
+            "uncalibrated": {
+                "log_loss": before_loss,
+                "mean_probability": before_probabilities.mean().item(),
+            },
+            "temperature": {
+                "temperature": temperature,
+                "log_loss": after_loss,
+                "mean_probability": after_probabilities.mean().item(),
+            },
+            "platt": {
+                "scale": scale,
+                "offset": offset,
+                "log_loss": platt_loss,
+                "mean_probability": platt_probabilities.mean().item(),
+            },
+        })
+        for method, probabilities in (
+            ("uncalibrated", before_probabilities),
+            ("temperature", after_probabilities),
+            ("platt", platt_probabilities),
+        ):
+            for index in range(10):
+                lower, upper = index / 10, (index + 1) / 10
+                mask = (probabilities >= lower) & (
+                    (probabilities <= upper) if index == 9 else (probabilities < upper)
+                )
+                count = int(mask.sum().item())
+                bin_rows.append({
+                    "status": "trial", "seed": seed, "method": method,
+                    "lower": lower, "upper": upper, "count": count,
+                    "glaucoma_count": int(labels[mask].sum().item()),
+                    "mean_probability": probabilities[mask].mean().item() if count else None,
+                    "observed_rate": labels[mask].mean().item() if count else None,
+                })
+
+    save_trial_calibration(trials, bin_rows)
     print(f"Validation images: {len(rows)}")
     for condition in ("cataract", "glaucoma"):
         print(f"{condition.capitalize()} cases: {sum(row[condition] for row in rows)}")
     print("Trial calibration fitted on validation data; settings are not frozen.")
+    print("These losses use the same data used to fit calibration, not an independent test.")
 
 
 if __name__ == "__main__":
