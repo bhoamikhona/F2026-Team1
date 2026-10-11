@@ -9,6 +9,7 @@ import csv
 from pathlib import Path
 import torch
 import numpy as np
+from glaucoma_model import GlaucomaNet
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 LABELS_FILE = PROJECT_ROOT / "labels" / "eye_labels_task7.csv"
@@ -83,15 +84,26 @@ def load_glaucoma_checkpoint(path, expected_seed):
 
      return checkpoint
 
+def load_glaucoma_model(path, expected_seed):
+    """Create the glaucoma model and load its saved weights."""
+    checkpoint = load_glaucoma_checkpoint(path, expected_seed)
+
+    model = GlaucomaNet(pretrained=False)
+    model.load_state_dict(checkpoint["model_state_dict"], strict=True)
+    model.eval()
+
+    return model
+
+
 def main():
     rows = load_validation_labels()
 
     checkpoints = find_glaucoma_checkpoints()
 
     for seed, path in checkpoints.items():
-        checkpoint = load_glaucoma_checkpoint(path, seed)
-        print(f"Loaded glaucoma checkpoint for seed {seed}")
-        del checkpoint
+        model = load_glaucoma_model(path, seed)
+        print(f"Glaucoma model ready for seed {seed}")
+        del model
 
     print(f"Validation images: {len(rows)}")
     for condition in ("cataract", "glaucoma"):
