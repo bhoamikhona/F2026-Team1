@@ -1,4 +1,4 @@
-import "../../styles/results/risk-ring.css";
+import "../styles/risk-ring.css";
 
 const TONES = {
   no_concern: "success",

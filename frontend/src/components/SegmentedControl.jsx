@@ -1,4 +1,4 @@
-import "../../styles/results/segmented-control.css";
+import "../styles/segmented-control.css";
 
 function SegmentedControl({ label, name, options, value, onChange }) {
   return (

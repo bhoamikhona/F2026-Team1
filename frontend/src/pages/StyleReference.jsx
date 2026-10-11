@@ -28,8 +28,8 @@ import MetaList from "../components/MetaList.jsx";
 import Table from "../components/Table";
 import { SCREENING_COLUMNS } from "../data/screeningColumns.js";
 import { SCREENINGS } from "../data/screenings.js";
-import RiskRing from "../components/results/RiskRing.jsx";
-import SegmentedControl from "../components/results/SegmentedControl.jsx";
+import RiskRing from "../components/RiskRing.jsx";
+import SegmentedControl from "../components/SegmentedControl.jsx";
 
 function StyleReference() {
   const [patientId, setPatientId] = useState("");
