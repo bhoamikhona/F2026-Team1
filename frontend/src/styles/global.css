@@ -67,7 +67,7 @@ body {
 }
 
 .main {
-  min-height: 100vh;
+  min-height: 85vh;
   max-width: 128rem;
   margin: 0 auto;
   padding: var(--space-16) var(--space-6);
@@ -136,6 +136,10 @@ body {
 
 .btn--block {
   width: 100%;
+}
+
+.text-nowrap {
+  white-space: nowrap;
 }
 
 .chip {
