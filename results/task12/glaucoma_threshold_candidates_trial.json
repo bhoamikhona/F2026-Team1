@@ -1,0 +1,12 @@
+{
+  "status": "trial",
+  "frozen": false,
+  "method": "platt",
+  "split": "validation",
+  "sample_count_per_seed": 1024,
+  "rule": "Refer when calibrated probability >= threshold",
+  "abstention_applied": false,
+  "selected_thresholds": null,
+  "calibration_source_sha256": "6da95692ef95e1a4c7322ece434d6706f8c93e2d242f837430904307777a1019",
+  "limitations": "Same validation data used for calibration and candidate comparison; not independent test results."
+}
