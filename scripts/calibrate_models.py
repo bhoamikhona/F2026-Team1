@@ -114,6 +114,28 @@ def make_validation_loader():
         num_workers=0,
     )
 
+def collect_glaucoma_predictions(model, loader):
+    """Collect raw glaucoma scores and correct labels for validation photos."""
+    predictions = []
+    model.eval()
+
+    with torch.inference_mode():
+        for batch in loader:
+            logits = model(batch["image"]).reshape(-1)
+
+            for filename, logit, label in zip(
+                batch["filename"],
+                logits.tolist(),
+                batch["glaucoma"].tolist(),
+            ):
+             predictions.append({
+                    "filename": filename,
+                    "logit": logit,
+                    "glaucoma": int(label),
+                })
+
+    return predictions
+
 
 def main():
     rows = load_validation_labels()
@@ -125,7 +147,16 @@ def main():
 
     for seed, path in checkpoints.items():
         model = load_glaucoma_model(path, seed)
-        print(f"Glaucoma model ready for seed {seed}")
+        print(f"Collecting predictions for seed {seed}...", flush=True)
+
+        predictions = collect_glaucoma_predictions(
+            model, validation_loader
+        )
+
+        if len(predictions) != len(rows):
+            raise ValueError("Prediction count does not match validation labels")
+
+        print(f"Seed {seed}: {len(predictions)} predictions collected")
         del model
 
     print(f"Validation images: {len(rows)}")
