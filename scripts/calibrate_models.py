@@ -7,6 +7,7 @@ to choose these settings.
 
 import csv
 from pathlib import Path
+import torch
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 LABELS_FILE = PROJECT_ROOT / "labels" / "eye_labels_task7.csv"
@@ -57,6 +58,23 @@ def find_glaucoma_checkpoints():
     return checkpoints    
 
 
+def load_glaucoma_checkpoint(path, expected_seed):
+     """Open a saved glaucoma model file and check its contents."""
+     checkpoint = torch.load(
+        path,
+        map_location="cpu",
+        weights_only=True,
+     )
+     if checkpoint.get("model_type") != "glaucoma_only":
+        raise ValueError(f"Wrong model type in {path.name}")
+
+     if checkpoint.get("seed") != expected_seed:
+        raise ValueError(f"Wrong seed in {path.name}")
+
+     if "model_state_dict" not in checkpoint:
+        raise ValueError(f"Missing model weights in {path.name}")
+
+     return checkpoint
 
 def main():
     rows = load_validation_labels()
