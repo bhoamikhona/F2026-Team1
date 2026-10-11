@@ -8,6 +8,7 @@ to choose these settings.
 import csv
 from pathlib import Path
 import torch
+import numpy as np
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 LABELS_FILE = PROJECT_ROOT / "labels" / "eye_labels_task7.csv"
@@ -60,11 +61,17 @@ def find_glaucoma_checkpoints():
 
 def load_glaucoma_checkpoint(path, expected_seed):
      """Open a saved glaucoma model file and check its contents."""
-     checkpoint = torch.load(
-        path,
-        map_location="cpu",
-        weights_only=True,
-     )
+      # Allow the NumPy number types used in these checkpoints.
+     with torch.serialization.safe_globals([
+        np._core.multiarray.scalar,
+        np.dtype,
+        np.dtypes.Float64DType,
+     ]):
+        checkpoint = torch.load(
+            path,
+            map_location="cpu",
+            weights_only=True,
+        )
      if checkpoint.get("model_type") != "glaucoma_only":
         raise ValueError(f"Wrong model type in {path.name}")
 
@@ -82,7 +89,9 @@ def main():
     checkpoints = find_glaucoma_checkpoints()
 
     for seed, path in checkpoints.items():
-        print(f"Found glaucoma model for see {seed}:{path.name}")
+        checkpoint = load_glaucoma_checkpoint(path, seed)
+        print(f"Loaded glaucoma checkpoint for seed {seed}")
+        del checkpoint
 
     print(f"Validation images: {len(rows)}")
     for condition in ("cataract", "glaucoma"):
