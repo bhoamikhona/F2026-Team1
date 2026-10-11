@@ -29,6 +29,7 @@ import Table from "../components/Table";
 import { SCREENING_COLUMNS } from "../data/screeningColumns.js";
 import { SCREENINGS } from "../data/screenings.js";
 import RiskRing from "../components/results/RiskRing.jsx";
+import SegmentedControl from "../components/results/SegmentedControl.jsx";
 
 function StyleReference() {
   const [patientId, setPatientId] = useState("");
@@ -39,6 +40,8 @@ function StyleReference() {
   const [formPatient, setFormPatient] = useState("");
   const [formEye, setFormEye] = useState("OD");
   const [formFile, setFormFile] = useState(null);
+
+  const [condition, setCondition] = useState("glaucoma");
 
   return (
     <main className="style-main">
@@ -256,6 +259,19 @@ function StyleReference() {
         <RiskRing value={0.5} result="uncertain" />
         <RiskRing value={0} result="no_concern" />
         <RiskRing value={1} result="refer" />
+      </div>
+
+      <div>
+        <SegmentedControl
+          label="Heatmap condition"
+          name="heatmap-condition"
+          options={[
+            { value: "cataract", label: "Cataract" },
+            { value: "glaucoma", label: "Glaucoma" },
+          ]}
+          value={condition}
+          onChange={setCondition}
+        />
       </div>
     </main>
   );
