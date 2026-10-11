@@ -176,6 +176,48 @@ def load_saved_glaucoma_predictions(seed):
 
     return logits, labels
 
+def calculate_log_loss(logits, labels):
+    """Measure prediction confidence errors; lower is better."""
+    loss = torch.nn.functional.binary_cross_entropy_with_logits(
+        logits,
+        labels,
+    )
+
+    return loss.item()
+
+
+def fit_temperature(logits, labels):
+    """Fit a positive temperature using validation log loss."""
+    logits = logits.detach()
+    labels = labels.detach()
+
+    log_temperature = torch.zeros(
+        (), dtype=logits.dtype, requires_grad=True
+    )
+
+    optimizer = torch.optim.LBFGS(
+        [log_temperature],
+        lr=0.1,
+        max_iter=100,
+        line_search_fn="strong_wolfe",
+    )
+
+    def closure():
+        optimizer.zero_grad()
+        temperature = log_temperature.exp()
+
+        loss = torch.nn.functional.binary_cross_entropy_with_logits(
+            logits / temperature,
+            labels,
+        )
+
+        loss.backward()
+        return loss
+
+    optimizer.step(closure)
+
+    return log_temperature.exp().detach().item()
+
 
 def main():
     rows = load_validation_labels()
@@ -187,12 +229,20 @@ def main():
 
     for seed in SEEDS:
         logits, labels = load_saved_glaucoma_predictions(seed)
-        print(f"Seed {seed}: loaded {len(logits)} saved predictions")
+
+        before_loss = calculate_log_loss(logits, labels)
+        temperature = fit_temperature(logits, labels)
+        after_loss = calculate_log_loss(logits / temperature, labels)
+
+        print(f"Seed {seed}:")
+        print(f"  Temperature: {temperature:.4f}")
+        print(f"  Loss before: {before_loss:.6f}")
+        print(f"  Loss after:  {after_loss:.6f}")
 
     print(f"Validation images: {len(rows)}")
     for condition in ("cataract", "glaucoma"):
         print(f"{condition.capitalize()} cases: {sum(row[condition] for row in rows)}")
-    print("Preparation only: no calibration or cutoffs have been fitted.")
+    print("Trial calibration fitted on validation data; settings are not frozen.")
 
 
 if __name__ == "__main__":
