@@ -154,6 +154,28 @@ def save_glaucoma_predictions(predictions, seed):
 
     print(f"Saved: {output_file}")
 
+def load_saved_glaucoma_predictions(seed):
+    """Read saved validation scores and labels for one glaucoma model."""
+    path = (
+        PROJECT_ROOT / "results" / "task12"
+        / f"glaucoma_seed_{seed}_validation.csv"
+    )
+
+    with path.open(newline="", encoding="utf-8") as file:
+        predictions = list(csv.DictReader(file))
+
+    logits = torch.tensor(
+        [float(row["logit"]) for row in predictions],
+        dtype=torch.float64,
+    )
+
+    labels = torch.tensor(
+        [int(row["glaucoma"]) for row in predictions],
+        dtype=torch.float64,
+    )
+
+    return logits, labels
+
 
 def main():
     rows = load_validation_labels()
@@ -163,22 +185,9 @@ def main():
 
     checkpoints = find_glaucoma_checkpoints()
 
-    for seed, path in checkpoints.items():
-        model = load_glaucoma_model(path, seed)
-        print(f"Collecting predictions for seed {seed}...", flush=True)
-
-        predictions = collect_glaucoma_predictions(
-            model, validation_loader
-        )
-
-        if len(predictions) != len(rows):
-            raise ValueError("Prediction count does not match validation labels")
-
-        print(f"Seed {seed}: {len(predictions)} predictions collected")
-
-        save_glaucoma_predictions(predictions, seed)
-
-        del model
+    for seed in SEEDS:
+        logits, labels = load_saved_glaucoma_predictions(seed)
+        print(f"Seed {seed}: loaded {len(logits)} saved predictions")
 
     print(f"Validation images: {len(rows)}")
     for condition in ("cataract", "glaucoma"):
