@@ -5,6 +5,7 @@ available. Internal test, external test, and holdout eyes must not be used
 to choose these settings.
 """
 
+import argparse
 import csv
 import hashlib
 import json
@@ -265,7 +266,7 @@ def fit_platt_scaling(logits, labels):
 
     return scale, bias
 
-def show_calibration_bins(probabilities, labels):
+def show_calibration_bins(probabilities, labels, disease="glaucoma"):
     """Compare predicted probabilities with actual rates in ten ranges."""
     for index in range(10):
         lower = index / 10
@@ -287,17 +288,17 @@ def show_calibration_bins(probabilities, labels):
         print(
             f"  {lower:.0%}–{upper:.0%}: {count} photos, "
             f"average prediction {predicted:.1%}, "
-            f"actual glaucoma {actual:.1%}"
+            f"actual {disease} {actual:.1%}"
         )
 
-def save_trial_calibration(trials, bin_rows):
+def save_trial_calibration(trials, bin_rows, disease="glaucoma"):
     """Save unfrozen settings and descriptive results from the fitting data."""
     output_dir = PROJECT_ROOT / "results" / "calibration"
     output_dir.mkdir(parents=True, exist_ok=True)
     summary = {
         "status": "trial",
         "frozen": False,
-        "model_type": "glaucoma_only",
+        "model_type": f"{disease}_only",
         "fit_split": "validation",
         "evaluation_split": "validation",
         "evaluation_note": "Same data used for fitting; not an independent test.",
@@ -311,15 +312,15 @@ def save_trial_calibration(trials, bin_rows):
         "bin_definition": "Ten equal-width bins, lower inclusive, upper exclusive except 1.0.",
         "runs": trials,
     }
-    summary_path = output_dir / "glaucoma_calibration_trial.json"
+    summary_path = output_dir / f"{disease}_calibration_trial.json"
     summary_path.write_text(
         json.dumps(summary, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
-    bins_path = output_dir / "glaucoma_calibration_trial_bins.csv"
+    bins_path = output_dir / f"{disease}_calibration_trial_bins.csv"
     with bins_path.open("w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=[
             "status", "seed", "method", "lower", "upper", "count",
-            "glaucoma_count", "mean_probability", "observed_rate",
+            f"{disease}_count", "mean_probability", "observed_rate",
         ])
         writer.writeheader()
         writer.writerows(bin_rows)
@@ -397,18 +398,57 @@ def save_cataract_predictions(predictions, seed):
     print(f"Saved: {output_file}")
 
 
+def load_saved_predictions(seed, disease, rows):
+    """Validate saved scores against the canonical validation labels."""
+    path = PROJECT_ROOT / "results" / "calibration" / f"{disease}_seed_{seed}_validation.csv"
+    with path.open(newline="", encoding="utf-8") as file:
+        predictions = list(csv.DictReader(file))
+    by_name = {r["filename"]: r for r in predictions}
+    expected = {r["filename"]: r[disease] for r in rows}
+    if len(by_name) != len(predictions) or set(by_name) != set(expected):
+        raise ValueError("Missing, duplicate, or extra validation predictions")
+    if any(int(by_name[name][disease]) != label for name, label in expected.items()):
+        raise ValueError("Saved labels do not match validation labels")
+    logits = torch.tensor([float(by_name[r["filename"]]["logit"]) for r in rows], dtype=torch.float64)
+    labels = torch.tensor([r[disease] for r in rows], dtype=torch.float64)
+    if not torch.isfinite(logits).all():
+        raise ValueError("Invalid saved scores")
+    return logits, labels
+
+
 def main():
+    parser = argparse.ArgumentParser(description="Compare trial calibration using validation only")
+    parser.add_argument("--disease", choices=("glaucoma", "cataract"), default="glaucoma")
+    parser.add_argument("--collect-predictions", action="store_true",
+                        help="Run models and replace saved validation scores before calibration")
+    args = parser.parse_args()
+    disease = args.disease
     rows = load_validation_labels()
+    if args.collect_predictions:
+        loader = make_validation_loader()
+        for seed in SEEDS:
+            print(f"Collecting {disease} predictions for seed {seed}...", flush=True)
+            if disease == "cataract":
+                model = load_cataract_model(seed)
+                predictions = collect_cataract_predictions(model, loader)
+                save = save_cataract_predictions
+            else:
+                model = load_glaucoma_model(CHECKPOINT_DIR / f"glaucoma_seed_{seed}_best.pt", seed)
+                predictions = collect_glaucoma_predictions(model, loader)
+                save = save_glaucoma_predictions
+            if (len(predictions) != len(rows) or
+                    {r["filename"]: r[disease] for r in predictions} !=
+                    {r["filename"]: r[disease] for r in rows}):
+                raise ValueError("Predictions do not match validation labels")
+            if not all(np.isfinite(r["logit"]) for r in predictions):
+                raise ValueError("Invalid model scores")
+            save(predictions, seed)
 
-    validation_loader = make_validation_loader()
-    print(f"Validation batches: {len(validation_loader)}")
-
-    checkpoints = find_glaucoma_checkpoints()
     trials = []
     bin_rows = []
 
     for seed in SEEDS:
-        logits, labels = load_saved_glaucoma_predictions(seed)
+        logits, labels = load_saved_predictions(seed, disease, rows)
 
         before_loss = calculate_log_loss(logits, labels)
         temperature = fit_temperature(logits, labels)
@@ -422,7 +462,7 @@ def main():
         before_probabilities = torch.sigmoid(logits)
         after_probabilities = torch.sigmoid(logits / temperature)
 
-        print(f"  Actual glaucoma rate: {labels.mean().item():.2%}")
+        print(f"  Actual {disease} rate: {labels.mean().item():.2%}")
         print(
             f"  Average probability before: "
             f"{before_probabilities.mean().item():.2%}"
@@ -440,18 +480,18 @@ def main():
         print(f"  Loss after Platt scaling: {platt_loss:.6f}")
         print(f"  Average probability after Platt: {platt_probabilities.mean().item():.2%}")
 
-        show_calibration_bins(platt_probabilities, labels)
+        show_calibration_bins(platt_probabilities, labels, disease)
 
         prediction_path = (
             PROJECT_ROOT / "results" / "calibration"
-            / f"glaucoma_seed_{seed}_validation.csv"
+            / f"{disease}_seed_{seed}_validation.csv"
         )
         trials.append({
             "seed": seed,
             "prediction_file": prediction_path.relative_to(PROJECT_ROOT).as_posix(),
             "prediction_sha256": hashlib.sha256(prediction_path.read_bytes()).hexdigest(),
             "sample_count": len(labels),
-            "glaucoma_count": int(labels.sum().item()),
+            f"{disease}_count": int(labels.sum().item()),
             "observed_rate": labels.mean().item(),
             "uncalibrated": {
                 "log_loss": before_loss,
@@ -483,12 +523,12 @@ def main():
                 bin_rows.append({
                     "status": "trial", "seed": seed, "method": method,
                     "lower": lower, "upper": upper, "count": count,
-                    "glaucoma_count": int(labels[mask].sum().item()),
+                    f"{disease}_count": int(labels[mask].sum().item()),
                     "mean_probability": probabilities[mask].mean().item() if count else None,
                     "observed_rate": labels[mask].mean().item() if count else None,
                 })
 
-    save_trial_calibration(trials, bin_rows)
+    save_trial_calibration(trials, bin_rows, disease)
     print(f"Validation images: {len(rows)}")
     for condition in ("cataract", "glaucoma"):
         print(f"{condition.capitalize()} cases: {sum(row[condition] for row in rows)}")

@@ -1,5 +1,6 @@
 """Explore threshold-margin abstention on validation data; freeze nothing."""
 
+import argparse
 import csv
 import hashlib
 import json
@@ -23,22 +24,25 @@ def summarize(labels, probabilities, threshold, margin):
     errors = ((probabilities >= threshold) != labels) & retained
     return {
         "uncertain_count": int(uncertain.sum()),
-        "uncertain_glaucoma": int((uncertain & (labels == 1)).sum()),
+        "uncertain_positive": int((uncertain & (labels == 1)).sum()),
         "ordinary_refer_count": int(ordinary_refer.sum()),
         "no_concern_count": int(no_concern.sum()),
         "coverage": float(retained.mean()),
         "retained_error_rate": float(errors.sum() / retained.sum()) if retained.any() else None,
         "total_referred": int(referred.sum()),
-        "glaucoma_referred": int((referred & (labels == 1)).sum()),
-        "glaucoma_missed": int((no_concern & (labels == 1)).sum()),
-        "non_glaucoma_referred": int((referred & (labels == 0)).sum()),
+        "positive_referred": int((referred & (labels == 1)).sum()),
+        "positive_missed": int((no_concern & (labels == 1)).sum()),
+        "negative_referred": int((referred & (labels == 0)).sum()),
     }
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--disease", choices=("glaucoma", "cataract"), default="glaucoma")
+    disease = parser.parse_args().disease
     output = PROJECT_ROOT / "results" / "calibration"
-    calibration_path = output / "glaucoma_calibration_trial.json"
-    comparison_path = output / "glaucoma_threshold_comparison_trial.csv"
+    calibration_path = output / f"{disease}_calibration_trial.json"
+    comparison_path = output / f"{disease}_threshold_comparison_trial.csv"
     calibration = json.loads(calibration_path.read_text())
     if calibration.get("frozen") is not False or calibration.get("fit_split") != "validation":
         raise ValueError("Expected validation-only trial calibration")
@@ -49,11 +53,11 @@ def main():
     if len(keys) != len(expected) or set(keys) != expected:
         raise ValueError("Expected nine distinct trial operating points")
     rows = load_validation_labels()
-    labels = np.array([r["glaucoma"] for r in rows])
+    labels = np.array([r[disease] for r in rows])
     runs = {run["seed"]: run for run in calibration["runs"]}
     results = []
     for seed in SEEDS:
-        logits, digest = read_predictions(seed, rows)
+        logits, digest = read_predictions(seed, rows, disease)
         run = runs[seed]
         if digest != run["prediction_sha256"]:
             raise ValueError("Prediction source changed; regenerate calibration")
@@ -66,8 +70,8 @@ def main():
             if point["status"] != "trial" or not np.isfinite(threshold):
                 raise ValueError("Expected finite trial threshold")
             baseline = summarize(labels, probabilities, threshold, None)
-            if (baseline["glaucoma_referred"] != int(point["tp"])
-                    or baseline["non_glaucoma_referred"] != int(point["fp"])):
+            if (baseline["positive_referred"] != int(point["tp"])
+                    or baseline["negative_referred"] != int(point["fp"])):
                 raise ValueError("Stale threshold comparison; regenerate it first")
             distances = np.sort(np.abs(probabilities - threshold))
             for fraction in (0.0, 0.05, 0.10, 0.20):
@@ -80,13 +84,13 @@ def main():
                     "margin": margin, **result,
                     "additional_referrals": result["total_referred"] - baseline["total_referred"],
                 })
-    destination = output / "glaucoma_abstention_comparison_trial.csv"
+    destination = output / f"{disease}_abstention_comparison_trial.csv"
     with destination.open("w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=list(results[0]))
         writer.writeheader()
         writer.writerows(results)
     metadata = {
-        "status": "trial", "frozen": False, "selected_rule": None,
+        "status": "trial", "disease": disease, "frozen": False, "selected_rule": None,
         "split": "validation", "sample_count_per_seed": len(rows),
         "rule": "Uncertain, refer if abs(Platt probability - disease threshold) <= margin; otherwise refer if probability >= threshold.",
         "margin_selection": "Order statistic covering at least 5%, 10%, or 20% of validation eyes; include ties. Zero is a no-abstention baseline.",
@@ -96,11 +100,11 @@ def main():
             "Exploratory fractions and sensitivity targets are project comparisons, not clinical standards.",
             "Distance from the decision boundary is a heuristic, not proven uncertainty or photo quality detection.",
             "Same validation data fit calibration and select thresholds and margins; these are not independent test results.",
-            "Retained error rate is dominated by the majority class; inspect missed glaucoma and referral burden as well.",
-            "No holdout or external images used. No cataract or combined-head rule evaluated.",
+            "Retained error rate is dominated by the majority class; inspect missed positive cases and referral burden as well.",
+            "No holdout or external images used. Only the selected disease is evaluated; no combined-head rule evaluated.",
         ],
     }
-    (output / "glaucoma_abstention_comparison_trial.json").write_text(
+    (output / f"{disease}_abstention_comparison_trial.json").write_text(
         json.dumps(metadata, indent=2, allow_nan=False) + "\n"
     )
     print(f"Saved {len(results)} trial comparisons: {destination}")
