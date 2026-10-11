@@ -141,7 +141,7 @@ def collect_glaucoma_predictions(model, loader):
 
 def save_glaucoma_predictions(predictions, seed):
     """Save one model's validation scores and correct labels."""
-    output_dir = PROJECT_ROOT / "results" / "task12"
+    output_dir = PROJECT_ROOT / "results" / "calibration"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     output_file = output_dir / f"glaucoma_seed_{seed}_validation.csv"
@@ -159,7 +159,7 @@ def save_glaucoma_predictions(predictions, seed):
 def load_saved_glaucoma_predictions(seed):
     """Read saved validation scores and labels for one glaucoma model."""
     path = (
-        PROJECT_ROOT / "results" / "task12"
+        PROJECT_ROOT / "results" / "calibration"
         / f"glaucoma_seed_{seed}_validation.csv"
     )
 
@@ -292,7 +292,7 @@ def show_calibration_bins(probabilities, labels):
 
 def save_trial_calibration(trials, bin_rows):
     """Save unfrozen settings and descriptive results from the fitting data."""
-    output_dir = PROJECT_ROOT / "results" / "task12"
+    output_dir = PROJECT_ROOT / "results" / "calibration"
     output_dir.mkdir(parents=True, exist_ok=True)
     summary = {
         "status": "trial",
@@ -373,7 +373,7 @@ def main():
         show_calibration_bins(platt_probabilities, labels)
 
         prediction_path = (
-            PROJECT_ROOT / "results" / "task12"
+            PROJECT_ROOT / "results" / "calibration"
             / f"glaucoma_seed_{seed}_validation.csv"
         )
         trials.append({

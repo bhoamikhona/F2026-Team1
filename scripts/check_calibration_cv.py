@@ -22,7 +22,7 @@ from calibrate_models import (
 
 def read_predictions(seed, rows):
     """Align saved predictions by filename and verify their validation labels."""
-    path = PROJECT_ROOT / "results" / "task12" / f"glaucoma_seed_{seed}_validation.csv"
+    path = PROJECT_ROOT / "results" / "calibration" / f"glaucoma_seed_{seed}_validation.csv"
     with path.open(newline="", encoding="utf-8") as file:
         predictions = list(csv.DictReader(file))
     by_name = {row["filename"]: row for row in predictions}
@@ -137,7 +137,7 @@ def main():
                                     "filename": row["filename"], "glaucoma": row["glaucoma"],
                                     **{k: v[i] for k, v in probabilities.items()}})
 
-    output = PROJECT_ROOT / "results" / "task12"
+    output = PROJECT_ROOT / "results" / "calibration"
     output.mkdir(parents=True, exist_ok=True)
     (output / "glaucoma_calibration_cv_trial.json").write_text(
         json.dumps(summary, indent=2, allow_nan=False) + "\n", encoding="utf-8"

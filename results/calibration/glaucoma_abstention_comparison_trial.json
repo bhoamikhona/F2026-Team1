@@ -7,7 +7,7 @@
   "rule": "Uncertain, refer if abs(Platt probability - disease threshold) <= margin; otherwise refer if probability >= threshold.",
   "margin_selection": "Order statistic covering at least 5%, 10%, or 20% of validation eyes; include ties. Zero is a no-abstention baseline.",
   "sources_sha256": {
-    "glaucoma_calibration_trial.json": "6da95692ef95e1a4c7322ece434d6706f8c93e2d242f837430904307777a1019",
+    "glaucoma_calibration_trial.json": "262e4d351a1fa4bd0589a09dc86d9c2d344522b61ea621dbc45fe599db16e35d",
     "glaucoma_threshold_comparison_trial.csv": "693756d57505d2d22f830d2fc3fa1ee7d1ef5bb103ecbb8c7d049dc7682d145c"
   },
   "limitations": [

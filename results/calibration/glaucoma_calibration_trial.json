@@ -16,7 +16,7 @@
   "runs": [
     {
       "seed": 42,
-      "prediction_file": "results/task12/glaucoma_seed_42_validation.csv",
+      "prediction_file": "results/calibration/glaucoma_seed_42_validation.csv",
       "prediction_sha256": "359a28551bdf6f19d2d6557474327932f4007453b1b0a42afb3e60b0ee6e3380",
       "sample_count": 1024,
       "glaucoma_count": 39,
@@ -39,7 +39,7 @@
     },
     {
       "seed": 43,
-      "prediction_file": "results/task12/glaucoma_seed_43_validation.csv",
+      "prediction_file": "results/calibration/glaucoma_seed_43_validation.csv",
       "prediction_sha256": "7b9774a6d8bac11051c8bfcf058d4b3098d6a2f111f9fde546b24945dad65a5f",
       "sample_count": 1024,
       "glaucoma_count": 39,
@@ -62,7 +62,7 @@
     },
     {
       "seed": 44,
-      "prediction_file": "results/task12/glaucoma_seed_44_validation.csv",
+      "prediction_file": "results/calibration/glaucoma_seed_44_validation.csv",
       "prediction_sha256": "9d4f903aaf14a3fe27ba009aee8d7838f8f49c26d051c6790dfd6f2b8063ab5a",
       "sample_count": 1024,
       "glaucoma_count": 39,

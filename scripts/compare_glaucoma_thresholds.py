@@ -29,7 +29,7 @@ def select_operating_points(results):
 
 
 def main():
-    output = PROJECT_ROOT / "results" / "task12"
+    output = PROJECT_ROOT / "results" / "calibration"
     source = output / "glaucoma_calibration_trial.json"
     trial = json.loads(source.read_text(encoding="utf-8"))
     if trial.get("frozen") is not False or trial.get("fit_split") != "validation":

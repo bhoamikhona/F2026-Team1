@@ -36,7 +36,7 @@ def summarize(labels, probabilities, threshold, margin):
 
 
 def main():
-    output = PROJECT_ROOT / "results" / "task12"
+    output = PROJECT_ROOT / "results" / "calibration"
     calibration_path = output / "glaucoma_calibration_trial.json"
     comparison_path = output / "glaucoma_threshold_comparison_trial.csv"
     calibration = json.loads(calibration_path.read_text())
