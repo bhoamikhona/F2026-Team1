@@ -1,3 +1,4 @@
+
 # ---------------------------------------------------------
 # TASK 11 - GLAUCOMA-ONLY TRAINING SMOKE TEST
 # ---------------------------------------------------------
@@ -97,14 +98,55 @@ def main():
     # Small training subset
     # -----------------------------------------------------
 
+    positive_train_indices = []
+    negative_train_indices = []
+
+    for index in range(len(train_dataset)):
+
+        sample = train_dataset[index]
+
+        glaucoma_label = int(
+            sample["glaucoma"].item()
+        )
+
+        if glaucoma_label == 1:
+            positive_train_indices.append(index)
+        else:
+            negative_train_indices.append(index)
+
+        if (
+            len(positive_train_indices) >= 20
+            and len(negative_train_indices) >= 20
+        ):
+            break
+
+    if (
+        len(positive_train_indices) < 20
+        or len(negative_train_indices) < 20
+    ):
+        raise RuntimeError(
+            "Could not create smoke training subset "
+            "with both glaucoma classes."
+        )
+
+    train_indices = (
+        positive_train_indices[:20]
+        + negative_train_indices[:20]
+    )
+
     train_subset = Subset(
         train_dataset,
-        range(
-            min(
-                SMOKE_IMAGES,
-                len(train_dataset),
-            )
-        ),
+        train_indices,
+    )
+
+    print(
+        "Smoke training positives:",
+        20,
+    )
+
+    print(
+        "Smoke training negatives:",
+        20,
     )
 
     # -----------------------------------------------------
@@ -170,11 +212,15 @@ def main():
     # DataLoaders
     # -----------------------------------------------------
 
+    train_generator = torch.Generator()
+    train_generator.manual_seed(SEED)
+
     train_loader = DataLoader(
         train_subset,
         batch_size=BATCH_SIZE,
-        shuffle=False,
+        shuffle=True,
         num_workers=0,
+        generator=train_generator,
     )
 
     validation_loader = DataLoader(
