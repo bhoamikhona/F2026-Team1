@@ -68,6 +68,9 @@ def main():
                 "precision": tp / (tp + fp) if tp + fp else None,
                 "referral_count": tp + fp, "referral_rate": (tp + fp) / len(rows),
             })
+    if not results:
+        raise RuntimeError("No threshold candidates generated")
+
     destination = output / f"{disease}_threshold_candidates_trial.csv"
     with destination.open("w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=list(results[0]))
