@@ -597,7 +597,7 @@ def train_seed(seed, device):
                     "model_type": "glaucoma_only",
                     "seed": seed,
                     "epoch": epoch,
-                    "validation_auroc": validation_auroc,
+                    "validation_auroc": float(validation_auroc),
                     "model_state_dict": model.state_dict(),
                     "learning_rate": LEARNING_RATE,
                     "batch_size": BATCH_SIZE,
