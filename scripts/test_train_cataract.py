@@ -1,3 +1,6 @@
+
+import math
+
 import pandas as pd
 import torch
 import torch.nn as nn
@@ -16,9 +19,13 @@ from train_cataract import (
     train_one_epoch,
     validate,
 )
+from dual.config import set_seed
 
 
 def main():
+    # Use the shared project seed for reproducibility.
+    set_seed(42)
+
     print(
         "Task 11 Cataract Training Smoke Test"
     )
@@ -55,9 +62,8 @@ def main():
         len(validation_dataset),
     )
 
-    # Select a small training subset that contains
-    # both cataract-positive and cataract-negative
-    # examples.
+    # Select a small training subset containing
+    # both cataract-positive and cataract-negative examples.
     train_labels = pd.read_csv(LABELS_CSV)
 
     train_labels = train_labels[
@@ -88,8 +94,8 @@ def main():
         train_indices,
     )
 
-    # Validation subset with both classes so
-    # AUROC can be calculated.
+    # Validation subset must contain both classes
+    # so that AUROC can be calculated.
     validation_labels = pd.read_csv(
         LABELS_CSV
     )
@@ -113,15 +119,6 @@ def main():
         .tolist()[:20]
     )
 
-    if (
-        len(validation_positive) == 0
-        or len(validation_negative) == 0
-    ):
-        raise RuntimeError(
-            "Smoke test requires both cataract "
-            "classes in validation."
-        )
-
     validation_indices = (
         validation_positive
         + validation_negative
@@ -130,6 +127,32 @@ def main():
     validation_subset = Subset(
         validation_dataset,
         validation_indices,
+    )
+
+    # Assert that both classes are present
+    # in training and validation subsets.
+    assert len(train_positive) > 0, (
+        "No positive training examples"
+    )
+
+    assert len(train_negative) > 0, (
+        "No negative training examples"
+    )
+
+    assert len(validation_positive) > 0, (
+        "No positive validation examples"
+    )
+
+    assert len(validation_negative) > 0, (
+        "No negative validation examples"
+    )
+
+    assert len(train_subset) > 0, (
+        "Training subset is empty"
+    )
+
+    assert len(validation_subset) > 0, (
+        "Validation subset is empty"
     )
 
     print(
@@ -152,11 +175,17 @@ def main():
         len(validation_negative),
     )
 
+    # Explicitly seed the training DataLoader
+    # to match the final Task 11 training script.
+    generator = torch.Generator()
+    generator.manual_seed(42)
+
     train_loader = DataLoader(
         train_subset,
         batch_size=8,
         shuffle=True,
         num_workers=0,
+        generator=generator,
     )
 
     validation_loader = DataLoader(
@@ -166,10 +195,26 @@ def main():
         num_workers=0,
     )
 
+    assert len(train_loader) > 0, (
+        "Training DataLoader is empty"
+    )
+
+    assert len(validation_loader) > 0, (
+        "Validation DataLoader is empty"
+    )
+
     cataract_weight = (
         calculate_cataract_weight(
             LABELS_CSV
         )
+    )
+
+    assert math.isfinite(cataract_weight), (
+        "Cataract positive weight is not finite"
+    )
+
+    assert cataract_weight > 0, (
+        "Cataract positive weight must be positive"
     )
 
     print(
@@ -198,8 +243,7 @@ def main():
         lr=1e-4,
     )
 
-    # Important: call the REAL Task 11
-    # training function.
+    # Call the actual Task 11 training function.
     train_loss = train_one_epoch(
         model=model,
         loader=train_loader,
@@ -208,8 +252,7 @@ def main():
         device=device,
     )
 
-    # Important: call the REAL Task 11
-    # validation function.
+    # Call the actual Task 11 validation function.
     (
         validation_loss,
         validation_auroc,
@@ -218,6 +261,31 @@ def main():
         loader=validation_loader,
         loss_fn=loss_fn,
         device=device,
+    )
+
+    # Verify numerical correctness of the outputs.
+    assert math.isfinite(train_loss), (
+        "Training loss is not finite"
+    )
+
+    assert math.isfinite(validation_loss), (
+        "Validation loss is not finite"
+    )
+
+    assert math.isfinite(validation_auroc), (
+        "Validation AUROC is not finite"
+    )
+
+    assert train_loss >= 0, (
+        "Training loss is negative"
+    )
+
+    assert validation_loss >= 0, (
+        "Validation loss is negative"
+    )
+
+    assert 0.0 <= validation_auroc <= 1.0, (
+        "Validation AUROC is outside [0, 1]"
     )
 
     print(

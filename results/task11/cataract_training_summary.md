@@ -8,48 +8,28 @@
 Task 11 Cataract-Only - Seed 42
 ============================================================
 Device: cuda
+Git commit: 6822292afcf23c7f10b56ca748358584ee1f35d7
 Training images: 4807
 Validation images: 1024
 Cataract positive weight: 20.3644
 Downloading: "https://download.pytorch.org/models/resnet50-11ad3fa6.pth" to /root/.cache/torch/hub/checkpoints/resnet50-11ad3fa6.pth
-100%|██████████| 97.8M/97.8M [00:00<00:00, 167MB/s]
-Git commit: 88d55db641aa999be33f7f90d55d6655553f4fd0
-Epoch 1/30 | Train loss: 0.5054 | Validation loss: 0.4403 | Validation cataract AUROC: 0.973148
-New best model saved.
-Epoch 2/30 | Train loss: 0.3333 | Validation loss: 0.4085 | Validation cataract AUROC: 0.974860
-New best model saved.
-Epoch 3/30 | Train loss: 0.3525 | Validation loss: 0.4278 | Validation cataract AUROC: 0.975393
-New best model saved.
-Epoch 4/30 | Train loss: 0.2264 | Validation loss: 0.3647 | Validation cataract AUROC: 0.978950
-New best model saved.
-Epoch 5/30 | Train loss: 0.3478 | Validation loss: 0.2973 | Validation cataract AUROC: 0.984529
-New best model saved.
-Epoch 6/30 | Train loss: 0.2452 | Validation loss: 0.3744 | Validation cataract AUROC: 0.976772
-No AUROC improvement for 1 epoch(s).
-Epoch 7/30 | Train loss: 0.1995 | Validation loss: 0.3807 | Validation cataract AUROC: 0.978283
-No AUROC improvement for 2 epoch(s).
-Epoch 8/30 | Train loss: 0.2363 | Validation loss: 0.2937 | Validation cataract AUROC: 0.983084
-No AUROC improvement for 3 epoch(s).
-Epoch 9/30 | Train loss: 0.2079 | Validation loss: 0.3579 | Validation cataract AUROC: 0.979061
-No AUROC improvement for 4 epoch(s).
-Epoch 10/30 | Train loss: 0.2376 | Validation loss: 0.2742 | Validation cataract AUROC: 0.986485
-New best model saved.
-Epoch 11/30 | Train loss: 0.2194 | Validation loss: 0.2880 | Validation cataract AUROC: 0.987108
-New best model saved.
-Epoch 12/30 | Train loss: 0.1851 | Validation loss: 0.7232 | Validation cataract AUROC: 0.972626
-No AUROC improvement for 1 epoch(s).
-Epoch 13/30 | Train loss: 0.1690 | Validation loss: 0.3305 | Validation cataract AUROC: 0.981662
-No AUROC improvement for 2 epoch(s).
-Epoch 14/30 | Train loss: 0.1896 | Validation loss: 0.3653 | Validation cataract AUROC: 0.982151
-No AUROC improvement for 3 epoch(s).
-Epoch 15/30 | Train loss: 0.2560 | Validation loss: 0.3920 | Validation cataract AUROC: 0.978439
-No AUROC improvement for 4 epoch(s).
-Epoch 16/30 | Train loss: 0.1814 | Validation loss: 0.3170 | Validation cataract AUROC: 0.981929
-No AUROC improvement for 5 epoch(s).
-Early stopping triggered.
-Seed 42 complete | Best epoch: 11 | Best validation cataract AUROC: 0.987108
-**Checkpoint location (verified separately):**
-`checkpoints/task11/cataract/cataract_seed_42_best.pt`
+100%|██████████| 97.8M/97.8M [00:00<00:00, 184MB/s] 
+Epoch 1/30 | Train loss: 0.4115 | Validation loss: 0.3493 | Validation cataract AUROC: 0.986196
+  New best model saved: AUROC 0.986196
+Epoch 2/30 | Train loss: 0.3922 | Validation loss: 0.3608 | Validation cataract AUROC: 0.980150
+  No AUROC improvement (1/5)
+Epoch 3/30 | Train loss: 0.3202 | Validation loss: 0.4757 | Validation cataract AUROC: 0.963590
+  No AUROC improvement (2/5)
+Epoch 4/30 | Train loss: 0.2997 | Validation loss: 0.3977 | Validation cataract AUROC: 0.976638
+  No AUROC improvement (3/5)
+Epoch 5/30 | Train loss: 0.3124 | Validation loss: 0.3652 | Validation cataract AUROC: 0.978239
+  No AUROC improvement (4/5)
+Epoch 6/30 | Train loss: 0.2068 | Validation loss: 0.3408 | Validation cataract AUROC: 0.983818
+  No AUROC improvement (5/5)
+Early stopping after epoch 6.
+
+Seed 42 complete | Best epoch: 1 | Best validation cataract AUROC: 0.986196
+Best checkpoint: checkpoints/task11/cataract/cataract_seed_42_best.pt
 
 ---
 
