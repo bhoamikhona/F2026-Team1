@@ -59,59 +59,59 @@
   "runs": [
     {
       "seed": 42,
-      "prediction_sha256": "536837dbc24a56a21f5a6b1953a74b3b2e85a2531d27220000e9744e47067ccc",
+      "prediction_sha256": "715f8c1f722284d74a12524f4723c5f087456cd13d9b96d811add005041c5f78",
       "fold_parameters": [
         {
           "fold": 1,
-          "temperature": 1.3587035028874939,
-          "platt_scale": 0.7899048386562099,
-          "platt_offset": -2.834733322329891
+          "temperature": 1.4162929077976179,
+          "platt_scale": 1.1043129164406977,
+          "platt_offset": -4.153240480828043
         },
         {
           "fold": 2,
-          "temperature": 1.3035489857849902,
-          "platt_scale": 0.8336482479628848,
-          "platt_offset": -2.796093227988721
+          "temperature": 1.4077019232306014,
+          "platt_scale": 1.262711381242809,
+          "platt_offset": -4.525109893074514
         },
         {
           "fold": 3,
-          "temperature": 1.303784154870092,
-          "platt_scale": 0.9454862052235298,
-          "platt_offset": -3.1895537140274848
+          "temperature": 1.3755449612968726,
+          "platt_scale": 1.1017461057416829,
+          "platt_offset": -4.223185721026868
         },
         {
           "fold": 4,
-          "temperature": 1.4198562753877497,
-          "platt_scale": 0.7882799123525615,
-          "platt_offset": -2.8790796420293527
+          "temperature": 1.4536735861048173,
+          "platt_scale": 1.056408496237541,
+          "platt_offset": -4.001123812263764
         },
         {
           "fold": 5,
-          "temperature": 1.3075101949739898,
-          "platt_scale": 0.9534895940412396,
-          "platt_offset": -3.1807020102360557
+          "temperature": 1.3279536361190953,
+          "platt_scale": 1.2049981250394555,
+          "platt_offset": -4.513739024313752
         }
       ],
       "metrics": {
         "uncalibrated": {
-          "log_loss": 0.14670984304768314,
-          "brier_score": 0.04237369712184691,
-          "ece_10_equal_width_bins": 0.06273217314557768,
-          "mean_probability": 0.10765404814557769,
+          "log_loss": 0.29727035256244794,
+          "brier_score": 0.09356423774848557,
+          "ece_10_equal_width_bins": 0.15903288711984792,
+          "mean_probability": 0.2039547621198479,
           "observed_rate": 0.044921875
         },
         "temperature": {
-          "log_loss": 0.1403474851994033,
-          "brier_score": 0.041716165830825436,
-          "ece_10_equal_width_bins": 0.07267388987980059,
-          "mean_probability": 0.11759576487980059,
+          "log_loss": 0.2858833739842045,
+          "brier_score": 0.09163894663816774,
+          "ece_10_equal_width_bins": 0.17501057837644068,
+          "mean_probability": 0.21993245337644068,
           "observed_rate": 0.044921875
         },
         "platt": {
-          "log_loss": 0.057086509002895275,
-          "brier_score": 0.01580565853382905,
-          "ece_10_equal_width_bins": 0.006905551120459068,
-          "mean_probability": 0.044690614616870766,
+          "log_loss": 0.05915081281065891,
+          "brier_score": 0.016658294710446393,
+          "ece_10_equal_width_bins": 0.009628457019567533,
+          "mean_probability": 0.04497481263656136,
           "observed_rate": 0.044921875
         }
       }

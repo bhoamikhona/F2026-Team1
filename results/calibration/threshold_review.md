@@ -2,6 +2,10 @@
 
 Status: trial. No decision thresholds or abstention settings are frozen.
 
+Update, 13 October 2026: see `final_checkpoint_review.md` for the current
+comparison of both diseases after refreshing cataract seed 42. The glaucoma
+tables below remain valid; the final shared-model settings are still pending.
+
 The supplied project brief, section 15.2, Task 12, requires calibration,
 disease thresholds and an "Uncertain, refer" cutoff to use validation data
 only, with final values committed and frozen before internal or external tests.
@@ -103,5 +107,5 @@ not a finalized uncertainty policy or independent performance estimate.
 The CSV includes coverage (fraction receiving an ordinary decision), error rate
 among those ordinary decisions, and total referral burden. Class imbalance
 makes overall retained error alone insufficient for selecting a rule.
-The 21 holdout eyes remain unused. Cataract and combined-head behavior remain
-to be evaluated before completing Task 12.
+The 21 holdout eyes remain unused. Cataract comparisons are now available in
+the updated review; combined-head behavior remains to be evaluated.

@@ -1,5 +1,6 @@
 {
   "status": "trial",
+  "disease": "glaucoma",
   "frozen": false,
   "method": "platt",
   "split": "validation",
@@ -7,6 +8,6 @@
   "rule": "Refer when calibrated probability >= threshold",
   "abstention_applied": false,
   "selected_thresholds": null,
-  "calibration_source_sha256": "262e4d351a1fa4bd0589a09dc86d9c2d344522b61ea621dbc45fe599db16e35d",
+  "calibration_source_sha256": "349f724a0811d494ec9688ebd73a573ce32e198dc3acd85eb3fd700e8de35cef",
   "limitations": "Same validation data used for calibration and candidate comparison; not independent test results."
 }

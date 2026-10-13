@@ -1,4 +1,4 @@
-seed,target_sensitivity,threshold,requested_uncertain_fraction,margin,uncertain_count,uncertain_glaucoma,ordinary_refer_count,no_concern_count,coverage,retained_error_rate,total_referred,glaucoma_referred,glaucoma_missed,non_glaucoma_referred,additional_referrals
+seed,target_sensitivity,threshold,requested_uncertain_fraction,margin,uncertain_count,uncertain_positive,ordinary_refer_count,no_concern_count,coverage,retained_error_rate,total_referred,positive_referred,positive_missed,negative_referred,additional_referrals
 42,0.9,0.01887661902327415,0.0,,0,0,404,620,1.0,0.3623046875,404,36,3,368,0
 42,0.9,0.01887661902327415,0.05,0.0011622566169944143,52,2,383,589,0.94921875,0.36213991769547327,435,36,3,399,31
 42,0.9,0.01887661902327415,0.1,0.0024232302641842528,103,2,365,556,0.8994140625,0.36264929424538545,468,36,3,432,64

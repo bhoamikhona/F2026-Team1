@@ -1,0 +1,21 @@
+{
+  "disease": "glaucoma",
+  "seed": 43,
+  "split": "validation",
+  "checkpoint": "checkpoints/task11/glaucoma/glaucoma_seed_43_best.pt",
+  "checkpoint_sha256": "132a11163f4e43a131b56610cad54c12087b8cf683340f34b66625676cb90da7",
+  "prediction_sha256": "7b9774a6d8bac11051c8bfcf058d4b3098d6a2f111f9fde546b24945dad65a5f",
+  "input_source_sha256": {
+    "labels/eye_labels_task7.csv": "67d7d8bbc8cb70d8fcb382c264b1e6fa73b5f0c7adc1dbcda2d3b63d044e6ce7",
+    "scripts/glaucoma_model.py": "c319fa2a256936fe745e89db3ce8808b660a9188bf8b969980670ab465f1e930",
+    "scripts/resnet_backbone.py": "aa921cbd3d4c9c90f071d500b6937a9af5bdf9ded2eb3e0d8df7c223f32c7796",
+    "scripts/fundus_dataset.py": "bc9e4ac05935255844f01225119e318525c38a27fc08ae60611733b1d3924190",
+    "scripts/preprocess_images.py": "4e4167e830718e94033a09732e5f07e470581ede5eac14d33e6b69cf8817db51"
+  },
+  "device": "cpu",
+  "batch_size": 8,
+  "shuffle": false,
+  "python_version": "3.13.3",
+  "torch_version": "2.14.0",
+  "reuse_note": "Existing CPU predictions retained: all model-state tensors were compared against the final release and are exactly equal. Provenance recorded during final-checkpoint audit, not at original inference time."
+}

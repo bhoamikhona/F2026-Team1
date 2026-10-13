@@ -1,8 +1,7 @@
-"""Prepare validation labels for Task 12 calibration.
+"""Collect validation predictions and compare trial calibration methods.
 
-Calibration and cutoff fitting will be added when Task 11 predictions are
-available. Internal test, external test, and holdout eyes must not be used
-to choose these settings.
+Internal test, external test, and holdout eyes must not be used to choose
+these settings. Saved predictions are checked against their provenance.
 """
 
 import argparse
@@ -10,6 +9,7 @@ import csv
 import hashlib
 import json
 import warnings
+import platform
 from pathlib import Path
 import torch
 import numpy as np
@@ -25,6 +25,54 @@ IMAGE_DIR = PROJECT_ROOT / "Preprocessed" / "ODIR"
 # Saved glaucoma models from Task 11
 CHECKPOINT_DIR = PROJECT_ROOT / "checkpoints" / "task11" / "glaucoma"
 SEEDS = (42, 43, 44)
+
+
+def file_sha256(path):
+    """Fingerprint a file without loading the entire file into memory."""
+    with path.open("rb") as file:
+        return hashlib.file_digest(file, "sha256").hexdigest()
+
+
+def save_prediction_metadata(disease, seed, reuse_note=None):
+    """Record which checkpoint and inputs produced the saved scores."""
+    output = PROJECT_ROOT / "results" / "calibration"
+    prediction = output / f"{disease}_seed_{seed}_validation.csv"
+    checkpoint = PROJECT_ROOT / "checkpoints" / "task11" / disease / f"{disease}_seed_{seed}_best.pt"
+    sources = [LABELS_FILE] + [PROJECT_ROOT / "scripts" / name for name in
+                              (f"{disease}_model.py", "resnet_backbone.py",
+                               "fundus_dataset.py", "preprocess_images.py")]
+    record = {
+        "disease": disease, "seed": seed, "split": "validation",
+        "checkpoint": checkpoint.relative_to(PROJECT_ROOT).as_posix(),
+        "checkpoint_sha256": file_sha256(checkpoint),
+        "prediction_sha256": file_sha256(prediction),
+        "input_source_sha256": {p.relative_to(PROJECT_ROOT).as_posix(): file_sha256(p) for p in sources},
+        "device": "cpu", "batch_size": 8, "shuffle": False,
+        "python_version": platform.python_version(), "torch_version": str(torch.__version__),
+        "reuse_note": reuse_note,
+    }
+    prediction.with_suffix(".meta.json").write_text(json.dumps(record, indent=2) + "\n")
+
+
+def verify_prediction_metadata(disease, seed):
+    """Reject stale scores when the checkpoint or recorded inputs have changed."""
+    path = PROJECT_ROOT / "results" / "calibration" / f"{disease}_seed_{seed}_validation.csv"
+    metadata_path = path.with_suffix(".meta.json")
+    if not metadata_path.is_file():
+        raise ValueError(f"Missing prediction provenance: {metadata_path}. Recollect predictions.")
+    record = json.loads(metadata_path.read_text())
+    if (record["disease"], record["seed"], record["split"]) != (disease, seed, "validation"):
+        raise ValueError("Prediction provenance identifies a different model or split")
+    if file_sha256(path) != record["prediction_sha256"]:
+        raise ValueError("Saved predictions changed since provenance was recorded")
+    for name, digest in record["input_source_sha256"].items():
+        if file_sha256(PROJECT_ROOT / name) != digest:
+            raise ValueError(f"Prediction input changed: {name}. Recollect predictions.")
+    checkpoint = PROJECT_ROOT / record["checkpoint"]
+    # Saved-score comparisons can run without downloading the large checkpoints.
+    if checkpoint.exists() and file_sha256(checkpoint) != record["checkpoint_sha256"]:
+        raise ValueError("Checkpoint changed; recollect validation predictions before calibration")
+    return record
 
 
 def load_validation_labels(labels_file=LABELS_FILE):
@@ -124,7 +172,7 @@ def collect_glaucoma_predictions(model, loader):
     model.eval()
 
     with torch.inference_mode():
-        for batch in loader:
+        for batch_number, batch in enumerate(loader, start=1):
             logits = model(batch["image"]).reshape(-1)
 
             for filename, logit, label in zip(
@@ -137,6 +185,9 @@ def collect_glaucoma_predictions(model, loader):
                     "logit": logit,
                     "glaucoma": int(label),
                 })
+
+            if batch_number % 16 == 0:
+                print(f"Collected {len(predictions)} validation predictions...", flush=True)
 
     return predictions
 
@@ -159,26 +210,8 @@ def save_glaucoma_predictions(predictions, seed):
     print(f"Saved: {output_file}")
 
 def load_saved_glaucoma_predictions(seed):
-    """Read saved validation scores and labels for one glaucoma model."""
-    path = (
-        PROJECT_ROOT / "results" / "calibration"
-        / f"glaucoma_seed_{seed}_validation.csv"
-    )
-
-    with path.open(newline="", encoding="utf-8") as file:
-        predictions = list(csv.DictReader(file))
-
-    logits = torch.tensor(
-        [float(row["logit"]) for row in predictions],
-        dtype=torch.float64,
-    )
-
-    labels = torch.tensor(
-        [int(row["glaucoma"]) for row in predictions],
-        dtype=torch.float64,
-    )
-
-    return logits, labels
+    """Read verified glaucoma scores through the shared provenance checks."""
+    return load_saved_predictions(seed, "glaucoma", load_validation_labels())
 
 def calculate_log_loss(logits, labels):
     """Measure prediction confidence errors; lower is better."""
@@ -378,7 +411,7 @@ def collect_cataract_predictions(model, loader):
     model.eval()
 
     with torch.inference_mode():
-        for batch in loader:
+        for batch_number, batch in enumerate(loader, start=1):
             logits = model(batch["image"]).reshape(-1)
 
             if not torch.isfinite(logits).all():
@@ -395,6 +428,9 @@ def collect_cataract_predictions(model, loader):
                     "logit": logit,
                     "cataract": int(label),
                 })
+
+            if batch_number % 16 == 0:
+                print(f"Collected {len(predictions)} validation predictions...", flush=True)
 
     return predictions
 
@@ -418,6 +454,7 @@ def save_cataract_predictions(predictions, seed):
 
 def load_saved_predictions(seed, disease, rows):
     """Validate saved scores against the canonical validation labels."""
+    verify_prediction_metadata(disease, seed)
     path = PROJECT_ROOT / "results" / "calibration" / f"{disease}_seed_{seed}_validation.csv"
     with path.open(newline="", encoding="utf-8") as file:
         predictions = list(csv.DictReader(file))
@@ -439,12 +476,14 @@ def main():
     parser.add_argument("--disease", choices=("glaucoma", "cataract"), default="glaucoma")
     parser.add_argument("--collect-predictions", action="store_true",
                         help="Run models and replace saved validation scores before calibration")
+    parser.add_argument("--collect-seeds", type=int, nargs="+", choices=SEEDS,
+                        default=list(SEEDS), help="Seeds to refresh; calibration still compares all three")
     args = parser.parse_args()
     disease = args.disease
     rows = load_validation_labels()
     if args.collect_predictions:
         loader = make_validation_loader()
-        for seed in SEEDS:
+        for seed in args.collect_seeds:
             print(f"Collecting {disease} predictions for seed {seed}...", flush=True)
             if disease == "cataract":
                 model = load_cataract_model(seed)
@@ -461,6 +500,7 @@ def main():
             if not all(np.isfinite(r["logit"]) for r in predictions):
                 raise ValueError("Invalid model scores")
             save(predictions, seed)
+            save_prediction_metadata(disease, seed)
 
     trials = []
     bin_rows = []
@@ -508,6 +548,7 @@ def main():
             "seed": seed,
             "prediction_file": prediction_path.relative_to(PROJECT_ROOT).as_posix(),
             "prediction_sha256": hashlib.sha256(prediction_path.read_bytes()).hexdigest(),
+            "prediction_metadata_sha256": file_sha256(prediction_path.with_suffix(".meta.json")),
             "sample_count": len(labels),
             f"{disease}_count": int(labels.sum().item()),
             "observed_rate": labels.mean().item(),

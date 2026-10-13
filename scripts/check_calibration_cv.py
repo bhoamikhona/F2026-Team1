@@ -18,11 +18,13 @@ from dual.config import SEED, set_seed
 from calibrate_models import (
     PROJECT_ROOT, SEEDS, load_validation_labels,
     fit_temperature, fit_platt_scaling, calculate_log_loss,
+    verify_prediction_metadata,
 )
 
 
 def read_predictions(seed, rows, disease="glaucoma"):
     """Align saved predictions by filename and verify their validation labels."""
+    verify_prediction_metadata(disease, seed)
     path = PROJECT_ROOT / "results" / "calibration" / f"{disease}_seed_{seed}_validation.csv"
     with path.open(newline="", encoding="utf-8") as file:
         predictions = list(csv.DictReader(file))
