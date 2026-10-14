@@ -9,6 +9,7 @@ import {
   AlertTriangle,
   CheckCircle2,
   ShieldCheck,
+  ArrowLeft,
 } from "lucide-react";
 import Button from "../components/Button.jsx";
 import Chip from "../components/Chip.jsx";
@@ -92,6 +93,10 @@ function StyleReference() {
       </Button>
       <Button icon={BarChart3} fullWidth>
         Full width
+      </Button>
+
+      <Button variant="secondary" icon={ArrowLeft} to="/upload">
+        New screening
       </Button>
 
       <Chip mono>Demo data</Chip>
@@ -256,6 +261,15 @@ function StyleReference() {
 
       <div>
         <BackLink to="/history">Back to History</BackLink>
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: "1.6rem" }}>
+        <Button variant="secondary" icon={ArrowLeft} to="/upload">
+          New screening
+        </Button>
+        <BackLink to="/history" arrow={false}>
+          or back to History
+        </BackLink>
       </div>
 
       <div>

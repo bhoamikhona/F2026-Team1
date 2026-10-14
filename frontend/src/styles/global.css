@@ -106,6 +106,7 @@ body {
   gap: var(--space-2);
 
   cursor: pointer;
+  text-decoration: none;
 }
 
 .btn-primary {
@@ -132,6 +133,16 @@ body {
   border: 0.1rem solid var(--border-strong);
   border-radius: var(--radius-md);
   padding: var(--space-3) var(--space-4);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-subtle);
+  border-color: var(--accent);
+}
+
+.btn-secondary:focus-visible {
+  outline: 0.2rem solid var(--accent);
+  outline-offset: 0.2rem;
 }
 
 .btn--block {
