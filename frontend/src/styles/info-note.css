@@ -17,3 +17,9 @@
 .info-note__text {
   color: var(--text-primary);
 }
+
+.info-note__title {
+  margin-right: var(--space-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}

@@ -8,6 +8,7 @@ import {
   HelpCircle,
   AlertTriangle,
   CheckCircle2,
+  ShieldCheck,
 } from "lucide-react";
 import Button from "../components/Button.jsx";
 import Chip from "../components/Chip.jsx";
@@ -35,6 +36,7 @@ import cataractHeatmap from "../assets/images/cataractHeatmap.png";
 import glaucomaHeatmap from "../assets/images/glaucomaHeatmap.png";
 import eyePhoto from "../assets/images/eye.png";
 import RiskSummary from "../components/results/RiskSummary.jsx";
+import Banner from "../components/Banner.jsx";
 
 function StyleReference() {
   const [patientId, setPatientId] = useState("");
@@ -111,6 +113,12 @@ function StyleReference() {
         DUAL flags eyes that may need a specialist review for cataract or
         glaucoma. It does not diagnose. Every Refer or Uncertain result needs a
         full eye examination.
+      </InfoNote>
+
+      <InfoNote icon={ShieldCheck} title="Triage, not diagnosis">
+        This screening tool assists qualified practitioners in prioritizing
+        clinical evaluations. It does not provide definitive diagnostic
+        findings.
       </InfoNote>
 
       <Card title="Fundus preview" aside="Awaiting capture">
@@ -334,6 +342,14 @@ function StyleReference() {
         <ConditionCard condition="Glaucoma" result="refer">
           <RiskSummary score={0.78} threshold={0.5} result="refer" isExample />
         </ConditionCard>
+      </div>
+
+      <div>
+        <Banner title="Triage, not diagnosis">
+          This screening tool assists qualified practitioners in prioritizing
+          clinical evaluations. It does not provide definitive diagnostic
+          findings.
+        </Banner>
       </div>
     </main>
   );
