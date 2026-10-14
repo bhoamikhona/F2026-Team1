@@ -137,15 +137,41 @@ function StyleReference() {
       </div>
 
       <div style={{ width: "60rem" }}>
-        <SummaryStrip />
+        <SummaryStrip
+          items={[
+            { label: "Patient", value: "—" },
+            { label: "Eye", value: "—" },
+            { label: "File name", value: "No file selected", mono: true },
+          ]}
+        />
       </div>
 
       <div style={{ width: "60rem" }}>
         <SummaryStrip
-          patient="P-001, Maria Lopez, 67"
-          eye="Right eye (OD)"
-          fileName="maria_lopez_right_fundus.jpg"
+          items={[
+            { label: "Patient", value: "P-001, Maria Lopez, 67" },
+            { label: "Eye", value: "Right eye (OD)" },
+            {
+              label: "File name",
+              value: "maria_lopez_right_fundus.jpg",
+              mono: true,
+            },
+          ]}
         />
+      </div>
+
+      <div style={{ width: "128rem" }}>
+        <SummaryStrip
+          items={[
+            { label: "Patient", value: "Maria Lopez, P-001" },
+            { label: "Eye", value: "Right eye, OD" },
+            { label: "Date", value: "Oct 9, 2026" },
+            { label: "Screening ID", value: "SCR-0008", mono: true },
+          ]}
+          asideLabel="Overall result:"
+        >
+          <ResultChip result="refer" />
+        </SummaryStrip>
       </div>
 
       <PageHeader eyebrow="Clinical triage intake" title="New screening" />
@@ -244,7 +270,7 @@ function StyleReference() {
             { label: "Patient", value: "Maria Lopez, P-001" },
             { label: "Eye", value: "Right eye, OD" },
             { label: "Date", value: "Sep 22, 2026" },
-            { label: "Screening ID", value: "#SCR-2026-8841" },
+            { label: "Screening ID", value: "#SCR-2026-8841", mono: true },
           ]}
         />
       </div>
@@ -254,7 +280,7 @@ function StyleReference() {
           label="Past screenings"
           columns={SCREENING_COLUMNS}
           rows={SCREENINGS}
-          rowHref={(row) => `/history/${row.id}`}
+          rowHref={(row) => `/results/${row.id}`}
         />
       </div>
 
@@ -269,7 +295,6 @@ function StyleReference() {
       <div>
         <SegmentedControl
           label="Heatmap condition"
-          name="heatmap-condition"
           options={[
             { value: "cataract", label: "Cataract" },
             { value: "glaucoma", label: "Glaucoma" },

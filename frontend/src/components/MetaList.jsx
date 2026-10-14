@@ -6,7 +6,13 @@ function MetaList({ items }) {
       {items.map((item) => (
         <div key={item.label} className="meta-list__item">
           <dt className="label-mono">{item.label}</dt>
-          <dd className="body-md">{item.value}</dd>
+          <dd
+            className={
+              item.mono ? "meta-list__value--mono mono-meta" : "body-md"
+            }
+          >
+            {item.value}
+          </dd>
         </div>
       ))}
     </dl>

@@ -7,6 +7,7 @@ import Home from "./pages/Home.jsx";
 import History from "./pages/History.jsx";
 import About from "./pages/About.jsx";
 import Upload from "./pages/Upload.jsx";
+import Results from "./pages/Results.jsx";
 import StyleReference from "./pages/StyleReference.jsx";
 
 function AppLayout() {
@@ -29,6 +30,7 @@ function App() {
         <Route path="/history" element={<History />} />
         <Route path="/about" element={<About />} />
         <Route path="/upload" element={<Upload />} />
+        <Route path="/results/:id" element={<Results />} />
         <Route path="/style" element={<StyleReference />} />
       </Route>
     </Routes>

@@ -130,9 +130,15 @@ function ScreeningForm({
         </div>
 
         <SummaryStrip
-          patient={patientLabel}
-          eye={eyeLabel}
-          fileName={file?.name}
+          items={[
+            { label: "Patient", value: patientLabel || "—" },
+            { label: "Eye", value: eyeLabel || "—" },
+            {
+              label: "File name",
+              value: file?.name || "No file selected",
+              mono: true,
+            },
+          ]}
         />
 
         <Button type="submit" icon={BarChart3} fullWidth disabled={!canSubmit}>
