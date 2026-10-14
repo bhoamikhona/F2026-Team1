@@ -2,7 +2,7 @@
 """Task 11.1 smoke test for shared two-head ResNet-50 checkpoints.
 
 Run from the repository root:
-    python tests/test_train_dual_task11.py
+    python scripts/test_train_dual_task11.py
 
 Does not retrain ResNet or modify project artifacts.
 Uses a temporary directory for synthetic test artifacts.
