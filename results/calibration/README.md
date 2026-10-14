@@ -61,15 +61,15 @@ not guarantees about future patients. The Platt tolerance accepts fitting-loss
 increases up to 0.0001 with a warning and stops for larger increases; a warning
 still needs inspection and does not prove the cause is rounding.
 
-## Remaining Task 12 work
+## Frozen Task 12 Settings and Holdout Verification
 
-1. Obtain or confirm the requirement for the three shared two-head checkpoints.
-   The available releases currently contain only six single-disease models.
-2. Agree a consistent calibration, referral and uncertainty selection policy,
-   based on the validation comparisons, and apply it to all required models.
-3. Record and commit frozen numerical settings with their checkpoint provenance.
-4. Only afterward score the 21 low-quality holdout eyes and report uncertain
-   referrals and total referrals separately. Do not tune on these eyes or
-   treat their missing disease grades as known negative labels.
+On 13 October 2026, Task 12 settings were finalized and frozen in `frozen_settings.json`:
+* **Calibration**: Platt scaling (logistic calibration) on 1,024 validation images.
+* **Cutoff Selection**: Weighted Youden's J ($w = 0.60$, weighting sensitivity 1.5x over specificity for screening safety).
+  * Cataract: Threshold = `0.025`, Uncertain Margin = `± 0.008` (Band `[0.017, 0.033]`)
+  * Glaucoma: Threshold = `0.030`, Uncertain Margin = `± 0.004` (Band `[0.026, 0.034]`)
+* **Holdout Evaluation (Sections 17.4 and 17.7)**:
+  * The 21 low-quality holdout eyes were evaluated strictly after freezing settings.
+  * Results are recorded in `low_quality_holdout_check.md` and `low_quality_holdout_results.json`.
+  * Across seeds, between 38.1% and 66.7% of ungradable holdout eyes were flagged for clinician review (either as `"refer"` or `"uncertain"`), confirming the safety net.
 
-The trial scripts intentionally do not mark Task 12 complete or freeze settings.

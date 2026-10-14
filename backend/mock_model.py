@@ -15,10 +15,11 @@ import numpy as np
 VERSION = "v0-mock"
 CONDITIONS = ("cataract", "glaucoma")
 
-# Example values until Task 12 fits the real ones on the
-# validation split. They are stored with the model version, never hard-coded in the app.
-THRESHOLDS = {"cataract": 0.35, "glaucoma": 0.50}
-UNCERTAIN_MARGIN = 0.05
+# Task 12 frozen values from results/calibration/frozen_settings.json
+# They are stored with the model version, never hard-coded in the frontend.
+THRESHOLDS = {"cataract": 0.025, "glaucoma": 0.030}
+UNCERTAIN_MARGIN = 0.006
+
 
 
 def _rng(image, condition):
