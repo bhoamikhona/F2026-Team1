@@ -12,3 +12,11 @@
 .meta-list__value--mono {
   overflow-wrap: anywhere;
 }
+
+.meta-list__value--tag {
+  display: inline-block;
+  padding: var(--space-1) var(--space-2);
+  background-color: var(--bg-subtle);
+  border: 0.1rem solid var(--border-default);
+  border-radius: var(--radius-md);
+}

@@ -1,0 +1,30 @@
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.results__back {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.results__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.results__conditions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+@media (max-width: 64em) {
+  .results__layout {
+    grid-template-columns: 1fr;
+  }
+}
