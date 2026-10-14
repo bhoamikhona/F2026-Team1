@@ -1,0 +1,20 @@
+.history__filter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.history__filter-label {
+  color: var(--text-secondary);
+}
+
+.history__empty {
+  padding: var(--space-10) 0;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.history__count {
+  margin-top: var(--space-4);
+  color: var(--text-secondary);
+}

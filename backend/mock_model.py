@@ -21,7 +21,6 @@ THRESHOLDS = {"cataract": 0.35, "glaucoma": 0.50}
 UNCERTAIN_MARGIN = 0.05
 
 
-
 def _rng(image, condition):
     digest = hashlib.sha256(image.tobytes() + condition.encode()).digest()
     return np.random.default_rng(int.from_bytes(digest[:8], "big"))

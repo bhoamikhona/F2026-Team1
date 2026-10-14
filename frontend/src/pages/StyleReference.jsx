@@ -25,6 +25,9 @@ import ResultChip from "../components/ResultChip.jsx";
 import BackLink from "../components/BackLink.jsx";
 import ConditionCard from "../components/ConditionCard.jsx";
 import MetaList from "../components/MetaList.jsx";
+import Table from "../components/Table";
+import { SCREENING_COLUMNS } from "../data/screeningColumns.js";
+import { SCREENINGS } from "../data/screenings.js";
 
 function StyleReference() {
   const [patientId, setPatientId] = useState("");
@@ -234,6 +237,15 @@ function StyleReference() {
             { label: "Date", value: "Sep 22, 2026" },
             { label: "Screening ID", value: "#SCR-2026-8841" },
           ]}
+        />
+      </div>
+
+      <div>
+        <Table
+          label="Past screenings"
+          columns={SCREENING_COLUMNS}
+          rows={SCREENINGS}
+          rowHref={(row) => `/history/${row.id}`}
         />
       </div>
     </main>
