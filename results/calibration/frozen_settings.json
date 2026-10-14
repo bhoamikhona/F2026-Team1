@@ -1,6 +1,6 @@
 {
-  "status": "frozen",
-  "frozen": true,
+  "status": "superseded_single_model_trial",
+  "frozen": false,
   "date_frozen": "2026-10-13",
   "fit_split": "validation",
   "sample_count": 1024,
@@ -35,7 +35,10 @@
     "cataract": {
       "threshold": 0.025,
       "uncertain_margin": 0.008,
-      "uncertain_band": [0.017, 0.033],
+      "uncertain_band": [
+        0.017,
+        0.033
+      ],
       "decision_rules": {
         "refer": "probability >= 0.025 and abs(probability - 0.025) > 0.008",
         "uncertain": "abs(probability - 0.025) <= 0.008",
@@ -47,30 +50,52 @@
         "referral_rate": 0.165
       },
       "platt_parameters": {
-        "seed_42": { "scale": 1.138810175548822, "offset": -4.261784530950902 },
-        "seed_43": { "scale": 0.8795511058721477, "offset": -2.500588264906972 },
-        "seed_44": { "scale": 0.8808489376678519, "offset": -2.1874801111666453 }
+        "seed_42": {
+          "scale": 1.138810175548822,
+          "offset": -4.261784530950902
+        },
+        "seed_43": {
+          "scale": 0.8795511058721477,
+          "offset": -2.500588264906972
+        },
+        "seed_44": {
+          "scale": 0.8808489376678519,
+          "offset": -2.187480111166645
+        }
       }
     },
     "glaucoma": {
-      "threshold": 0.030,
+      "threshold": 0.03,
       "uncertain_margin": 0.004,
-      "uncertain_band": [0.026, 0.034],
+      "uncertain_band": [
+        0.026,
+        0.034
+      ],
       "decision_rules": {
         "refer": "probability >= 0.030 and abs(probability - 0.030) > 0.004",
         "uncertain": "abs(probability - 0.030) <= 0.004",
         "no_concern": "probability < 0.030 and abs(probability - 0.030) > 0.004"
       },
       "validation_expected_performance": {
-        "sensitivity": 0.880,
+        "sensitivity": 0.88,
         "specificity": 0.784,
-        "referral_rate": 0.230
+        "referral_rate": 0.23
       },
       "platt_parameters": {
-        "seed_42": { "scale": 0.42950810332822767, "offset": -3.038289456250965 },
-        "seed_43": { "scale": 0.3965824960309998, "offset": -4.219983177969305 },
-        "seed_44": { "scale": 0.4729326880053913, "offset": -2.2145992928503893 }
+        "seed_42": {
+          "scale": 0.4295081033282277,
+          "offset": -3.038289456250965
+        },
+        "seed_43": {
+          "scale": 0.3965824960309998,
+          "offset": -4.219983177969305
+        },
+        "seed_44": {
+          "scale": 0.4729326880053913,
+          "offset": -2.2145992928503895
+        }
       }
     }
-  }
+  },
+  "review_note": "Historical single-model experiment. Shared-model settings are being recalculated in settings_review.json. Do not use these rounded values for deployment or further holdout evaluation."
 }

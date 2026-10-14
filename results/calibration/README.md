@@ -1,7 +1,7 @@
 # Validation calibration work
 
 These are trial comparisons, not frozen deployment settings or independent
-test results. Work is on `develop`; no merge into `main` is performed here.
+test results. Work is on `task-12-ablation-freeze`; no merge is performed here.
 
 ## Reproduce the comparisons
 
@@ -61,15 +61,65 @@ not guarantees about future patients. The Platt tolerance accepts fitting-loss
 increases up to 0.0001 with a warning and stops for larger increases; a warning
 still needs inspection and does not prove the cause is rounding.
 
-## Frozen Task 12 Settings and Holdout Verification
+## Shared models and reproducible threshold selection
 
-On 13 October 2026, Task 12 settings were finalized and frozen in `frozen_settings.json`:
-* **Calibration**: Platt scaling (logistic calibration) on 1,024 validation images.
-* **Cutoff Selection**: Weighted Youden's J ($w = 0.60$, weighting sensitivity 1.5x over specificity for screening safety).
-  * Cataract: Threshold = `0.025`, Uncertain Margin = `± 0.008` (Band `[0.017, 0.033]`)
-  * Glaucoma: Threshold = `0.030`, Uncertain Margin = `± 0.004` (Band `[0.026, 0.034]`)
-* **Holdout Evaluation (Sections 17.4 and 17.7)**:
-  * The 21 low-quality holdout eyes were evaluated strictly after freezing settings.
-  * Results are recorded in `low_quality_holdout_check.md` and `low_quality_holdout_results.json`.
-  * Across seeds, between 38.1% and 66.7% of ungradable holdout eyes were flagged for clinician review (either as `"refer"` or `"uncertain"`), confirming the safety net.
+Run from the repository root:
 
+```bash
+python scripts/calibrate_shared_models.py
+python scripts/select_calibration_settings.py
+```
+
+The first command collects both shared heads in one pass per seed. It verifies
+release hashes, model identity, validation filenames/labels, and AUROC reproduction
+within 0.0001 of checkpoint metadata. Predictions and hashes are stored under
+`results/calibration/shared/`. Existing valid scores are reused.
+
+The second command compares uncalibrated, temperature and Platt probabilities
+using five patient-grouped folds, then fits Platt on the full validation split.
+It calculates separate settings for all twelve head/seed pairs from nine models.
+It maximizes `0.6*sensitivity + 0.4*specificity` before uncertainty. Ties prefer
+higher specificity, then a higher threshold. The uncertainty margin includes the
+nearest `ceil(0.05*n)` probabilities to the cutoff, including boundary ties.
+For 1,024 images this means at least 52 uncertain eyes per head. Total referrals
+include both ordinary referrals and uncertain referrals. No averaging of seeds
+or rounded cutoffs is used. These policy choices require team review.
+
+`settings_review.json` contains full precision parameters and provenance.
+`settings_review.csv` and `settings_review.md` summarize the operating points.
+`settings_review_oof.csv` saves held-out calibration probabilities for auditing.
+These remain pending review, not frozen. Results are validation selection results,
+not independent performance estimates. Calibration improves probability estimates;
+it does not guarantee true probabilities or clinical safety.
+
+## Earlier single-model experiment
+
+The original 13 October settings are preserved under
+`archive/single_model_2026_10_13/frozen_settings.json`. The old top-level
+`frozen_settings.json` is marked superseded and unfrozen. Its rounded common
+thresholds and margins were not reproducible per-model optima or exactly 5%
+uncertainty coverage. They are not the final shared-model settings.
+
+The earlier 21-eye holdout results remain available as historical observations.
+These eyes have already been examined; do not describe them as untouched or use
+their outcomes to tune the new rules. The present selection scripts read validation
+only. Referral counts alone do not establish safety because reliable disease
+labels are unavailable for these low-quality eyes.
+
+## Remaining steps
+
+Review the proposed policy and numerical settings, then commit the
+approved frozen settings. Only afterward run the low-quality holdout report with
+those fixed settings. Do not tune on holdout, internal test or external test data.
+
+The prepared command is:
+
+```bash
+python scripts/evaluate_calibration_holdout.py --settings results/calibration/settings_review.json
+```
+
+It deliberately stops while `frozen` is false. After review, record the review
+reference, set `status` to `frozen` and `frozen` to true in the approved settings,
+and commit that exact file before running. The evaluator verifies checkpoint and
+label hashes, uses batches of eight, and reports uncertain and total referrals
+per head and across both heads. It does not infer disease accuracy from these eyes.

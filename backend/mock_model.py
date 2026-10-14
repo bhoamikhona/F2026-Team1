@@ -15,10 +15,10 @@ import numpy as np
 VERSION = "v0-mock"
 CONDITIONS = ("cataract", "glaucoma")
 
-# Task 12 frozen values from results/calibration/frozen_settings.json
-# They are stored with the model version, never hard-coded in the frontend.
-THRESHOLDS = {"cataract": 0.025, "glaucoma": 0.030}
-UNCERTAIN_MARGIN = 0.006
+# Example values for synthetic scores, not fitted Task 12 settings.
+# Real inference must load the approved settings for its exact checkpoint.
+THRESHOLDS = {"cataract": 0.35, "glaucoma": 0.50}
+UNCERTAIN_MARGIN = 0.05
 
 
 
