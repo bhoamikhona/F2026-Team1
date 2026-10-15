@@ -28,7 +28,7 @@ Rule: ODIR-5K is the only training data. External sets (ORIGA, DRISHTI-GS,
 ACRIMA, retina_dataset_2016) are used for testing only. Calibration, thresholds
 and the uncertain cutoff are fitted on the ODIR validation split only.
 
-## Splits (Task 7)
+## Splits
 One row per eye in `labels/eye_labels_task7.csv`. Split by patient, 70/15/15,
 so both eyes of a patient are in the same split.
 
@@ -42,7 +42,7 @@ so both eyes of a patient are in the same split.
 
 External labels are in `labels/external/` (one CSV per dataset).
 
-## Data decisions (Task 4)
+## Data decisions
 - Media opacity: all 63 media-opacity eyes are held out of train, validation and test (split = holdout). They are used later as the check for the cataract "haze shortcut".
 - Low image quality: the 21 low-quality eyes are held out (split = holdout) and used later to test the "uncertain, refer" result.
 - Suspected glaucoma: all 44 suspected-glaucoma eyes are held out. This includes 2 eyes that also have cataract (625_left, 1415_right), so they are not used as cataract examples either.
@@ -93,7 +93,7 @@ It runs at http://localhost:5173.
 
 The model in the app is still a mock (`backend/mock_model.py`): made-up scores,
 heatmaps marked "MOCK" and placeholder thresholds. The trained model and the
-approved Task 12 settings replace it later. Only made-up patients are used.
+approved calibration settings replace it later. Only made-up patients are used.
 
 ## Pipeline
 Run from the repo folder, in this order. Each step writes the file the next one reads.
@@ -115,13 +115,13 @@ Run from the repo folder, in this order. Each step writes the file the next one 
 Preprocessing is one function for ODIR and all external sets. When the fundus
 circle is not found, it falls back to the largest centered square.
 
-## Models and checkpoints (Task 11)
+## Models and checkpoints
 Nine models: cataract-only, glaucoma-only and shared two-head, seeds 42, 43
 and 44, all with the same settings. Checkpoints are not in git; they are in
 GitHub releases. The settings, validation AUROCs, checkpoint hashes and release
 links for all nine runs are in `results/task11/README.md`.
 
-## Calibration and thresholds (Task 12)
+## Calibration and thresholds
 Platt calibration, a decision threshold and an "Uncertain, refer" margin for
 each model, head and seed, fitted on the validation split only. Settings are
 not frozen until the team approves them. Status, commands and results:
@@ -136,8 +136,8 @@ test in `scripts/` (for example `python scripts/test_train_dual_task11.py`),
 which needs that model's checkpoints downloaded.
 
 ## Random seeds
-`SEED = 42` in `src/dual/config.py` is the project seed. It made the Task 7
-split and must not change. Training uses seeds 42, 43 and 44 for every model
+`SEED = 42` in `src/dual/config.py` is the project seed. It made the
+train/validation/test split and must not change. Training uses seeds 42, 43 and 44 for every model
 type, so results can be reported as a mean over seeds. Every script starts with:
 
     from dual.config import set_seed
