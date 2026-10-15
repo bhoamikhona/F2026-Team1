@@ -9,7 +9,8 @@ import ResultChip from "../components/ResultChip.jsx";
 import SummaryStrip from "../components/SummaryStrip.jsx";
 import HeatmapPanel from "../components/results/HeatmapPanel.jsx";
 import RiskSummary from "../components/results/RiskSummary.jsx";
-import { SCREENING_RECORDS } from "../data/screeningRecords.js";
+import { useScreening } from "../hooks/useScreening.js";
+import { assetUrl } from "../services/api.js";
 import "../styles/results/results.css";
 
 const EYE_LABELS = { right: "Right eye, OD", left: "Left eye, OS" };
@@ -25,22 +26,48 @@ function formatDate(iso) {
   });
 }
 
+function ResultsMessage({ children }) {
+  return (
+    <main className="main results">
+      <div className="results__back">
+        <BackLink to="/history">Back to History</BackLink>
+      </div>
+      <p className="body-md">{children}</p>
+    </main>
+  );
+}
+
 function Results() {
   const { id } = useParams();
-  const screening = SCREENING_RECORDS[id];
+  const { screening, error, isLoading } = useScreening(id);
 
-  if (!screening) {
+  if (isLoading) return <ResultsMessage>Loading screening…</ResultsMessage>;
+
+  if (error?.status === 404) {
+    return <ResultsMessage>Screening {id} was not found.</ResultsMessage>;
+  }
+
+  if (error) {
     return (
-      <main className="main results">
-        <div className="results__back">
-          <BackLink to="/history">Back to History</BackLink>
-        </div>
-        <p className="body-md">Screening {id} was not found.</p>
-      </main>
+      <ResultsMessage>
+        Could not load screening {id}. {error.message}
+      </ResultsMessage>
     );
   }
 
-  const { patient, eye, image, conditions, model_version } = screening;
+  if (screening.skipped) {
+    return (
+      <ResultsMessage>
+        This eye was skipped, so there is no result to show.
+      </ResultsMessage>
+    );
+  }
+
+  const { patient, eye, image, model_version } = screening;
+  const conditions = screening.conditions.map((item) => ({
+    ...item,
+    heatmap_url: assetUrl(item.heatmap_url),
+  }));
 
   return (
     <main className="main results">
@@ -73,7 +100,7 @@ function Results() {
       </SummaryStrip>
 
       <div className="results__layout">
-        <HeatmapPanel photoUrl={image.url} conditions={conditions} />
+        <HeatmapPanel photoUrl={assetUrl(image.url)} conditions={conditions} />
 
         <div className="results__conditions">
           {conditions.map((item) => (
