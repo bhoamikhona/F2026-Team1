@@ -1,0 +1,36 @@
+sequenceDiagram
+  actor U as Optometrist
+  participant App as React app
+  participant API as FastAPI
+  participant Q as Quality check
+  participant P as Preprocess
+  participant M as DUAL model
+  participant C as Calibrator
+  participant G as Grad-CAM
+  participant DB as SQLite
+  Note over M,G: Sprint 1: mock model and mock heatmaps (real model in Sprint 3)
+  U->>App: choose patient and eye, upload photo
+  App->>API: POST /images
+  API->>Q: check photo quality
+  Q-->>API: passed or failed, with reason
+  API->>DB: save image and quality status
+  alt quality failed
+    API-->>App: failed, with reason (for example too dark)
+    App-->>U: alert: retake or upload another photo
+  else quality passed
+    API-->>App: passed
+    U->>App: Screen this photo
+    App->>API: POST /screenings
+    API->>P: preprocess photo
+    P->>P: fundus crop or centered-square fallback, 512 x 512
+    P->>M: image tensor
+    M->>C: raw cataract and glaucoma scores
+    C->>C: calibrate, check uncertainty first, then apply disease threshold if confident
+    C-->>API: per condition: Refer, No concern or Uncertain, refer
+    API->>API: overall for the eye: Refer if any condition is Refer or uncertain
+    API->>G: request cataract and glaucoma heatmaps
+    G-->>API: heatmaps
+    API->>DB: save screening, condition results, heatmaps, model version
+    API-->>App: screening result
+    App-->>U: Results screen: overall result, one chip per condition, heatmap
+  end
