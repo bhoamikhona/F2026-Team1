@@ -21,14 +21,17 @@ function HeatmapPanel({ conditions, photoUrl }) {
       aside={
         <SegmentedControl
           label="Heatmap condition"
-          name="heatmap-condition"
           options={options}
           value={selected}
           onChange={setSelected}
         />
       }
     >
-      <div className="heatmap-panel__canvas">
+      <div
+        className={`heatmap-panel__canvas ${
+          current.heatmap_url ? "" : "heatmap-panel__canvas--empty"
+        }`}
+      >
         {current.heatmap_url ? (
           <img
             className="heatmap-panel__image"
