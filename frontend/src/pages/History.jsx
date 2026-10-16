@@ -3,24 +3,67 @@ import PageHeader from "../components/PageHeader";
 import Select from "../components/Select";
 import Table from "../components/Table";
 import { SCREENING_COLUMNS } from "../data/screeningColumns.js";
-import { SCREENINGS } from "../data/screenings.js";
-import { PATIENTS } from "../data/patients.js";
+import { useApi } from "../hooks/useApi.js";
 import "../styles/history/history.css";
-
-const PATIENT_OPTIONS = [
-  { value: "", label: "All patients" },
-  ...PATIENTS.map((patient) => ({
-    value: patient.id,
-    label: patient.full_name,
-  })),
-];
 
 function History() {
   const [patientId, setPatientId] = useState("");
 
-  const screenings = patientId
-    ? SCREENINGS.filter((screening) => screening.patient_id === patientId)
-    : SCREENINGS;
+  const { data: patients } = useApi("/patients");
+  const {
+    data: screenings,
+    error,
+    isLoading,
+  } = useApi(
+    patientId
+      ? `/screenings?patient=${encodeURIComponent(patientId)}`
+      : "/screenings",
+  );
+
+  const patientOptions = [
+    { value: "", label: "All patients" },
+    ...(patients ?? []).map((patient) => ({
+      value: patient.id,
+      label: patient.full_name,
+    })),
+  ];
+
+  function renderContent() {
+    if (isLoading) {
+      return <p className="history__empty body-md">Loading screenings…</p>;
+    }
+
+    if (error) {
+      return (
+        <p className="history__empty body-md">
+          Could not load screenings. {error.message}
+        </p>
+      );
+    }
+
+    if (screenings.length === 0) {
+      return (
+        <p className="history__empty body-md">
+          No screenings for this patient yet.
+        </p>
+      );
+    }
+
+    return (
+      <>
+        <Table
+          label="Past screenings"
+          columns={SCREENING_COLUMNS}
+          rows={screenings}
+          rowHref={(row) => `/results/${row.id}`}
+        />
+        <p className="history__count mono-meta">
+          Showing {screenings.length}{" "}
+          {screenings.length === 1 ? "screening" : "screenings"}
+        </p>
+      </>
+    );
+  }
 
   return (
     <main className="main">
@@ -39,29 +82,13 @@ function History() {
               id="patient-filter"
               value={patientId}
               onChange={(event) => setPatientId(event.target.value)}
-              options={PATIENT_OPTIONS}
+              options={patientOptions}
             />
           </div>
         }
       />
 
-      {screenings.length === 0 ? (
-        <p className="history__empty body-md">
-          No screenings for this patient yet.
-        </p>
-      ) : (
-        <Table
-          label="Past screenings"
-          columns={SCREENING_COLUMNS}
-          rows={screenings}
-          rowHref={(row) => `/results/${row.id}`}
-        />
-      )}
-
-      <p className="history__count mono-meta">
-        Showing {screenings.length}{" "}
-        {screenings.length === 1 ? "screening" : "screenings"}
-      </p>
+      {renderContent()}
     </main>
   );
 }
