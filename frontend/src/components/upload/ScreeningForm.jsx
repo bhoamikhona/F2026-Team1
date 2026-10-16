@@ -2,7 +2,6 @@ import { BarChart3 } from "lucide-react";
 import Alert from "../Alert.jsx";
 import Button from "../Button.jsx";
 import Card from "../Card.jsx";
-import Chip from "../Chip.jsx";
 import FileDropzone from "./FileDropzone.jsx";
 import RadioCardGroup from "../RadioCardGroup.jsx";
 import Select from "../Select.jsx";
@@ -66,12 +65,9 @@ function ScreeningForm({
 
       <form className="screening-form" onSubmit={handleSubmit}>
         <div className="screening-form__step">
-          <div className="screening-form__step-head">
-            <h3 id="step-patient" className="label-mono">
-              Step 1: Select patient
-            </h3>
-            <Chip mono>Demo data</Chip>
-          </div>
+          <h3 id="step-patient" className="label-mono">
+            Step 1: Select patient
+          </h3>
           <Select
             aria-labelledby="step-patient"
             placeholder="Select a patient"
