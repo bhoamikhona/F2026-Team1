@@ -6,7 +6,7 @@ function Card({ title, aside, children }) {
       {(title || aside) && (
         <header className="card__header">
           {title && <h2 className="card__title label-mono">{title}</h2>}
-          {aside && <p className="card__aside mono-meta">{aside}</p>}
+          {aside && <div className="card__aside mono-meta">{aside}</div>}
         </header>
       )}
       {children}
