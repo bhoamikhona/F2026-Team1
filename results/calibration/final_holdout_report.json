@@ -1,0 +1,2189 @@
+{
+  "settings_sha256": "d1d97e58e25d32892527db0ad459a7b9d555391e5abda924ff33f1700f14db71",
+  "sample_count": 21,
+  "patient_count": 19,
+  "summary": [
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "uncertain_count": 2,
+      "ordinary_referrals": 7,
+      "total_referrals": 9,
+      "sample_count": 21
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "uncertain_count": 3,
+      "ordinary_referrals": 13,
+      "total_referrals": 16,
+      "sample_count": 21
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "either_eye_result",
+      "uncertain_count": 4,
+      "ordinary_referrals": 15,
+      "total_referrals": 19,
+      "sample_count": 21
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "uncertain_count": 3,
+      "ordinary_referrals": 5,
+      "total_referrals": 8,
+      "sample_count": 21
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "uncertain_count": 3,
+      "ordinary_referrals": 3,
+      "total_referrals": 6,
+      "sample_count": 21
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "either_eye_result",
+      "uncertain_count": 6,
+      "ordinary_referrals": 5,
+      "total_referrals": 11,
+      "sample_count": 21
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "uncertain_count": 3,
+      "ordinary_referrals": 6,
+      "total_referrals": 9,
+      "sample_count": 21
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "uncertain_count": 7,
+      "ordinary_referrals": 12,
+      "total_referrals": 19,
+      "sample_count": 21
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "either_eye_result",
+      "uncertain_count": 10,
+      "ordinary_referrals": 10,
+      "total_referrals": 20,
+      "sample_count": 21
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "uncertain_count": 3,
+      "ordinary_referrals": 6,
+      "total_referrals": 9,
+      "sample_count": 21
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "uncertain_count": 6,
+      "ordinary_referrals": 7,
+      "total_referrals": 13,
+      "sample_count": 21
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "either_eye_result",
+      "uncertain_count": 8,
+      "ordinary_referrals": 7,
+      "total_referrals": 15,
+      "sample_count": 21
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "uncertain_count": 2,
+      "ordinary_referrals": 7,
+      "total_referrals": 9,
+      "sample_count": 21
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "uncertain_count": 0,
+      "ordinary_referrals": 4,
+      "total_referrals": 4,
+      "sample_count": 21
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "either_eye_result",
+      "uncertain_count": 2,
+      "ordinary_referrals": 9,
+      "total_referrals": 11,
+      "sample_count": 21
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "uncertain_count": 4,
+      "ordinary_referrals": 3,
+      "total_referrals": 7,
+      "sample_count": 21
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "uncertain_count": 2,
+      "ordinary_referrals": 7,
+      "total_referrals": 9,
+      "sample_count": 21
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "either_eye_result",
+      "uncertain_count": 6,
+      "ordinary_referrals": 5,
+      "total_referrals": 11,
+      "sample_count": 21
+    }
+  ],
+  "note": "Observed referral counts, not disease accuracy or proof of safety. No fitting was performed.",
+  "historical_note": "These eyes were previously examined in a single-model experiment.",
+  "per_image": [
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "372_left.jpg",
+      "probability": 0.6596308644078543,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "372_right.jpg",
+      "probability": 0.3430607515224399,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "3935_left.jpg",
+      "probability": 0.17714870672075994,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "3947_right.jpg",
+      "probability": 0.7815750809454168,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4007_left.jpg",
+      "probability": 2.328166987259054e-05,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4066_right.jpg",
+      "probability": 0.005301077557918746,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4124_right.jpg",
+      "probability": 5.124453446127959e-06,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4149_left.jpg",
+      "probability": 5.423720394969783e-07,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4149_right.jpg",
+      "probability": 1.491242551401329e-07,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4169_left.jpg",
+      "probability": 5.177823084291477e-05,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4180_right.jpg",
+      "probability": 0.1588580835032106,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4198_right.jpg",
+      "probability": 0.00941139089615464,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4262_right.jpg",
+      "probability": 0.012575472918127054,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4290_left.jpg",
+      "probability": 0.0037725764985428356,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4319_right.jpg",
+      "probability": 0.3588813527428103,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4394_right.jpg",
+      "probability": 0.07627189551660464,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4427_right.jpg",
+      "probability": 2.170107556671286e-06,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4442_left.jpg",
+      "probability": 6.725722605892104e-05,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4448_left.jpg",
+      "probability": 0.01681732874143287,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4522_left.jpg",
+      "probability": 0.2360536567504275,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4601_right.jpg",
+      "probability": 0.04094100235794083,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "372_left.jpg",
+      "probability": 0.016848318191051592,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "372_right.jpg",
+      "probability": 0.01836792571800399,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "3935_left.jpg",
+      "probability": 0.029084732490088226,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "3947_right.jpg",
+      "probability": 0.04022508531709597,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4007_left.jpg",
+      "probability": 0.025699165353597796,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4066_right.jpg",
+      "probability": 0.014462806150869312,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4124_right.jpg",
+      "probability": 0.023081125540571137,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4149_left.jpg",
+      "probability": 0.0769214545231923,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4149_right.jpg",
+      "probability": 0.028328560203561507,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4169_left.jpg",
+      "probability": 0.02738160915335106,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4180_right.jpg",
+      "probability": 0.004989088822604523,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4198_right.jpg",
+      "probability": 0.062493103533878235,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4262_right.jpg",
+      "probability": 0.025200159222913653,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4290_left.jpg",
+      "probability": 0.016995854392471834,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4319_right.jpg",
+      "probability": 0.020834886279120612,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4394_right.jpg",
+      "probability": 0.019118929782536497,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4427_right.jpg",
+      "probability": 0.024115568162871907,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4442_left.jpg",
+      "probability": 0.018453337659474812,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4448_left.jpg",
+      "probability": 0.02614082196202692,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4522_left.jpg",
+      "probability": 0.033260348678586404,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4601_right.jpg",
+      "probability": 0.012829523511684371,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "372_left.jpg",
+      "probability": 0.431807199536668,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "372_right.jpg",
+      "probability": 0.5725796040611054,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "3935_left.jpg",
+      "probability": 0.02866329880132655,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "3947_right.jpg",
+      "probability": 0.15861922394791797,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4007_left.jpg",
+      "probability": 0.011943252959773288,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4066_right.jpg",
+      "probability": 0.0031902406677963542,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4124_right.jpg",
+      "probability": 0.00012134703516463263,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4149_left.jpg",
+      "probability": 0.00041780473150840195,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4149_right.jpg",
+      "probability": 0.008167191260916511,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4169_left.jpg",
+      "probability": 0.00012952554169562086,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4180_right.jpg",
+      "probability": 0.014444822692459449,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4198_right.jpg",
+      "probability": 0.08874840379476139,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4262_right.jpg",
+      "probability": 0.010003696050494922,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4290_left.jpg",
+      "probability": 0.001795269957595053,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4319_right.jpg",
+      "probability": 0.27343534338821607,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4394_right.jpg",
+      "probability": 0.010428008804432851,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4427_right.jpg",
+      "probability": 0.028872832855436428,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4442_left.jpg",
+      "probability": 1.0193945335697414e-05,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4448_left.jpg",
+      "probability": 0.006193498705493534,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4522_left.jpg",
+      "probability": 0.6085893131978334,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4601_right.jpg",
+      "probability": 0.007169605634725382,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "372_left.jpg",
+      "probability": 0.061016510804314805,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "372_right.jpg",
+      "probability": 0.017716721187121736,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "3935_left.jpg",
+      "probability": 0.011652662363369258,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "3947_right.jpg",
+      "probability": 0.013900855585772219,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4007_left.jpg",
+      "probability": 0.015174581282272255,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4066_right.jpg",
+      "probability": 0.009708311411786793,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4124_right.jpg",
+      "probability": 0.016451236208096572,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4149_left.jpg",
+      "probability": 0.011925983356033931,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4149_right.jpg",
+      "probability": 0.010904649920085921,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4169_left.jpg",
+      "probability": 0.016022576038787664,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4180_right.jpg",
+      "probability": 0.011475261274824372,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4198_right.jpg",
+      "probability": 0.03864720293488338,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4262_right.jpg",
+      "probability": 0.013174012673877458,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4290_left.jpg",
+      "probability": 0.01181986858517924,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4319_right.jpg",
+      "probability": 0.011710626520921839,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4394_right.jpg",
+      "probability": 0.011285980035851805,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4427_right.jpg",
+      "probability": 0.012942363679162525,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4442_left.jpg",
+      "probability": 0.012315401885898374,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4448_left.jpg",
+      "probability": 0.011906501431549456,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4522_left.jpg",
+      "probability": 0.013103456932784087,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4601_right.jpg",
+      "probability": 0.013702259534254012,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "372_left.jpg",
+      "probability": 0.2595874386419077,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "372_right.jpg",
+      "probability": 0.22158205892094426,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "3935_left.jpg",
+      "probability": 0.05959230912148941,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "3947_right.jpg",
+      "probability": 0.512277760282262,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4007_left.jpg",
+      "probability": 0.026852999369655482,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4066_right.jpg",
+      "probability": 0.0013962833649359616,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4124_right.jpg",
+      "probability": 0.000543073649698882,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4149_left.jpg",
+      "probability": 0.0010477035356118082,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4149_right.jpg",
+      "probability": 0.0025137114678594648,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4169_left.jpg",
+      "probability": 0.0037458197417530033,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4180_right.jpg",
+      "probability": 0.49610590667278376,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4198_right.jpg",
+      "probability": 0.07241275043212644,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4262_right.jpg",
+      "probability": 0.009251546283962828,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4290_left.jpg",
+      "probability": 0.010214492847392736,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4319_right.jpg",
+      "probability": 0.24722140480512972,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4394_right.jpg",
+      "probability": 0.0058844917154809,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4427_right.jpg",
+      "probability": 0.0048524857713096075,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4442_left.jpg",
+      "probability": 0.0009092999630980627,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4448_left.jpg",
+      "probability": 0.05288550224802883,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4522_left.jpg",
+      "probability": 0.4067434775595303,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4601_right.jpg",
+      "probability": 0.0020743609741873553,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "372_left.jpg",
+      "probability": 0.01854768915640946,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "372_right.jpg",
+      "probability": 0.041236857032183896,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "3935_left.jpg",
+      "probability": 0.03319104789940467,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "3947_right.jpg",
+      "probability": 0.1526819197713339,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4007_left.jpg",
+      "probability": 0.06815401108947157,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4066_right.jpg",
+      "probability": 0.018706672888096125,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4124_right.jpg",
+      "probability": 0.014046485867708267,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4149_left.jpg",
+      "probability": 0.020033165403782523,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4149_right.jpg",
+      "probability": 0.017872645566373312,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4169_left.jpg",
+      "probability": 0.03359571561966985,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4180_right.jpg",
+      "probability": 0.0057180718832610155,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4198_right.jpg",
+      "probability": 0.16065713656113914,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4262_right.jpg",
+      "probability": 0.02124890275217458,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4290_left.jpg",
+      "probability": 0.046094637041358,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4319_right.jpg",
+      "probability": 0.03835127786107199,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4394_right.jpg",
+      "probability": 0.01955073753708516,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4427_right.jpg",
+      "probability": 0.03179106290113399,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4442_left.jpg",
+      "probability": 0.04760180940168381,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4448_left.jpg",
+      "probability": 0.03188048819460282,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4522_left.jpg",
+      "probability": 0.06769083533344047,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "single",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4601_right.jpg",
+      "probability": 0.01804017761126987,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "372_left.jpg",
+      "probability": 0.013879645307767866,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "372_right.jpg",
+      "probability": 0.560168142006245,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "3935_left.jpg",
+      "probability": 0.1476965027664355,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "3947_right.jpg",
+      "probability": 0.25480146617557475,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4007_left.jpg",
+      "probability": 0.0018484422455193417,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4066_right.jpg",
+      "probability": 9.204200647800036e-05,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4124_right.jpg",
+      "probability": 1.8523758904715365e-05,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4149_left.jpg",
+      "probability": 0.0004386379783155974,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4149_right.jpg",
+      "probability": 0.0006795355144833032,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4169_left.jpg",
+      "probability": 0.00010884023031404179,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4180_right.jpg",
+      "probability": 0.20436100858865228,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4198_right.jpg",
+      "probability": 0.05263853973627941,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4262_right.jpg",
+      "probability": 0.003253758219835172,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4290_left.jpg",
+      "probability": 0.000817472671145081,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4319_right.jpg",
+      "probability": 0.5178342362316611,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4394_right.jpg",
+      "probability": 0.020034401752447348,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4427_right.jpg",
+      "probability": 0.0007561277301244891,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4442_left.jpg",
+      "probability": 4.686593954560221e-06,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4448_left.jpg",
+      "probability": 0.08635126295798995,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4522_left.jpg",
+      "probability": 0.46725378110988464,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "cataract",
+      "filename": "4601_right.jpg",
+      "probability": 0.008358210215221554,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "372_left.jpg",
+      "probability": 0.06828244567303525,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "372_right.jpg",
+      "probability": 0.010720878990449743,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "3935_left.jpg",
+      "probability": 0.013247139283361865,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "3947_right.jpg",
+      "probability": 0.013636411387842287,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4007_left.jpg",
+      "probability": 0.04699934974574157,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4066_right.jpg",
+      "probability": 0.011101429995653828,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4124_right.jpg",
+      "probability": 0.0053734853220909805,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4149_left.jpg",
+      "probability": 0.018015513863733908,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4149_right.jpg",
+      "probability": 0.0124682462526257,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4169_left.jpg",
+      "probability": 0.03029362075625638,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4180_right.jpg",
+      "probability": 0.014186010599069394,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4198_right.jpg",
+      "probability": 0.048095791059922934,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4262_right.jpg",
+      "probability": 0.014437050661647959,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4290_left.jpg",
+      "probability": 0.015044077771502962,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4319_right.jpg",
+      "probability": 0.01597095005604019,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4394_right.jpg",
+      "probability": 0.016481853592021943,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4427_right.jpg",
+      "probability": 0.0067920707017847535,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4442_left.jpg",
+      "probability": 0.005731012223071821,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4448_left.jpg",
+      "probability": 0.015668550383415306,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4522_left.jpg",
+      "probability": 0.014273324787607036,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 42,
+      "disease": "glaucoma",
+      "filename": "4601_right.jpg",
+      "probability": 0.009031147448803803,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "372_left.jpg",
+      "probability": 0.04691264986069105,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "372_right.jpg",
+      "probability": 0.5237665495230699,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "3935_left.jpg",
+      "probability": 0.010701397618911335,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "3947_right.jpg",
+      "probability": 0.37005650585650374,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4007_left.jpg",
+      "probability": 0.008101629090809316,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4066_right.jpg",
+      "probability": 0.0020709106160883947,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4124_right.jpg",
+      "probability": 0.00030211425737241405,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4149_left.jpg",
+      "probability": 0.004768828932097354,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4149_right.jpg",
+      "probability": 0.0019698104617473008,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4169_left.jpg",
+      "probability": 0.010542001009299088,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4180_right.jpg",
+      "probability": 0.08822780180574596,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4198_right.jpg",
+      "probability": 0.1321330512786543,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4262_right.jpg",
+      "probability": 0.3264281665116054,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4290_left.jpg",
+      "probability": 0.01626952845800517,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4319_right.jpg",
+      "probability": 0.35453141289106893,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4394_right.jpg",
+      "probability": 0.009014116602142045,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4427_right.jpg",
+      "probability": 0.013382199770203884,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4442_left.jpg",
+      "probability": 0.0003414450002149523,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4448_left.jpg",
+      "probability": 0.03174335917935376,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4522_left.jpg",
+      "probability": 0.25377928867368066,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "cataract",
+      "filename": "4601_right.jpg",
+      "probability": 0.011097032674493483,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "372_left.jpg",
+      "probability": 0.05048850816386455,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "372_right.jpg",
+      "probability": 0.009643440848948096,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "3935_left.jpg",
+      "probability": 0.005865591464815107,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "3947_right.jpg",
+      "probability": 0.010861804169790195,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4007_left.jpg",
+      "probability": 0.029723653975427203,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4066_right.jpg",
+      "probability": 0.0053437626953901736,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4124_right.jpg",
+      "probability": 0.005442762557976687,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4149_left.jpg",
+      "probability": 0.01350556245252424,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4149_right.jpg",
+      "probability": 0.0062959642219695845,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4169_left.jpg",
+      "probability": 0.022339999160791994,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4180_right.jpg",
+      "probability": 0.0091826993158321,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4198_right.jpg",
+      "probability": 0.054314427602819244,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4262_right.jpg",
+      "probability": 0.012663040100210679,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4290_left.jpg",
+      "probability": 0.013117355742479579,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4319_right.jpg",
+      "probability": 0.007084533637175669,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4394_right.jpg",
+      "probability": 0.008739284428636281,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4427_right.jpg",
+      "probability": 0.008517522832880346,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4442_left.jpg",
+      "probability": 0.003535201913030945,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4448_left.jpg",
+      "probability": 0.0073291022444701825,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4522_left.jpg",
+      "probability": 0.013009138363092943,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 43,
+      "disease": "glaucoma",
+      "filename": "4601_right.jpg",
+      "probability": 0.005323376852441513,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "372_left.jpg",
+      "probability": 0.1463004945828663,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "372_right.jpg",
+      "probability": 0.4599156942256572,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "3935_left.jpg",
+      "probability": 0.005274093839028112,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "3947_right.jpg",
+      "probability": 0.5344947742032697,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4007_left.jpg",
+      "probability": 0.014178827815161908,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4066_right.jpg",
+      "probability": 0.009068117665125313,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4124_right.jpg",
+      "probability": 0.00023423563292892009,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4149_left.jpg",
+      "probability": 5.627931154227326e-05,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4149_right.jpg",
+      "probability": 0.00014309223456652754,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4169_left.jpg",
+      "probability": 0.00022772059759285814,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4180_right.jpg",
+      "probability": 0.046436118429874565,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4198_right.jpg",
+      "probability": 0.13236216012221705,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4262_right.jpg",
+      "probability": 0.017127997153393713,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4290_left.jpg",
+      "probability": 0.004066292175773246,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4319_right.jpg",
+      "probability": 0.1294564941866403,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4394_right.jpg",
+      "probability": 0.030295286318150812,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4427_right.jpg",
+      "probability": 0.0034746278309498663,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4442_left.jpg",
+      "probability": 0.00014786617366328687,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4448_left.jpg",
+      "probability": 0.018047384899835577,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4522_left.jpg",
+      "probability": 0.424243100012689,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "cataract",
+      "filename": "4601_right.jpg",
+      "probability": 0.0031998320469534425,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "372_left.jpg",
+      "probability": 0.05316494650912358,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "372_right.jpg",
+      "probability": 0.016681451469815353,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "3935_left.jpg",
+      "probability": 0.018571543920627133,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "3947_right.jpg",
+      "probability": 0.04069439750838063,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4007_left.jpg",
+      "probability": 0.05259433159140955,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4066_right.jpg",
+      "probability": 0.01498347076119947,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4124_right.jpg",
+      "probability": 0.01071986912615007,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4149_left.jpg",
+      "probability": 0.012050521563059455,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4149_right.jpg",
+      "probability": 0.007510072501751773,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4169_left.jpg",
+      "probability": 0.021201456861615935,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4180_right.jpg",
+      "probability": 0.007398856641295822,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4198_right.jpg",
+      "probability": 0.23020542099505978,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4262_right.jpg",
+      "probability": 0.013726894111574742,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4290_left.jpg",
+      "probability": 0.020798845722264675,
+      "result": "Uncertain, refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4319_right.jpg",
+      "probability": 0.026807468315919257,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4394_right.jpg",
+      "probability": 0.01467498041103958,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4427_right.jpg",
+      "probability": 0.01592896937203213,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4442_left.jpg",
+      "probability": 0.009592093678041867,
+      "result": "No concern"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4448_left.jpg",
+      "probability": 0.024122816649645395,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4522_left.jpg",
+      "probability": 0.027980277591065316,
+      "result": "Refer"
+    },
+    {
+      "model_kind": "shared",
+      "seed": 44,
+      "disease": "glaucoma",
+      "filename": "4601_right.jpg",
+      "probability": 0.012206629622435317,
+      "result": "No concern"
+    }
+  ]
+}

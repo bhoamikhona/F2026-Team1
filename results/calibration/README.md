@@ -25,8 +25,11 @@ the approved thresholds, margins, counts and rates reproduce exactly to the
 recorded comparison tolerances. The freeze script refuses to overwrite a frozen
 file. Do not refit after viewing holdout or test outcomes.
 
-Commit the frozen file before the 21-eye check. The resulting report is
-`final_holdout_report.json`. Old `settings_review.*` files describe the superseded
+The frozen file was committed in `2920a71` before the 21-eye check on 17 October
+2026. Results are in `final_holdout_report.json` and `final_holdout_report.md`.
+For shared seed 42, 8/21 eyes were uncertain and 15/21 were referred in total
+(7 ordinary referrals). The counts were independently checked against per-eye
+records; no settings were changed after observing the holdout outcomes. Old `settings_review.*` files describe the superseded
 weighted-rule proposal, not the settings used by that report.
 
 ## Reproduce the comparisons
