@@ -1,0 +1,33 @@
+
+name: Sync with Original Repository
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Fetch original repository
+        run: |
+          git remote add upstream https://github.com/htmw/F2026-Team1.git
+          git fetch upstream main
+
+      - name: Merge and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git merge upstream/main --no-edit
+          git push origin main
