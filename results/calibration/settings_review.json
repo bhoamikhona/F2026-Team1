@@ -1,0 +1,1234 @@
+{
+  "status": "pending_team_review",
+  "frozen": false,
+  "fit_split": "validation",
+  "sample_count": 1024,
+  "positive_counts": {
+    "cataract": 46,
+    "glaucoma": 39
+  },
+  "labels_sha256": "67d7d8bbc8cb70d8fcb382c264b1e6fa73b5f0c7adc1dbcda2d3b63d044e6ce7",
+  "selection_script_sha256": "c301fc55a23c9fd396ed2c6a62bbcce4e71ba7a1c4f90e0b279aed83ac39b000",
+  "calibration_source_sha256": {
+    "select_calibration_settings.py": "c301fc55a23c9fd396ed2c6a62bbcce4e71ba7a1c4f90e0b279aed83ac39b000",
+    "calibrate_models.py": "de6d5b726f740cbf293b0e8d36acd150fb5746943384f1b08ef851990638eb9b",
+    "check_calibration_cv.py": "275b84ce8634110c1ac6d011c33d083c24c534ee893d6088e440099af367327f",
+    "calibrate_shared_models.py": "779e677724fe01ff5a2be354bedcfbc03b15128666cd6df1787d27da569bb12a"
+  },
+  "policy": {
+    "calibration": "Positive-scale Platt fit per model, head and seed",
+    "threshold": "Maximize 0.6*sensitivity + 0.4*specificity before uncertainty",
+    "tie_break": "Higher specificity, then higher threshold",
+    "uncertainty": "abs(p-threshold) <= kth nearest distance; k=ceil(0.05*n); include ties",
+    "referral": "Uncertain OR p >= threshold",
+    "aggregation": "No seed averaging or ensemble. Separate parameters for every checkpoint/head."
+  },
+  "limitations": [
+    "Validation reused for checkpoint and setting selection; not independent test performance.",
+    "Policy weights and 5% target are proposed design choices, not clinical guarantees.",
+    "Earlier single-model holdout results already exist; they were not used by this script.",
+    "Team approval is required before freezing. Deployment must use settings for its exact checkpoint/head."
+  ],
+  "runs": [
+    {
+      "model_kind": "single",
+      "disease": "cataract",
+      "seed": 42,
+      "checkpoint": "checkpoints/task11/cataract/cataract_seed_42_best.pt",
+      "checkpoint_sha256": "8379604cfed3ccbe2c65e1997139dc94a617bd5f22062e514aa9bc6c9102c32e",
+      "prediction_sha256": "715f8c1f722284d74a12524f4723c5f087456cd13d9b96d811add005041c5f78",
+      "method": "platt",
+      "scale": 1.138810175548822,
+      "offset": -4.261784530950902,
+      "threshold": 0.03000239551032924,
+      "uncertain_margin": 0.010671646771994274,
+      "uncertainty_fraction_target": 0.05,
+      "weighted_objective": 0.9538276873833023,
+      "calibration_cv": {
+        "uncalibrated": {
+          "log_loss": 0.29727035256244794,
+          "brier_score": 0.09356423774848557,
+          "ece_10_equal_width_bins": 0.15903288711984792,
+          "mean_probability": 0.2039547621198479,
+          "observed_rate": 0.044921875
+        },
+        "temperature": {
+          "log_loss": 0.2858833739842045,
+          "brier_score": 0.09163894663816774,
+          "ece_10_equal_width_bins": 0.17501057837644068,
+          "mean_probability": 0.21993245337644068,
+          "observed_rate": 0.044921875
+        },
+        "platt": {
+          "log_loss": 0.05915081281065891,
+          "brier_score": 0.016658294710446393,
+          "ece_10_equal_width_bins": 0.009628457019567533,
+          "mean_probability": 0.04497481263656136,
+          "observed_rate": 0.044921875
+        }
+      },
+      "cv_fold_parameters": [
+        {
+          "fold": 0,
+          "temperature": 1.4162929077976179,
+          "scale": 1.1043129164406977,
+          "offset": -4.153240480828043
+        },
+        {
+          "fold": 1,
+          "temperature": 1.4077019232306014,
+          "scale": 1.262711381242809,
+          "offset": -4.525109893074514
+        },
+        {
+          "fold": 2,
+          "temperature": 1.3755449612968726,
+          "scale": 1.1017461057416829,
+          "offset": -4.223185721026868
+        },
+        {
+          "fold": 3,
+          "temperature": 1.4536735861048173,
+          "scale": 1.056408496237541,
+          "offset": -4.001123812263764
+        },
+        {
+          "fold": 4,
+          "temperature": 1.3279536361190953,
+          "scale": 1.2049981250394555,
+          "offset": -4.513739024313752
+        }
+      ],
+      "best_cv_method": "platt",
+      "fit_log_loss": 0.057504452887079574,
+      "threshold_only": {
+        "tp": 45,
+        "fp": 81,
+        "tn": 897,
+        "fn": 1,
+        "sensitivity": 0.9782608695652174,
+        "specificity": 0.9171779141104295,
+        "referral_count": 126,
+        "referral_rate": 0.123046875,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 126,
+        "no_concern_count": 898
+      },
+      "including_uncertainty": {
+        "tp": 45,
+        "fp": 115,
+        "tn": 863,
+        "fn": 1,
+        "sensitivity": 0.9782608695652174,
+        "specificity": 0.8824130879345603,
+        "referral_count": 160,
+        "referral_rate": 0.15625,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 108,
+        "no_concern_count": 864
+      }
+    },
+    {
+      "model_kind": "single",
+      "disease": "cataract",
+      "seed": 43,
+      "checkpoint": "checkpoints/task11/cataract/cataract_seed_43_best.pt",
+      "checkpoint_sha256": "7806ca48ec1ab1905f88da0dca4b640e3194a075a4fcb5c11762953c9d156b63",
+      "prediction_sha256": "659d5c924489e1e350405e7510b0f74c37df3b31650cc800d630cb68139a9d67",
+      "method": "platt",
+      "scale": 0.8795508831474563,
+      "offset": -2.5005876865135304,
+      "threshold": 0.024335858329067254,
+      "uncertain_margin": 0.006808298600255239,
+      "uncertainty_fraction_target": 0.05,
+      "weighted_objective": 0.9489197119231796,
+      "calibration_cv": {
+        "uncalibrated": {
+          "log_loss": 0.12143485572623536,
+          "brier_score": 0.0340980812590069,
+          "ece_10_equal_width_bins": 0.05735409216965698,
+          "mean_probability": 0.10227596716965695,
+          "observed_rate": 0.044921875
+        },
+        "temperature": {
+          "log_loss": 0.12436225875625107,
+          "brier_score": 0.03440706201892635,
+          "ece_10_equal_width_bins": 0.05917216749777569,
+          "mean_probability": 0.10409404249777568,
+          "observed_rate": 0.044921875
+        },
+        "platt": {
+          "log_loss": 0.05980454444196225,
+          "brier_score": 0.01710266427443478,
+          "ece_10_equal_width_bins": 0.008786974717777146,
+          "mean_probability": 0.044974782662057115,
+          "observed_rate": 0.044921875
+        }
+      },
+      "cv_fold_parameters": [
+        {
+          "fold": 0,
+          "temperature": 1.1130770402088226,
+          "scale": 0.7913255683757783,
+          "offset": -2.41927809350727
+        },
+        {
+          "fold": 1,
+          "temperature": 1.0431418884860835,
+          "scale": 0.8422983456256425,
+          "offset": -2.369060402201396
+        },
+        {
+          "fold": 2,
+          "temperature": 0.9543419279921982,
+          "scale": 0.9899520135581867,
+          "offset": -2.611291264875308
+        },
+        {
+          "fold": 3,
+          "temperature": 1.127208591362997,
+          "scale": 0.817366281886827,
+          "offset": -2.555264289404841
+        },
+        {
+          "fold": 4,
+          "temperature": 0.9707439010983231,
+          "scale": 1.0307522327514547,
+          "offset": -2.6615774772675986
+        }
+      ],
+      "best_cv_method": "platt",
+      "fit_log_loss": 0.05578302571990723,
+      "threshold_only": {
+        "tp": 45,
+        "fp": 93,
+        "tn": 885,
+        "fn": 1,
+        "sensitivity": 0.9782608695652174,
+        "specificity": 0.9049079754601227,
+        "referral_count": 138,
+        "referral_rate": 0.134765625,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 138,
+        "no_concern_count": 886
+      },
+      "including_uncertainty": {
+        "tp": 45,
+        "fp": 123,
+        "tn": 855,
+        "fn": 1,
+        "sensitivity": 0.9782608695652174,
+        "specificity": 0.8742331288343558,
+        "referral_count": 168,
+        "referral_rate": 0.1640625,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 116,
+        "no_concern_count": 856
+      }
+    },
+    {
+      "model_kind": "single",
+      "disease": "cataract",
+      "seed": 44,
+      "checkpoint": "checkpoints/task11/cataract/cataract_seed_44_best.pt",
+      "checkpoint_sha256": "c5be475f4e8fb32e684493cd88bd92f24037b6506f90713b633237cbbeaa7a31",
+      "prediction_sha256": "f79da60e56afae4401c35a6e05b826694bfdca2f24ca0fdd834108b44783608b",
+      "method": "platt",
+      "scale": 0.8808490936535575,
+      "offset": -2.187479709848141,
+      "threshold": 0.025876828322406436,
+      "uncertain_margin": 0.012968764287902544,
+      "uncertainty_fraction_target": 0.05,
+      "weighted_objective": 0.9472837201031388,
+      "calibration_cv": {
+        "uncalibrated": {
+          "log_loss": 0.11479753438321573,
+          "brier_score": 0.0344885017343112,
+          "ece_10_equal_width_bins": 0.049689651572221605,
+          "mean_probability": 0.09461152657222162,
+          "observed_rate": 0.044921875
+        },
+        "temperature": {
+          "log_loss": 0.1142382118101011,
+          "brier_score": 0.03429755556370989,
+          "ece_10_equal_width_bins": 0.05350757328194386,
+          "mean_probability": 0.09842944828194386,
+          "observed_rate": 0.044921875
+        },
+        "platt": {
+          "log_loss": 0.06339447380850721,
+          "brier_score": 0.01813924343976977,
+          "ece_10_equal_width_bins": 0.003966672140909982,
+          "mean_probability": 0.044677276998211155,
+          "observed_rate": 0.044921875
+        }
+      },
+      "cv_fold_parameters": [
+        {
+          "fold": 0,
+          "temperature": 1.1880966010221732,
+          "scale": 0.8375861122788877,
+          "offset": -2.208960878054291
+        },
+        {
+          "fold": 1,
+          "temperature": 1.1601321428270792,
+          "scale": 0.8442927306574237,
+          "offset": -2.1367260792178993
+        },
+        {
+          "fold": 2,
+          "temperature": 1.1247827018452683,
+          "scale": 0.9327132146040155,
+          "offset": -2.234749642947937
+        },
+        {
+          "fold": 3,
+          "temperature": 1.2197294892853234,
+          "scale": 0.8189890075660355,
+          "offset": -2.157561607929552
+        },
+        {
+          "fold": 4,
+          "temperature": 1.0937001222017622,
+          "scale": 1.0138817929460342,
+          "offset": -2.2700939262882023
+        }
+      ],
+      "best_cv_method": "platt",
+      "fit_log_loss": 0.06116181051688552,
+      "threshold_only": {
+        "tp": 45,
+        "fp": 97,
+        "tn": 881,
+        "fn": 1,
+        "sensitivity": 0.9782608695652174,
+        "specificity": 0.9008179959100204,
+        "referral_count": 142,
+        "referral_rate": 0.138671875,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 142,
+        "no_concern_count": 882
+      },
+      "including_uncertainty": {
+        "tp": 45,
+        "fp": 126,
+        "tn": 852,
+        "fn": 1,
+        "sensitivity": 0.9782608695652174,
+        "specificity": 0.8711656441717791,
+        "referral_count": 171,
+        "referral_rate": 0.1669921875,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 119,
+        "no_concern_count": 853
+      }
+    },
+    {
+      "model_kind": "single",
+      "disease": "glaucoma",
+      "seed": 42,
+      "checkpoint": "checkpoints/task11/glaucoma/glaucoma_seed_42_best.pt",
+      "checkpoint_sha256": "28e6d6839dcd8c34cb4a3de372e22ec2bbca4081419331954c5aa74c03483259",
+      "prediction_sha256": "359a28551bdf6f19d2d6557474327932f4007453b1b0a42afb3e60b0ee6e3380",
+      "method": "platt",
+      "scale": 0.4295081227760487,
+      "offset": -3.038289150081515,
+      "threshold": 0.02779688547951208,
+      "uncertain_margin": 0.001614315255298572,
+      "uncertainty_fraction_target": 0.05,
+      "weighted_objective": 0.833330730183522,
+      "calibration_cv": {
+        "uncalibrated": {
+          "log_loss": 0.38579415144244994,
+          "brier_score": 0.09455443790151426,
+          "ece_10_equal_width_bins": 0.1493649646178324,
+          "mean_probability": 0.18745090211783239,
+          "observed_rate": 0.0380859375
+        },
+        "temperature": {
+          "log_loss": 0.3571866335913991,
+          "brier_score": 0.09929691939234517,
+          "ece_10_equal_width_bins": 0.19000691380152585,
+          "mean_probability": 0.22809285130152585,
+          "observed_rate": 0.0380859375
+        },
+        "platt": {
+          "log_loss": 0.11301563162711946,
+          "brier_score": 0.02917166519481154,
+          "ece_10_equal_width_bins": 0.009755015914462043,
+          "mean_probability": 0.038070634295207455,
+          "observed_rate": 0.0380859375
+        }
+      },
+      "cv_fold_parameters": [
+        {
+          "fold": 0,
+          "temperature": 1.493697182081609,
+          "scale": 0.48023051998829425,
+          "offset": -3.1393593796838624
+        },
+        {
+          "fold": 1,
+          "temperature": 1.598294879870639,
+          "scale": 0.432706432900119,
+          "offset": -3.1030358673027267
+        },
+        {
+          "fold": 2,
+          "temperature": 1.5342311548483611,
+          "scale": 0.4219145107751525,
+          "offset": -2.9963141603455044
+        },
+        {
+          "fold": 3,
+          "temperature": 1.5639552444469986,
+          "scale": 0.41800345478403395,
+          "offset": -2.974913147591495
+        },
+        {
+          "fold": 4,
+          "temperature": 1.5669254106161215,
+          "scale": 0.4020554272706702,
+          "offset": -3.0048375455444125
+        }
+      ],
+      "best_cv_method": "platt",
+      "fit_log_loss": 0.11150817903032782,
+      "threshold_only": {
+        "tp": 34,
+        "fp": 221,
+        "tn": 764,
+        "fn": 5,
+        "sensitivity": 0.8717948717948718,
+        "specificity": 0.7756345177664975,
+        "referral_count": 255,
+        "referral_rate": 0.2490234375,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 255,
+        "no_concern_count": 769
+      },
+      "including_uncertainty": {
+        "tp": 34,
+        "fp": 250,
+        "tn": 735,
+        "fn": 5,
+        "sensitivity": 0.8717948717948718,
+        "specificity": 0.7461928934010152,
+        "referral_count": 284,
+        "referral_rate": 0.27734375,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 232,
+        "no_concern_count": 740
+      }
+    },
+    {
+      "model_kind": "single",
+      "disease": "glaucoma",
+      "seed": 43,
+      "checkpoint": "checkpoints/task11/glaucoma/glaucoma_seed_43_best.pt",
+      "checkpoint_sha256": "132a11163f4e43a131b56610cad54c12087b8cf683340f34b66625676cb90da7",
+      "prediction_sha256": "7b9774a6d8bac11051c8bfcf058d4b3098d6a2f111f9fde546b24945dad65a5f",
+      "method": "platt",
+      "scale": 0.39658211684533745,
+      "offset": -4.219983473406177,
+      "threshold": 0.033186911996525986,
+      "uncertain_margin": 0.007234675093929284,
+      "uncertainty_fraction_target": 0.05,
+      "weighted_objective": 0.8710972276454509,
+      "calibration_cv": {
+        "uncalibrated": {
+          "log_loss": 1.0406008498890094,
+          "brier_score": 0.2500333909944254,
+          "ece_10_equal_width_bins": 0.3817238063587804,
+          "mean_probability": 0.41980974385878045,
+          "observed_rate": 0.0380859375
+        },
+        "temperature": {
+          "log_loss": 0.6748340444176988,
+          "brier_score": 0.23961954659872506,
+          "ece_10_equal_width_bins": 0.4572216626051457,
+          "mean_probability": 0.4951696399866867,
+          "observed_rate": 0.0380859375
+        },
+        "platt": {
+          "log_loss": 0.10583879222958836,
+          "brier_score": 0.028722191238190704,
+          "ece_10_equal_width_bins": 0.009873180500261567,
+          "mean_probability": 0.03839585945982515,
+          "observed_rate": 0.0380859375
+        }
+      },
+      "cv_fold_parameters": [
+        {
+          "fold": 0,
+          "temperature": 7.6465474659337085,
+          "scale": 0.3985148441639584,
+          "offset": -4.24607694127044
+        },
+        {
+          "fold": 1,
+          "temperature": 8.802473257229924,
+          "scale": 0.3975035926920139,
+          "offset": -4.303365383369069
+        },
+        {
+          "fold": 2,
+          "temperature": 6.478977789295738,
+          "scale": 0.4114647712487273,
+          "offset": -4.194873573907954
+        },
+        {
+          "fold": 3,
+          "temperature": 7.524372985241631,
+          "scale": 0.38942444632144174,
+          "offset": -4.111909703090826
+        },
+        {
+          "fold": 4,
+          "temperature": 7.750725948629181,
+          "scale": 0.39004764571699885,
+          "offset": -4.258340324038056
+        }
+      ],
+      "best_cv_method": "platt",
+      "fit_log_loss": 0.10506437997614151,
+      "threshold_only": {
+        "tp": 34,
+        "fp": 128,
+        "tn": 857,
+        "fn": 5,
+        "sensitivity": 0.8717948717948718,
+        "specificity": 0.8700507614213198,
+        "referral_count": 162,
+        "referral_rate": 0.158203125,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 162,
+        "no_concern_count": 862
+      },
+      "including_uncertainty": {
+        "tp": 34,
+        "fp": 159,
+        "tn": 826,
+        "fn": 5,
+        "sensitivity": 0.8717948717948718,
+        "specificity": 0.8385786802030457,
+        "referral_count": 193,
+        "referral_rate": 0.1884765625,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 141,
+        "no_concern_count": 831
+      }
+    },
+    {
+      "model_kind": "single",
+      "disease": "glaucoma",
+      "seed": 44,
+      "checkpoint": "checkpoints/task11/glaucoma/glaucoma_seed_44_best.pt",
+      "checkpoint_sha256": "9e47544f36b8f6a6c5dc76b07dc2e5b52ae7203997dc437b75b1b444ea84c992",
+      "prediction_sha256": "9d4f903aaf14a3fe27ba009aee8d7838f8f49c26d051c6790dfd6f2b8063ab5a",
+      "method": "platt",
+      "scale": 0.4729327894548348,
+      "offset": -2.2145990533132562,
+      "threshold": 0.030558451459425488,
+      "uncertain_margin": 0.004131703466679241,
+      "uncertainty_fraction_target": 0.05,
+      "weighted_objective": 0.8515579851620461,
+      "calibration_cv": {
+        "uncalibrated": {
+          "log_loss": 0.2021505882018988,
+          "brier_score": 0.05231778095070803,
+          "ece_10_equal_width_bins": 0.06545925347628892,
+          "mean_probability": 0.10354519097628892,
+          "observed_rate": 0.0380859375
+        },
+        "temperature": {
+          "log_loss": 0.1908369113687175,
+          "brier_score": 0.05294794370246121,
+          "ece_10_equal_width_bins": 0.0833446435471523,
+          "mean_probability": 0.12143058104715229,
+          "observed_rate": 0.0380859375
+        },
+        "platt": {
+          "log_loss": 0.10318425761269077,
+          "brier_score": 0.028504691102576977,
+          "ece_10_equal_width_bins": 0.010554244041018426,
+          "mean_probability": 0.03825637985388011,
+          "observed_rate": 0.0380859375
+        }
+      },
+      "cv_fold_parameters": [
+        {
+          "fold": 0,
+          "temperature": 1.3923052917984213,
+          "scale": 0.49498716985126934,
+          "offset": -2.2582172788297057
+        },
+        {
+          "fold": 1,
+          "temperature": 1.4532330914563296,
+          "scale": 0.4487694845659997,
+          "offset": -2.2769807430627673
+        },
+        {
+          "fold": 2,
+          "temperature": 1.3372591251058021,
+          "scale": 0.48464578020921817,
+          "offset": -2.098607289987108
+        },
+        {
+          "fold": 3,
+          "temperature": 1.4102118237486247,
+          "scale": 0.4561550053067542,
+          "offset": -2.1836117439172997
+        },
+        {
+          "fold": 4,
+          "temperature": 1.415938713305853,
+          "scale": 0.488556294495893,
+          "offset": -2.259892960406691
+        }
+      ],
+      "best_cv_method": "platt",
+      "fit_log_loss": 0.1021471142257852,
+      "threshold_only": {
+        "tp": 35,
+        "fp": 214,
+        "tn": 771,
+        "fn": 4,
+        "sensitivity": 0.8974358974358975,
+        "specificity": 0.782741116751269,
+        "referral_count": 249,
+        "referral_rate": 0.2431640625,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 249,
+        "no_concern_count": 775
+      },
+      "including_uncertainty": {
+        "tp": 35,
+        "fp": 238,
+        "tn": 747,
+        "fn": 4,
+        "sensitivity": 0.8974358974358975,
+        "specificity": 0.7583756345177665,
+        "referral_count": 273,
+        "referral_rate": 0.2666015625,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 221,
+        "no_concern_count": 751
+      }
+    },
+    {
+      "model_kind": "shared",
+      "disease": "cataract",
+      "seed": 42,
+      "checkpoint": "checkpoints/task11/shared/shared_seed_42_best.pt",
+      "checkpoint_sha256": "9c4b9e7b4de308dd428af3f22a1eae0b5f3d857aa91464067c7e287b7dc910c7",
+      "prediction_sha256": "c391a72422939556a1263ad4baaeb5f3db49045efacf735a4d8a7f6110577943",
+      "method": "platt",
+      "scale": 0.963153294487912,
+      "offset": -2.9092682403195282,
+      "threshold": 0.02827740865825568,
+      "uncertain_margin": 0.018537424337252768,
+      "uncertainty_fraction_target": 0.05,
+      "weighted_objective": 0.9587356628434249,
+      "calibration_cv": {
+        "uncalibrated": {
+          "log_loss": 0.1276238189349732,
+          "brier_score": 0.039405806917849076,
+          "ece_10_equal_width_bins": 0.059373238340682165,
+          "mean_probability": 0.10429511334068217,
+          "observed_rate": 0.044921875
+        },
+        "temperature": {
+          "log_loss": 0.12597251811041887,
+          "brier_score": 0.038752326496665906,
+          "ece_10_equal_width_bins": 0.0653191326540083,
+          "mean_probability": 0.1102410076540083,
+          "observed_rate": 0.044921875
+        },
+        "platt": {
+          "log_loss": 0.05179407591697892,
+          "brier_score": 0.013705228042221847,
+          "ece_10_equal_width_bins": 0.012768744095489726,
+          "mean_probability": 0.04485788244114619,
+          "observed_rate": 0.044921875
+        }
+      },
+      "cv_fold_parameters": [
+        {
+          "fold": 0,
+          "temperature": 1.2425354087875418,
+          "scale": 0.9258300400700047,
+          "offset": -2.9269096485640933
+        },
+        {
+          "fold": 1,
+          "temperature": 1.204818736288388,
+          "scale": 0.9149878452565423,
+          "offset": -2.717403707592514
+        },
+        {
+          "fold": 2,
+          "temperature": 1.1182574891994543,
+          "scale": 1.0846021852895402,
+          "offset": -3.076498166504172
+        },
+        {
+          "fold": 3,
+          "temperature": 1.2555311001693725,
+          "scale": 0.885710582405482,
+          "offset": -2.7702966975552172
+        },
+        {
+          "fold": 4,
+          "temperature": 1.2139622854725616,
+          "scale": 1.070816777690675,
+          "offset": -3.2211497713382333
+        }
+      ],
+      "best_cv_method": "platt",
+      "fit_log_loss": 0.049545008654536316,
+      "threshold_only": {
+        "tp": 45,
+        "fp": 69,
+        "tn": 909,
+        "fn": 1,
+        "sensitivity": 0.9782608695652174,
+        "specificity": 0.9294478527607362,
+        "referral_count": 114,
+        "referral_rate": 0.111328125,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 114,
+        "no_concern_count": 910
+      },
+      "including_uncertainty": {
+        "tp": 45,
+        "fp": 104,
+        "tn": 874,
+        "fn": 1,
+        "sensitivity": 0.9782608695652174,
+        "specificity": 0.8936605316973415,
+        "referral_count": 149,
+        "referral_rate": 0.1455078125,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 97,
+        "no_concern_count": 875
+      }
+    },
+    {
+      "model_kind": "shared",
+      "disease": "cataract",
+      "seed": 43,
+      "checkpoint": "checkpoints/task11/shared/shared_seed_43_best.pt",
+      "checkpoint_sha256": "ab1be7650397e95f9da0236526fb84f38ee151c232a12b2cf2e58f7d19c1f83d",
+      "prediction_sha256": "64e81ef461c867cbda97e3ccd9a0b7be7a2b36e4543c73dc427ff3a9e3f9ab9c",
+      "method": "platt",
+      "scale": 0.7534291856932669,
+      "offset": -2.640980616557845,
+      "threshold": 0.05228055003323356,
+      "uncertain_margin": 0.028173443570392795,
+      "uncertainty_fraction_target": 0.05,
+      "weighted_objective": 0.9310571708011024,
+      "calibration_cv": {
+        "uncalibrated": {
+          "log_loss": 0.13102212499209143,
+          "brier_score": 0.03373746293434564,
+          "ece_10_equal_width_bins": 0.05477904411327153,
+          "mean_probability": 0.09970091911327153,
+          "observed_rate": 0.044921875
+        },
+        "temperature": {
+          "log_loss": 0.13211476405820394,
+          "brier_score": 0.03398692914480393,
+          "ece_10_equal_width_bins": 0.05879333578771826,
+          "mean_probability": 0.10371521078771825,
+          "observed_rate": 0.044921875
+        },
+        "platt": {
+          "log_loss": 0.06079655932582429,
+          "brier_score": 0.015720934483909516,
+          "ece_10_equal_width_bins": 0.008536852039982694,
+          "mean_probability": 0.04482010060393918,
+          "observed_rate": 0.044921875
+        }
+      },
+      "cv_fold_parameters": [
+        {
+          "fold": 0,
+          "temperature": 1.1316727606029942,
+          "scale": 0.7032388246434466,
+          "offset": -2.631389955168387
+        },
+        {
+          "fold": 1,
+          "temperature": 1.065924812644411,
+          "scale": 0.7355186475301528,
+          "offset": -2.4512659407383066
+        },
+        {
+          "fold": 2,
+          "temperature": 1.04624116152342,
+          "scale": 0.7969277446392888,
+          "offset": -2.7385010169861355
+        },
+        {
+          "fold": 3,
+          "temperature": 1.1356210640229112,
+          "scale": 0.7075657604961776,
+          "offset": -2.6058537019348034
+        },
+        {
+          "fold": 4,
+          "temperature": 1.0191414471304474,
+          "scale": 0.8670181431220549,
+          "offset": -2.89546181400722
+        }
+      ],
+      "best_cv_method": "platt",
+      "fit_log_loss": 0.05784535218120773,
+      "threshold_only": {
+        "tp": 42,
+        "fp": 41,
+        "tn": 937,
+        "fn": 4,
+        "sensitivity": 0.9130434782608695,
+        "specificity": 0.9580777096114519,
+        "referral_count": 83,
+        "referral_rate": 0.0810546875,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 83,
+        "no_concern_count": 941
+      },
+      "including_uncertainty": {
+        "tp": 42,
+        "fp": 84,
+        "tn": 894,
+        "fn": 4,
+        "sensitivity": 0.9130434782608695,
+        "specificity": 0.9141104294478528,
+        "referral_count": 126,
+        "referral_rate": 0.123046875,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 74,
+        "no_concern_count": 898
+      }
+    },
+    {
+      "model_kind": "shared",
+      "disease": "cataract",
+      "seed": 44,
+      "checkpoint": "checkpoints/task11/shared/shared_seed_44_best.pt",
+      "checkpoint_sha256": "809fe9d70a23e42c417b579bc7792f5d7de5dd36efe6c21bda640d8d170aeffe",
+      "prediction_sha256": "de617273971a241dbbb42e78c9ef612b097c67c84e4666536d15720a00fb5690",
+      "method": "platt",
+      "scale": 0.6458388374633676,
+      "offset": -2.9793588408783434,
+      "threshold": 0.08257841903291087,
+      "uncertain_margin": 0.05152550197556567,
+      "uncertainty_fraction_target": 0.05,
+      "weighted_objective": 0.9465546367920334,
+      "calibration_cv": {
+        "uncalibrated": {
+          "log_loss": 0.16868098777448157,
+          "brier_score": 0.04266437498662852,
+          "ece_10_equal_width_bins": 0.06332489386048556,
+          "mean_probability": 0.10824676886048556,
+          "observed_rate": 0.044921875
+        },
+        "temperature": {
+          "log_loss": 0.15640556037398096,
+          "brier_score": 0.04256304649611736,
+          "ece_10_equal_width_bins": 0.07878832867224685,
+          "mean_probability": 0.12371020367224685,
+          "observed_rate": 0.044921875
+        },
+        "platt": {
+          "log_loss": 0.05888457557067505,
+          "brier_score": 0.01534027276011622,
+          "ece_10_equal_width_bins": 0.008020380294579122,
+          "mean_probability": 0.044793691453174266,
+          "observed_rate": 0.044921875
+        }
+      },
+      "cv_fold_parameters": [
+        {
+          "fold": 0,
+          "temperature": 1.4635680303150644,
+          "scale": 0.6122619465950943,
+          "offset": -2.9150010357580736
+        },
+        {
+          "fold": 1,
+          "temperature": 1.4889858979122574,
+          "scale": 0.6025266960337491,
+          "offset": -2.814441048707084
+        },
+        {
+          "fold": 2,
+          "temperature": 1.3707049825630218,
+          "scale": 0.7256358517025677,
+          "offset": -3.214297229868332
+        },
+        {
+          "fold": 3,
+          "temperature": 1.550162114027243,
+          "scale": 0.6139440522827206,
+          "offset": -2.9633693379154673
+        },
+        {
+          "fold": 4,
+          "temperature": 1.4017881629570874,
+          "scale": 0.7099005822950554,
+          "offset": -3.1140145472687197
+        }
+      ],
+      "best_cv_method": "platt",
+      "fit_log_loss": 0.056410098564631764,
+      "threshold_only": {
+        "tp": 43,
+        "fp": 35,
+        "tn": 943,
+        "fn": 3,
+        "sensitivity": 0.9347826086956522,
+        "specificity": 0.9642126789366053,
+        "referral_count": 78,
+        "referral_rate": 0.076171875,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 78,
+        "no_concern_count": 946
+      },
+      "including_uncertainty": {
+        "tp": 43,
+        "fp": 74,
+        "tn": 904,
+        "fn": 3,
+        "sensitivity": 0.9347826086956522,
+        "specificity": 0.9243353783231084,
+        "referral_count": 117,
+        "referral_rate": 0.1142578125,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 65,
+        "no_concern_count": 907
+      }
+    },
+    {
+      "model_kind": "shared",
+      "disease": "glaucoma",
+      "seed": 42,
+      "checkpoint": "checkpoints/task11/shared/shared_seed_42_best.pt",
+      "checkpoint_sha256": "9c4b9e7b4de308dd428af3f22a1eae0b5f3d857aa91464067c7e287b7dc910c7",
+      "prediction_sha256": "c391a72422939556a1263ad4baaeb5f3db49045efacf735a4d8a7f6110577943",
+      "method": "platt",
+      "scale": 0.462037431009386,
+      "offset": -3.698524127813093,
+      "threshold": 0.03662686455485789,
+      "uncertain_margin": 0.006616790697682388,
+      "uncertainty_fraction_target": 0.05,
+      "weighted_objective": 0.8557126122608356,
+      "calibration_cv": {
+        "uncalibrated": {
+          "log_loss": 0.6125803434888757,
+          "brier_score": 0.15149098644901832,
+          "ece_10_equal_width_bins": 0.228679793975893,
+          "mean_probability": 0.266765731475893,
+          "observed_rate": 0.0380859375
+        },
+        "temperature": {
+          "log_loss": 0.49285148932541434,
+          "brier_score": 0.1532282749730802,
+          "ece_10_equal_width_bins": 0.30160491296773156,
+          "mean_probability": 0.3396908504677315,
+          "observed_rate": 0.0380859375
+        },
+        "platt": {
+          "log_loss": 0.10204957898862414,
+          "brier_score": 0.028048477523976125,
+          "ece_10_equal_width_bins": 0.01741669316997778,
+          "mean_probability": 0.038220835779203946,
+          "observed_rate": 0.0380859375
+        }
+      },
+      "cv_fold_parameters": [
+        {
+          "fold": 0,
+          "temperature": 2.246761998882066,
+          "scale": 0.48452025396311793,
+          "offset": -3.7731118661861633
+        },
+        {
+          "fold": 1,
+          "temperature": 2.4469278468788818,
+          "scale": 0.44482543301468824,
+          "offset": -3.7121819663008404
+        },
+        {
+          "fold": 2,
+          "temperature": 2.251269503850409,
+          "scale": 0.46897148293058827,
+          "offset": -3.672043864800996
+        },
+        {
+          "fold": 3,
+          "temperature": 2.371644558009569,
+          "scale": 0.4538729975548171,
+          "offset": -3.6055160693721136
+        },
+        {
+          "fold": 4,
+          "temperature": 2.376028859718692,
+          "scale": 0.4620762559702771,
+          "offset": -3.745870849004489
+        }
+      ],
+      "best_cv_method": "platt",
+      "fit_log_loss": 0.10138222075274021,
+      "threshold_only": {
+        "tp": 33,
+        "fp": 128,
+        "tn": 857,
+        "fn": 6,
+        "sensitivity": 0.8461538461538461,
+        "specificity": 0.8700507614213198,
+        "referral_count": 161,
+        "referral_rate": 0.1572265625,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 161,
+        "no_concern_count": 863
+      },
+      "including_uncertainty": {
+        "tp": 33,
+        "fp": 159,
+        "tn": 826,
+        "fn": 6,
+        "sensitivity": 0.8461538461538461,
+        "specificity": 0.8385786802030457,
+        "referral_count": 192,
+        "referral_rate": 0.1875,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 140,
+        "no_concern_count": 832
+      }
+    },
+    {
+      "model_kind": "shared",
+      "disease": "glaucoma",
+      "seed": 43,
+      "checkpoint": "checkpoints/task11/shared/shared_seed_43_best.pt",
+      "checkpoint_sha256": "ab1be7650397e95f9da0236526fb84f38ee151c232a12b2cf2e58f7d19c1f83d",
+      "prediction_sha256": "64e81ef461c867cbda97e3ccd9a0b7be7a2b36e4543c73dc427ff3a9e3f9ab9c",
+      "method": "platt",
+      "scale": 0.6669984670650342,
+      "offset": -3.882749036080196,
+      "threshold": 0.08014794002087326,
+      "uncertain_margin": 0.025489872430198075,
+      "uncertainty_fraction_target": 0.05,
+      "weighted_objective": 0.8484966809839907,
+      "calibration_cv": {
+        "uncalibrated": {
+          "log_loss": 0.6144007409765946,
+          "brier_score": 0.177775208111573,
+          "ece_10_equal_width_bins": 0.29988000418377664,
+          "mean_probability": 0.3379659416837766,
+          "observed_rate": 0.0380859375
+        },
+        "temperature": {
+          "log_loss": 0.560387498965659,
+          "brier_score": 0.18187936085546885,
+          "ece_10_equal_width_bins": 0.35625363410889543,
+          "mean_probability": 0.3943395716088953,
+          "observed_rate": 0.0380859375
+        },
+        "platt": {
+          "log_loss": 0.1036996450968284,
+          "brier_score": 0.027418685310794947,
+          "ece_10_equal_width_bins": 0.006887135287553935,
+          "mean_probability": 0.03824497923084539,
+          "observed_rate": 0.0380859375
+        }
+      },
+      "cv_fold_parameters": [
+        {
+          "fold": 0,
+          "temperature": 1.883257859082333,
+          "scale": 0.6814276938280666,
+          "offset": -3.8968579566269272
+        },
+        {
+          "fold": 1,
+          "temperature": 2.0740651722951804,
+          "scale": 0.6711369279660738,
+          "offset": -3.9964605254895433
+        },
+        {
+          "fold": 2,
+          "temperature": 1.841830867541118,
+          "scale": 0.6642175068968519,
+          "offset": -3.8024705506389758
+        },
+        {
+          "fold": 3,
+          "temperature": 1.864124076080156,
+          "scale": 0.6494942535239029,
+          "offset": -3.8072971292850397
+        },
+        {
+          "fold": 4,
+          "temperature": 1.8976925881048485,
+          "scale": 0.6742436907461579,
+          "offset": -3.926064918477657
+        }
+      ],
+      "best_cv_method": "platt",
+      "fit_log_loss": 0.103174318348456,
+      "threshold_only": {
+        "tp": 31,
+        "fp": 70,
+        "tn": 915,
+        "fn": 8,
+        "sensitivity": 0.7948717948717948,
+        "specificity": 0.9289340101522843,
+        "referral_count": 101,
+        "referral_rate": 0.0986328125,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 101,
+        "no_concern_count": 923
+      },
+      "including_uncertainty": {
+        "tp": 31,
+        "fp": 98,
+        "tn": 887,
+        "fn": 8,
+        "sensitivity": 0.7948717948717948,
+        "specificity": 0.9005076142131979,
+        "referral_count": 129,
+        "referral_rate": 0.1259765625,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 77,
+        "no_concern_count": 895
+      }
+    },
+    {
+      "model_kind": "shared",
+      "disease": "glaucoma",
+      "seed": 44,
+      "checkpoint": "checkpoints/task11/shared/shared_seed_44_best.pt",
+      "checkpoint_sha256": "809fe9d70a23e42c417b579bc7792f5d7de5dd36efe6c21bda640d8d170aeffe",
+      "prediction_sha256": "de617273971a241dbbb42e78c9ef612b097c67c84e4666536d15720a00fb5690",
+      "method": "platt",
+      "scale": 0.3392020220707645,
+      "offset": -2.878182647827327,
+      "threshold": 0.01911136429289871,
+      "uncertain_margin": 0.0014513238438999439,
+      "uncertainty_fraction_target": 0.05,
+      "weighted_objective": 0.8543069113627488,
+      "calibration_cv": {
+        "uncalibrated": {
+          "log_loss": 0.3505984526328314,
+          "brier_score": 0.0742544026869034,
+          "ece_10_equal_width_bins": 0.09185486224712847,
+          "mean_probability": 0.12994079974712847,
+          "observed_rate": 0.0380859375
+        },
+        "temperature": {
+          "log_loss": 0.28993686098753957,
+          "brier_score": 0.07565787395009754,
+          "ece_10_equal_width_bins": 0.1400061267579531,
+          "mean_probability": 0.1780920642579531,
+          "observed_rate": 0.0380859375
+        },
+        "platt": {
+          "log_loss": 0.10599552529874531,
+          "brier_score": 0.028023591548165847,
+          "ece_10_equal_width_bins": 0.011459610514894815,
+          "mean_probability": 0.03820835995345201,
+          "observed_rate": 0.0380859375
+        }
+      },
+      "cv_fold_parameters": [
+        {
+          "fold": 0,
+          "temperature": 1.8383478902016925,
+          "scale": 0.3467612170592471,
+          "offset": -2.9280641106398955
+        },
+        {
+          "fold": 1,
+          "temperature": 1.8708745102390953,
+          "scale": 0.3372863102767462,
+          "offset": -2.909366330871555
+        },
+        {
+          "fold": 2,
+          "temperature": 1.7289328821941965,
+          "scale": 0.35109283547726666,
+          "offset": -2.7977279276931624
+        },
+        {
+          "fold": 3,
+          "temperature": 1.861628994368374,
+          "scale": 0.3298573500282366,
+          "offset": -2.846100914493343
+        },
+        {
+          "fold": 4,
+          "temperature": 1.8514990274065162,
+          "scale": 0.33288538100539683,
+          "offset": -2.911303415400195
+        }
+      ],
+      "best_cv_method": "platt",
+      "fit_log_loss": 0.10544585483300896,
+      "threshold_only": {
+        "tp": 37,
+        "fp": 283,
+        "tn": 702,
+        "fn": 2,
+        "sensitivity": 0.9487179487179487,
+        "specificity": 0.7126903553299493,
+        "referral_count": 320,
+        "referral_rate": 0.3125,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 320,
+        "no_concern_count": 704
+      },
+      "including_uncertainty": {
+        "tp": 37,
+        "fp": 313,
+        "tn": 672,
+        "fn": 2,
+        "sensitivity": 0.9487179487179487,
+        "specificity": 0.682233502538071,
+        "referral_count": 350,
+        "referral_rate": 0.341796875,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 298,
+        "no_concern_count": 674
+      }
+    }
+  ]
+}

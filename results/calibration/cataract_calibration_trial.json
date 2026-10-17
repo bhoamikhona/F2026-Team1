@@ -1,0 +1,90 @@
+{
+  "status": "trial",
+  "frozen": false,
+  "model_type": "cataract_only",
+  "fit_split": "validation",
+  "evaluation_split": "validation",
+  "evaluation_note": "Same data used for fitting; not an independent test.",
+  "decision_threshold": null,
+  "abstention_cutoff": null,
+  "probability_formulas": {
+    "uncalibrated": "sigmoid(logit)",
+    "temperature": "sigmoid(logit / temperature)",
+    "platt": "sigmoid(scale * logit + offset)"
+  },
+  "bin_definition": "Ten equal-width bins, lower inclusive, upper exclusive except 1.0.",
+  "runs": [
+    {
+      "seed": 42,
+      "prediction_file": "results/calibration/cataract_seed_42_validation.csv",
+      "prediction_sha256": "715f8c1f722284d74a12524f4723c5f087456cd13d9b96d811add005041c5f78",
+      "prediction_metadata_sha256": "4f070ae04525f9d442fb528208cdf8c2d961170bb55ff55e1be37c017908eef1",
+      "sample_count": 1024,
+      "cataract_count": 46,
+      "observed_rate": 0.044921875,
+      "uncalibrated": {
+        "log_loss": 0.29727035256244794,
+        "mean_probability": 0.2039547621198479
+      },
+      "temperature": {
+        "temperature": 1.396325078404139,
+        "log_loss": 0.2850172596240531,
+        "mean_probability": 0.2196179527699802
+      },
+      "platt": {
+        "scale": 1.138810175548822,
+        "offset": -4.261784530950902,
+        "log_loss": 0.057504452887079574,
+        "mean_probability": 0.04492206583979275
+      }
+    },
+    {
+      "seed": 43,
+      "prediction_file": "results/calibration/cataract_seed_43_validation.csv",
+      "prediction_sha256": "659d5c924489e1e350405e7510b0f74c37df3b31650cc800d630cb68139a9d67",
+      "prediction_metadata_sha256": "aee7a535b2328c372713fcc344d4600b201182e95a7b07431dd135b9827889b3",
+      "sample_count": 1024,
+      "cataract_count": 46,
+      "observed_rate": 0.044921875,
+      "uncalibrated": {
+        "log_loss": 0.12143485572623536,
+        "mean_probability": 0.10227596716965695
+      },
+      "temperature": {
+        "temperature": 1.042618864163906,
+        "log_loss": 0.12130598965047566,
+        "mean_probability": 0.10392620964683179
+      },
+      "platt": {
+        "scale": 0.8795508831474563,
+        "offset": -2.5005876865135304,
+        "log_loss": 0.05578302571990723,
+        "mean_probability": 0.04492506466810271
+      }
+    },
+    {
+      "seed": 44,
+      "prediction_file": "results/calibration/cataract_seed_44_validation.csv",
+      "prediction_sha256": "f79da60e56afae4401c35a6e05b826694bfdca2f24ca0fdd834108b44783608b",
+      "prediction_metadata_sha256": "2ba5c2f0661d4905699d6c64e2cb614f4c406136ba8ea929e2211d9b7efd770d",
+      "sample_count": 1024,
+      "cataract_count": 46,
+      "observed_rate": 0.044921875,
+      "uncalibrated": {
+        "log_loss": 0.11479753438321573,
+        "mean_probability": 0.09461152657222162
+      },
+      "temperature": {
+        "temperature": 1.1584623879024127,
+        "log_loss": 0.11331540528025089,
+        "mean_probability": 0.09855082510721859
+      },
+      "platt": {
+        "scale": 0.8808490936535575,
+        "offset": -2.187479709848141,
+        "log_loss": 0.06116181051688552,
+        "mean_probability": 0.0449230149188726
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "disease": "cataract",
+  "seed": 42,
+  "split": "validation",
+  "checkpoint": "checkpoints/task11/cataract/cataract_seed_42_best.pt",
+  "checkpoint_sha256": "8379604cfed3ccbe2c65e1997139dc94a617bd5f22062e514aa9bc6c9102c32e",
+  "prediction_sha256": "715f8c1f722284d74a12524f4723c5f087456cd13d9b96d811add005041c5f78",
+  "input_source_sha256": {
+    "labels/eye_labels_task7.csv": "67d7d8bbc8cb70d8fcb382c264b1e6fa73b5f0c7adc1dbcda2d3b63d044e6ce7",
+    "scripts/cataract_model.py": "47299a7e73a55a5bdc437c0a30a298bf17d8443d08386959fa2df9ffa5a84bab",
+    "scripts/resnet_backbone.py": "aa921cbd3d4c9c90f071d500b6937a9af5bdf9ded2eb3e0d8df7c223f32c7796",
+    "scripts/fundus_dataset.py": "bc9e4ac05935255844f01225119e318525c38a27fc08ae60611733b1d3924190",
+    "scripts/preprocess_images.py": "4e4167e830718e94033a09732e5f07e470581ede5eac14d33e6b69cf8817db51"
+  },
+  "device": "cpu",
+  "batch_size": 8,
+  "shuffle": false,
+  "python_version": "3.13.3",
+  "torch_version": "2.14.0",
+  "reuse_note": null
+}

@@ -1,0 +1,59 @@
+{
+  "score": "sigmoid(float32 logits), matching training validation",
+  "checks": [
+    {
+      "disease": "glaucoma",
+      "seed": 42,
+      "images": 1024,
+      "positive_cases": 39,
+      "cpu_auroc": 0.89113627489262,
+      "checkpoint_auroc": 0.89113627489262,
+      "difference": 0.0
+    },
+    {
+      "disease": "glaucoma",
+      "seed": 43,
+      "images": 1024,
+      "positive_cases": 39,
+      "cpu_auroc": 0.9165560327996876,
+      "checkpoint_auroc": 0.916608095795913,
+      "difference": -5.206299622539934e-05
+    },
+    {
+      "disease": "glaucoma",
+      "seed": 44,
+      "images": 1024,
+      "positive_cases": 39,
+      "cpu_auroc": 0.9259664193674345,
+      "checkpoint_auroc": 0.9259664193674346,
+      "difference": -1.1102230246251565e-16
+    },
+    {
+      "disease": "cataract",
+      "seed": 42,
+      "images": 1024,
+      "positive_cases": 46,
+      "cpu_auroc": 0.9862185471681337,
+      "checkpoint_auroc": 0.9861963190184049,
+      "difference": 2.2228149728853452e-05
+    },
+    {
+      "disease": "cataract",
+      "seed": 43,
+      "images": 1024,
+      "positive_cases": 46,
+      "cpu_auroc": 0.9853961056281675,
+      "checkpoint_auroc": 0.9853961056281675,
+      "difference": 0.0
+    },
+    {
+      "disease": "cataract",
+      "seed": 44,
+      "images": 1024,
+      "positive_cases": 46,
+      "cpu_auroc": 0.9820396550191163,
+      "checkpoint_auroc": 0.9820396550191163,
+      "difference": 0.0
+    }
+  ]
+}

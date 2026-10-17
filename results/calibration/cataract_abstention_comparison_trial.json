@@ -1,0 +1,21 @@
+{
+  "status": "trial",
+  "disease": "cataract",
+  "frozen": false,
+  "selected_rule": null,
+  "split": "validation",
+  "sample_count_per_seed": 1024,
+  "rule": "Uncertain, refer if abs(Platt probability - disease threshold) <= margin; otherwise refer if probability >= threshold.",
+  "margin_selection": "Order statistic covering at least 5%, 10%, or 20% of validation eyes; include ties. Zero is a no-abstention baseline.",
+  "sources_sha256": {
+    "cataract_calibration_trial.json": "cecf490a47c9821e27adaf5070c8e249588fbe07e6a1e72556c751373c2270d4",
+    "cataract_threshold_comparison_trial.csv": "f75967d352e41274b80794c8a050a94d5d13c93b8445aed25d74d544a648cdcd"
+  },
+  "limitations": [
+    "Exploratory fractions and sensitivity targets are project comparisons, not clinical standards.",
+    "Distance from the decision boundary is a heuristic, not proven uncertainty or photo quality detection.",
+    "Same validation data fit calibration and select thresholds and margins; these are not independent test results.",
+    "Retained error rate is dominated by the majority class; inspect missed positive cases and referral burden as well.",
+    "No holdout or external images used. Only the selected disease is evaluated; no combined-head rule evaluated."
+  ]
+}

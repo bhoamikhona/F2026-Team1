@@ -1,0 +1,238 @@
+{
+  "status": "trial",
+  "frozen": false,
+  "split": "validation",
+  "method": "5-fold stratified patient-grouped cross-validation",
+  "random_seed": 42,
+  "sample_count": 1024,
+  "patient_count": 522,
+  "folds": [
+    {
+      "fold": 1,
+      "fit_images": 819,
+      "held_out_images": 205,
+      "fit_patients": 418,
+      "held_out_patients": 104,
+      "held_out_cataract_cases": 9
+    },
+    {
+      "fold": 2,
+      "fit_images": 819,
+      "held_out_images": 205,
+      "fit_patients": 417,
+      "held_out_patients": 105,
+      "held_out_cataract_cases": 9
+    },
+    {
+      "fold": 3,
+      "fit_images": 819,
+      "held_out_images": 205,
+      "fit_patients": 418,
+      "held_out_patients": 104,
+      "held_out_cataract_cases": 10
+    },
+    {
+      "fold": 4,
+      "fit_images": 820,
+      "held_out_images": 204,
+      "fit_patients": 418,
+      "held_out_patients": 104,
+      "held_out_cataract_cases": 9
+    },
+    {
+      "fold": 5,
+      "fit_images": 819,
+      "held_out_images": 205,
+      "fit_patients": 417,
+      "held_out_patients": 105,
+      "held_out_cataract_cases": 9
+    }
+  ],
+  "limitations": [
+    "Calibration fits exclude each held-out patient's eyes.",
+    "Base models previously used validation data for checkpoint selection.",
+    "Method comparison uses validation data and is not a final test estimate.",
+    "Only 46 cataract eyes; sparse probability bins have high uncertainty."
+  ],
+  "decision_threshold": null,
+  "abstention_cutoff": null,
+  "runs": [
+    {
+      "seed": 42,
+      "prediction_sha256": "715f8c1f722284d74a12524f4723c5f087456cd13d9b96d811add005041c5f78",
+      "fold_parameters": [
+        {
+          "fold": 1,
+          "temperature": 1.4162929077976179,
+          "platt_scale": 1.1043129164406977,
+          "platt_offset": -4.153240480828043
+        },
+        {
+          "fold": 2,
+          "temperature": 1.4077019232306014,
+          "platt_scale": 1.262711381242809,
+          "platt_offset": -4.525109893074514
+        },
+        {
+          "fold": 3,
+          "temperature": 1.3755449612968726,
+          "platt_scale": 1.1017461057416829,
+          "platt_offset": -4.223185721026868
+        },
+        {
+          "fold": 4,
+          "temperature": 1.4536735861048173,
+          "platt_scale": 1.056408496237541,
+          "platt_offset": -4.001123812263764
+        },
+        {
+          "fold": 5,
+          "temperature": 1.3279536361190953,
+          "platt_scale": 1.2049981250394555,
+          "platt_offset": -4.513739024313752
+        }
+      ],
+      "metrics": {
+        "uncalibrated": {
+          "log_loss": 0.29727035256244794,
+          "brier_score": 0.09356423774848557,
+          "ece_10_equal_width_bins": 0.15903288711984792,
+          "mean_probability": 0.2039547621198479,
+          "observed_rate": 0.044921875
+        },
+        "temperature": {
+          "log_loss": 0.2858833739842045,
+          "brier_score": 0.09163894663816774,
+          "ece_10_equal_width_bins": 0.17501057837644068,
+          "mean_probability": 0.21993245337644068,
+          "observed_rate": 0.044921875
+        },
+        "platt": {
+          "log_loss": 0.05915081281065891,
+          "brier_score": 0.016658294710446393,
+          "ece_10_equal_width_bins": 0.009628457019567533,
+          "mean_probability": 0.04497481263656136,
+          "observed_rate": 0.044921875
+        }
+      }
+    },
+    {
+      "seed": 43,
+      "prediction_sha256": "659d5c924489e1e350405e7510b0f74c37df3b31650cc800d630cb68139a9d67",
+      "fold_parameters": [
+        {
+          "fold": 1,
+          "temperature": 1.1130770402088226,
+          "platt_scale": 0.7913255683757783,
+          "platt_offset": -2.41927809350727
+        },
+        {
+          "fold": 2,
+          "temperature": 1.0431418884860835,
+          "platt_scale": 0.8422983456256425,
+          "platt_offset": -2.369060402201396
+        },
+        {
+          "fold": 3,
+          "temperature": 0.9543419279921982,
+          "platt_scale": 0.9899520135581867,
+          "platt_offset": -2.611291264875308
+        },
+        {
+          "fold": 4,
+          "temperature": 1.127208591362997,
+          "platt_scale": 0.817366281886827,
+          "platt_offset": -2.555264289404841
+        },
+        {
+          "fold": 5,
+          "temperature": 0.9707439010983231,
+          "platt_scale": 1.0307522327514547,
+          "platt_offset": -2.6615774772675986
+        }
+      ],
+      "metrics": {
+        "uncalibrated": {
+          "log_loss": 0.12143485572623536,
+          "brier_score": 0.0340980812590069,
+          "ece_10_equal_width_bins": 0.05735409216965698,
+          "mean_probability": 0.10227596716965695,
+          "observed_rate": 0.044921875
+        },
+        "temperature": {
+          "log_loss": 0.12436225875625107,
+          "brier_score": 0.03440706201892635,
+          "ece_10_equal_width_bins": 0.05917216749777569,
+          "mean_probability": 0.10409404249777568,
+          "observed_rate": 0.044921875
+        },
+        "platt": {
+          "log_loss": 0.05980454444196225,
+          "brier_score": 0.01710266427443478,
+          "ece_10_equal_width_bins": 0.008786974717777146,
+          "mean_probability": 0.044974782662057115,
+          "observed_rate": 0.044921875
+        }
+      }
+    },
+    {
+      "seed": 44,
+      "prediction_sha256": "f79da60e56afae4401c35a6e05b826694bfdca2f24ca0fdd834108b44783608b",
+      "fold_parameters": [
+        {
+          "fold": 1,
+          "temperature": 1.1880966010221732,
+          "platt_scale": 0.8375861122788877,
+          "platt_offset": -2.208960878054291
+        },
+        {
+          "fold": 2,
+          "temperature": 1.1601321428270792,
+          "platt_scale": 0.8442927306574237,
+          "platt_offset": -2.1367260792178993
+        },
+        {
+          "fold": 3,
+          "temperature": 1.1247827018452683,
+          "platt_scale": 0.9327132146040155,
+          "platt_offset": -2.234749642947937
+        },
+        {
+          "fold": 4,
+          "temperature": 1.2197294892853234,
+          "platt_scale": 0.8189890075660355,
+          "platt_offset": -2.157561607929552
+        },
+        {
+          "fold": 5,
+          "temperature": 1.0937001222017622,
+          "platt_scale": 1.0138817929460342,
+          "platt_offset": -2.2700939262882023
+        }
+      ],
+      "metrics": {
+        "uncalibrated": {
+          "log_loss": 0.11479753438321573,
+          "brier_score": 0.0344885017343112,
+          "ece_10_equal_width_bins": 0.049689651572221605,
+          "mean_probability": 0.09461152657222162,
+          "observed_rate": 0.044921875
+        },
+        "temperature": {
+          "log_loss": 0.1142382118101011,
+          "brier_score": 0.03429755556370989,
+          "ece_10_equal_width_bins": 0.05350757328194386,
+          "mean_probability": 0.09842944828194386,
+          "observed_rate": 0.044921875
+        },
+        "platt": {
+          "log_loss": 0.06339447380850721,
+          "brier_score": 0.01813924343976977,
+          "ece_10_equal_width_bins": 0.003966672140909982,
+          "mean_probability": 0.044677276998211155,
+          "observed_rate": 0.044921875
+        }
+      }
+    }
+  ]
+}

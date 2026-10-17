@@ -57,6 +57,13 @@ datasets in this repo is fine, since the project is not commercial.
 Glaucoma has three external test sets. External cataract testing relies on
 retina_dataset_2016 alone.
 
+## External evaluation protocol
+
+The [external evaluation protocol](documents/evaluation/external_validation_protocol.md)
+defines the test-only datasets, metrics, confidence intervals and referral reporting
+for SCRUM-44. It is a draft for team review. Final external testing starts only
+after the calibration and decision settings are reviewed, frozen and committed.
+
 ## Setup (one time)
 Use Python 3.14. The package versions in requirements.txt were pinned on 3.14,
 and older Python versions may fail to install them.

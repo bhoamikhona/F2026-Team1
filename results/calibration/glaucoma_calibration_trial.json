@@ -1,0 +1,90 @@
+{
+  "status": "trial",
+  "frozen": false,
+  "model_type": "glaucoma_only",
+  "fit_split": "validation",
+  "evaluation_split": "validation",
+  "evaluation_note": "Same data used for fitting; not an independent test.",
+  "decision_threshold": null,
+  "abstention_cutoff": null,
+  "probability_formulas": {
+    "uncalibrated": "sigmoid(logit)",
+    "temperature": "sigmoid(logit / temperature)",
+    "platt": "sigmoid(scale * logit + offset)"
+  },
+  "bin_definition": "Ten equal-width bins, lower inclusive, upper exclusive except 1.0.",
+  "runs": [
+    {
+      "seed": 42,
+      "prediction_file": "results/calibration/glaucoma_seed_42_validation.csv",
+      "prediction_sha256": "359a28551bdf6f19d2d6557474327932f4007453b1b0a42afb3e60b0ee6e3380",
+      "prediction_metadata_sha256": "e36427db6821cbb732d245e9c288cfdb900a75f82cb5866f36ae7f95aee02a55",
+      "sample_count": 1024,
+      "glaucoma_count": 39,
+      "observed_rate": 0.0380859375,
+      "uncalibrated": {
+        "log_loss": 0.38579415144244994,
+        "mean_probability": 0.18745090211783239
+      },
+      "temperature": {
+        "temperature": 1.5516095563450676,
+        "log_loss": 0.35655284177432556,
+        "mean_probability": 0.22818416428259058
+      },
+      "platt": {
+        "scale": 0.4295081227760487,
+        "offset": -3.038289150081515,
+        "log_loss": 0.11150817903032782,
+        "mean_probability": 0.03808642245015447
+      }
+    },
+    {
+      "seed": 43,
+      "prediction_file": "results/calibration/glaucoma_seed_43_validation.csv",
+      "prediction_sha256": "7b9774a6d8bac11051c8bfcf058d4b3098d6a2f111f9fde546b24945dad65a5f",
+      "prediction_metadata_sha256": "a7716ece1a7caf48a487df4110682325381c6095cd59421d002074b700a5c53b",
+      "sample_count": 1024,
+      "glaucoma_count": 39,
+      "observed_rate": 0.0380859375,
+      "uncalibrated": {
+        "log_loss": 1.0406008498890094,
+        "mean_probability": 0.41980974385878045
+      },
+      "temperature": {
+        "temperature": 7.600078108449972,
+        "log_loss": 0.6733150863530419,
+        "mean_probability": 0.49485992011614344
+      },
+      "platt": {
+        "scale": 0.39658211684533745,
+        "offset": -4.219983473406177,
+        "log_loss": 0.10506437997614151,
+        "mean_probability": 0.03808507436369474
+      }
+    },
+    {
+      "seed": 44,
+      "prediction_file": "results/calibration/glaucoma_seed_44_validation.csv",
+      "prediction_sha256": "9d4f903aaf14a3fe27ba009aee8d7838f8f49c26d051c6790dfd6f2b8063ab5a",
+      "prediction_metadata_sha256": "acb9e6934c854d4609f74163cf981b88f851ff122dc5122bba7e51be5763eb71",
+      "sample_count": 1024,
+      "glaucoma_count": 39,
+      "observed_rate": 0.0380859375,
+      "uncalibrated": {
+        "log_loss": 0.2021505882018988,
+        "mean_probability": 0.10354519097628892
+      },
+      "temperature": {
+        "temperature": 1.4024085272796671,
+        "log_loss": 0.19015715054235638,
+        "mean_probability": 0.12144068006378914
+      },
+      "platt": {
+        "scale": 0.4729327894548348,
+        "offset": -2.2145990533132562,
+        "log_loss": 0.1021471142257852,
+        "mean_probability": 0.03808455741152414
+      }
+    }
+  ]
+}

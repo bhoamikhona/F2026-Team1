@@ -15,8 +15,8 @@ import numpy as np
 VERSION = "v0-mock"
 CONDITIONS = ("cataract", "glaucoma")
 
-# Example values until Task 12 fits the real ones on the
-# validation split. They are stored with the model version, never hard-coded in the app.
+# Example values for synthetic scores, not fitted Task 12 settings.
+# Real inference must load the approved settings for its exact checkpoint.
 THRESHOLDS = {"cataract": 0.35, "glaucoma": 0.50}
 UNCERTAIN_MARGIN = 0.05
 

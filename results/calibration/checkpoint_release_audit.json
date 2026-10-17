@@ -1,0 +1,65 @@
+{
+  "checked_date": "2026-10-13",
+  "records": [
+    {
+      "disease": "glaucoma",
+      "seed": 42,
+      "weights_unchanged": true,
+      "old_sha256": "637fe48d48be16d5fe5ae0a1b6fa0a606bcb6533549e990ea19afd9a836a2252",
+      "sha256": "28e6d6839dcd8c34cb4a3de372e22ec2bbca4081419331954c5aa74c03483259",
+      "url": "https://github.com/htmw/F2026-Team1/releases/download/task11-glaucoma-checkpoints/glaucoma_seed_42_best.pt",
+      "epoch": 8,
+      "validation_auroc": 0.89113627489262
+    },
+    {
+      "disease": "glaucoma",
+      "seed": 43,
+      "weights_unchanged": true,
+      "old_sha256": "8a7bab584e3630e8656ca0a059170263b21967fbbca4befb02e6d41fdcae9713",
+      "sha256": "132a11163f4e43a131b56610cad54c12087b8cf683340f34b66625676cb90da7",
+      "url": "https://github.com/htmw/F2026-Team1/releases/download/task11-glaucoma-checkpoints/glaucoma_seed_43_best.pt",
+      "epoch": 3,
+      "validation_auroc": 0.916608095795913
+    },
+    {
+      "disease": "glaucoma",
+      "seed": 44,
+      "weights_unchanged": true,
+      "old_sha256": "17815b9285716dd1366b3016a20ef384773d2adca232fcfd255aee99e24cb5e1",
+      "sha256": "9e47544f36b8f6a6c5dc76b07dc2e5b52ae7203997dc437b75b1b444ea84c992",
+      "url": "https://github.com/htmw/F2026-Team1/releases/download/task11-glaucoma-checkpoints/glaucoma_seed_44_best.pt",
+      "epoch": 10,
+      "validation_auroc": 0.9259664193674346
+    },
+    {
+      "disease": "cataract",
+      "seed": 42,
+      "weights_unchanged": false,
+      "old_sha256": "207613cecac8bb25d67e7b896e341a2a9fd6f6f2af9a7a634df1b620077a0178",
+      "sha256": "8379604cfed3ccbe2c65e1997139dc94a617bd5f22062e514aa9bc6c9102c32e",
+      "url": "https://github.com/htmw/F2026-Team1/releases/download/task11-cataract-checkpoints/cataract_seed_42_best.pt",
+      "epoch": 1,
+      "validation_auroc": 0.9861963190184049
+    },
+    {
+      "disease": "cataract",
+      "seed": 43,
+      "weights_unchanged": true,
+      "old_sha256": "7806ca48ec1ab1905f88da0dca4b640e3194a075a4fcb5c11762953c9d156b63",
+      "sha256": "7806ca48ec1ab1905f88da0dca4b640e3194a075a4fcb5c11762953c9d156b63",
+      "url": "https://github.com/htmw/F2026-Team1/releases/download/task11-cataract-checkpoints/cataract_seed_43_best.pt",
+      "epoch": 7,
+      "validation_auroc": 0.9853961056281675
+    },
+    {
+      "disease": "cataract",
+      "seed": 44,
+      "weights_unchanged": true,
+      "old_sha256": "c5be475f4e8fb32e684493cd88bd92f24037b6506f90713b633237cbbeaa7a31",
+      "sha256": "c5be475f4e8fb32e684493cd88bd92f24037b6506f90713b633237cbbeaa7a31",
+      "url": "https://github.com/htmw/F2026-Team1/releases/download/task11-cataract-checkpoints/cataract_seed_44_best.pt",
+      "epoch": 7,
+      "validation_auroc": 0.9820396550191163
+    }
+  ]
+}

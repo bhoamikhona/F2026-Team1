@@ -1,0 +1,1102 @@
+{
+  "status": "completed",
+  "description": "Evaluation of 21 low-quality holdout eyes with frozen Task 12 settings",
+  "frozen_settings_source": "results/calibration/frozen_settings.json",
+  "date_evaluated": "2026-10-13",
+  "summary": [
+    {
+      "seed": 42,
+      "sample_count": 21,
+      "cataract": {
+        "uncertain_count": 0,
+        "ordinary_refer_count": 9,
+        "no_concern_count": 12,
+        "total_referred": 9
+      },
+      "glaucoma": {
+        "uncertain_count": 5,
+        "ordinary_refer_count": 3,
+        "no_concern_count": 13,
+        "total_referred": 8
+      },
+      "overall_eye": {
+        "uncertain_eyes": 5,
+        "total_referred": 14,
+        "referral_rate": 0.6666666666666666
+      }
+    },
+    {
+      "seed": 43,
+      "sample_count": 21,
+      "cataract": {
+        "uncertain_count": 2,
+        "ordinary_refer_count": 6,
+        "no_concern_count": 13,
+        "total_referred": 8
+      },
+      "glaucoma": {
+        "uncertain_count": 0,
+        "ordinary_refer_count": 2,
+        "no_concern_count": 19,
+        "total_referred": 2
+      },
+      "overall_eye": {
+        "uncertain_eyes": 2,
+        "total_referred": 8,
+        "referral_rate": 0.38095238095238093
+      }
+    },
+    {
+      "seed": 44,
+      "sample_count": 21,
+      "cataract": {
+        "uncertain_count": 1,
+        "ordinary_refer_count": 9,
+        "no_concern_count": 11,
+        "total_referred": 10
+      },
+      "glaucoma": {
+        "uncertain_count": 4,
+        "ordinary_refer_count": 8,
+        "no_concern_count": 9,
+        "total_referred": 12
+      },
+      "overall_eye": {
+        "uncertain_eyes": 5,
+        "total_referred": 14,
+        "referral_rate": 0.6666666666666666
+      }
+    }
+  ],
+  "per_image": {
+    "372_left.jpg": {
+      "patient_id": 372,
+      "eye": "left",
+      "diagnosis_text": "low image quality,maculopathy",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": 4.3233137130737305,
+            "probability": 0.6596307754516602,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -2.3939614295959473,
+            "probability": 0.01684827171266079,
+            "result": "no_concern"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": 2.530958890914917,
+            "probability": 0.4318074584007263,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": 3.747847557067871,
+            "probability": 0.061016570776700974,
+            "result": "refer"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": 1.293487548828125,
+            "probability": 0.2595875859260559,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -3.70896577835083,
+            "probability": 0.018547648563981056,
+            "result": "no_concern"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        }
+      }
+    },
+    "372_right.jpg": {
+      "patient_id": 372,
+      "eye": "right",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": 3.1718204021453857,
+            "probability": 0.3430609107017517,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -2.1892971992492676,
+            "probability": 0.01836792752146721,
+            "result": "no_concern"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": 3.1754508018493652,
+            "probability": 0.5725795030593872,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": 0.5159340500831604,
+            "probability": 0.01771668717265129,
+            "result": "no_concern"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": 1.056946039199829,
+            "probability": 0.2215820699930191,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -1.9700722694396973,
+            "probability": 0.04123688116669655,
+            "result": "refer"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        }
+      }
+    },
+    "3935_left.jpg": {
+      "patient_id": 3935,
+      "eye": "left",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": 2.3937277793884277,
+            "probability": 0.17714913189411163,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -1.0936648845672607,
+            "probability": 0.02908468246459961,
+            "result": "uncertain"
+          },
+          "eye_result": "refer",
+          "any_uncertain": true
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": -1.1624882221221924,
+            "probability": 0.028663288801908493,
+            "result": "uncertain"
+          },
+          "glaucoma": {
+            "logit": -0.5560415387153625,
+            "probability": 0.01165266428142786,
+            "result": "no_concern"
+          },
+          "eye_result": "refer",
+          "any_uncertain": true
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": -0.6485840678215027,
+            "probability": 0.05959242954850197,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -2.4466958045959473,
+            "probability": 0.0331910140812397,
+            "result": "uncertain"
+          },
+          "eye_result": "refer",
+          "any_uncertain": true
+        }
+      }
+    },
+    "3947_right.jpg": {
+      "patient_id": 3947,
+      "eye": "right",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": 4.861792087554932,
+            "probability": 0.7815759181976318,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -0.3117954134941101,
+            "probability": 0.0402250736951828,
+            "result": "refer"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": 0.9459938406944275,
+            "probability": 0.15861915051937103,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -0.10545957088470459,
+            "probability": 0.01390085555613041,
+            "result": "no_concern"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": 2.5391464233398438,
+            "probability": 0.5122786164283752,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": 1.0590871572494507,
+            "probability": 0.15268151462078094,
+            "result": "refer"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        }
+      }
+    },
+    "4007_left.jpg": {
+      "patient_id": 4007,
+      "eye": "left",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": -5.625204563140869,
+            "probability": 2.328158007003367e-05,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -1.3898977041244507,
+            "probability": 0.025699160993099213,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": -2.1772301197052,
+            "probability": 0.01194325927644968,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": 0.11887385696172714,
+            "probability": 0.015174626372754574,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": -1.592415690422058,
+            "probability": 0.026852991431951523,
+            "result": "uncertain"
+          },
+          "glaucoma": {
+            "logit": -0.8474746942520142,
+            "probability": 0.0681539848446846,
+            "result": "refer"
+          },
+          "eye_result": "refer",
+          "any_uncertain": true
+        }
+      }
+    },
+    "4066_right.jpg": {
+      "patient_id": 4066,
+      "eye": "right",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": -0.8541791439056396,
+            "probability": 0.005301064811646938,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -2.7550525665283203,
+            "probability": 0.014462797902524471,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": -3.6881043910980225,
+            "probability": 0.0031902380287647247,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -1.021310567855835,
+            "probability": 0.009708311408758163,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": -4.978219509124756,
+            "probability": 0.0013962899101898074,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -3.6905810832977295,
+            "probability": 0.018706588074564934,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        }
+      }
+    },
+    "4124_right.jpg": {
+      "patient_id": 4124,
+      "eye": "right",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": -6.954350471496582,
+            "probability": 5.1245183385617565e-06,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -1.6462950706481934,
+            "probability": 0.023081166669726372,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": -7.4084954261779785,
+            "probability": 0.00012134652206441388,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": 0.32581865787506104,
+            "probability": 0.016451193019747734,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": -6.051251411437988,
+            "probability": 0.0005430758465081453,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -4.306400299072266,
+            "probability": 0.014046487398445606,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        }
+      }
+    },
+    "4149_left.jpg": {
+      "patient_id": 4149,
+      "eye": "left",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": -8.92643928527832,
+            "probability": 5.423768243417726e-07,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": 1.2883551120758057,
+            "probability": 0.07692138105630875,
+            "result": "refer"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": -6.0024824142456055,
+            "probability": 0.0004178049857728183,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -0.4968787729740143,
+            "probability": 0.011926001869142056,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": -5.304683685302734,
+            "probability": 0.001047704485245049,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -3.542851686477661,
+            "probability": 0.020033160224556923,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        }
+      }
+    },
+    "4149_right.jpg": {
+      "patient_id": 4149,
+      "eye": "right",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": -10.060229301452637,
+            "probability": 1.4912566825842077e-07,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -1.1568069458007812,
+            "probability": 0.028328554704785347,
+            "result": "uncertain"
+          },
+          "eye_result": "refer",
+          "any_uncertain": true
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": -2.6136527061462402,
+            "probability": 0.008167191408574581,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -0.72524094581604,
+            "probability": 0.01090465672314167,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": -4.309473514556885,
+            "probability": 0.002513717394322157,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -3.7888026237487793,
+            "probability": 0.017872678115963936,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        }
+      }
+    },
+    "4169_left.jpg": {
+      "patient_id": 4169,
+      "eye": "left",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": -4.923298358917236,
+            "probability": 5.177836283110082e-05,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -1.238234281539917,
+            "probability": 0.02738158032298088,
+            "result": "uncertain"
+          },
+          "eye_result": "refer",
+          "any_uncertain": true
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": -7.334326267242432,
+            "probability": 0.00012952556426171213,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": 0.25815653800964355,
+            "probability": 0.01602259837090969,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": -3.855233669281006,
+            "probability": 0.0037458317819982767,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -2.4201934337615967,
+            "probability": 0.03359557315707207,
+            "result": "uncertain"
+          },
+          "eye_result": "refer",
+          "any_uncertain": true
+        }
+      }
+    },
+    "4180_right.jpg": {
+      "patient_id": 4180,
+      "eye": "right",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": 2.2787277698516846,
+            "probability": 0.15885847806930542,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -5.255336761474609,
+            "probability": 0.00498909642919898,
+            "result": "no_concern"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": -1.958132028579712,
+            "probability": 0.01444487925618887,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -0.5951813459396362,
+            "probability": 0.011475242674350739,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": 2.4656920433044434,
+            "probability": 0.4961056113243103,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -6.224544525146484,
+            "probability": 0.005718066822737455,
+            "result": "no_concern"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        }
+      }
+    },
+    "4198_right.jpg": {
+      "patient_id": 4198,
+      "eye": "right",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": -0.3464982509613037,
+            "probability": 0.009411375969648361,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": 0.7686017751693726,
+            "probability": 0.06249304115772247,
+            "result": "refer"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": 0.19507275521755219,
+            "probability": 0.08874855935573578,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": 2.5369625091552734,
+            "probability": 0.03864716365933418,
+            "result": "refer"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": -0.4117870032787323,
+            "probability": 0.0724128857254982,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": 1.1867445707321167,
+            "probability": 0.16065683960914612,
+            "result": "refer"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        }
+      }
+    },
+    "4262_right.jpg": {
+      "patient_id": 4262,
+      "eye": "right",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": -0.0891849622130394,
+            "probability": 0.012575501576066017,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -1.4367413520812988,
+            "probability": 0.025200163945555687,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": -2.380939483642578,
+            "probability": 0.010003700852394104,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -0.2427348643541336,
+            "probability": 0.01317401509732008,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": -2.8224902153015137,
+            "probability": 0.009251564741134644,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -3.415647506713867,
+            "probability": 0.02124892920255661,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        }
+      }
+    },
+    "4290_left.jpg": {
+      "patient_id": 4290,
+      "eye": "left",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": -1.1542160511016846,
+            "probability": 0.003772575641050935,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -2.3733069896698,
+            "probability": 0.016995854675769806,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": -4.3433709144592285,
+            "probability": 0.0017952669877558947,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -0.519689679145813,
+            "probability": 0.011819868348538876,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": -2.708977222442627,
+            "probability": 0.01021450012922287,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -1.7238571643829346,
+            "probability": 0.04609464481472969,
+            "result": "refer"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        }
+      }
+    },
+    "4319_right.jpg": {
+      "patient_id": 4319,
+      "eye": "right",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": 3.232813835144043,
+            "probability": 0.3588811755180359,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -1.8900270462036133,
+            "probability": 0.02083488740026951,
+            "result": "no_concern"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": 1.731935977935791,
+            "probability": 0.2734353840351105,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -0.5433807373046875,
+            "probability": 0.0117106344550848,
+            "result": "no_concern"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": 1.2192728519439697,
+            "probability": 0.24722175300121307,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -2.129822254180908,
+            "probability": 0.038351260125637054,
+            "result": "refer"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        }
+      }
+    },
+    "4394_right.jpg": {
+      "patient_id": 4394,
+      "eye": "right",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": 1.552211880683899,
+            "probability": 0.07627213001251221,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -2.0942163467407227,
+            "probability": 0.019118929281830788,
+            "result": "no_concern"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": -2.333220958709717,
+            "probability": 0.010428027249872684,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -0.6375991106033325,
+            "probability": 0.011285982094705105,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": -3.3400135040283203,
+            "probability": 0.005884523969143629,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -3.5954360961914062,
+            "probability": 0.01955072581768036,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        }
+      }
+    },
+    "4427_right.jpg": {
+      "patient_id": 4427,
+      "eye": "right",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": -7.708877086639404,
+            "probability": 2.1701059722545324e-06,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -1.541758418083191,
+            "probability": 0.024115553125739098,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": -1.1539585590362549,
+            "probability": 0.028872905299067497,
+            "result": "uncertain"
+          },
+          "glaucoma": {
+            "logit": -0.28805872797966003,
+            "probability": 0.012942366302013397,
+            "result": "no_concern"
+          },
+          "eye_result": "refer",
+          "any_uncertain": true
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": -3.560108184814453,
+            "probability": 0.004852496553212404,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -2.5408785343170166,
+            "probability": 0.031791020184755325,
+            "result": "uncertain"
+          },
+          "eye_result": "refer",
+          "any_uncertain": true
+        }
+      }
+    },
+    "4442_left.jpg": {
+      "patient_id": 4442,
+      "eye": "left",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": -4.693606376647949,
+            "probability": 6.725777348037809e-05,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -2.1782941818237305,
+            "probability": 0.018453331664204597,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": -10.224661827087402,
+            "probability": 1.0194000424235128e-05,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -0.41486769914627075,
+            "probability": 0.012315405532717705,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": -5.465685844421387,
+            "probability": 0.0009093020344153047,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -1.6524841785430908,
+            "probability": 0.04760177060961723,
+            "result": "refer"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        }
+      }
+    },
+    "4448_left.jpg": {
+      "patient_id": 4448,
+      "eye": "left",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": 0.16982732713222504,
+            "probability": 0.016817351803183556,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -1.3491697311401367,
+            "probability": 0.026140816509723663,
+            "result": "uncertain"
+          },
+          "eye_result": "refer",
+          "any_uncertain": true
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": -2.9304211139678955,
+            "probability": 0.006193494889885187,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -0.5010544657707214,
+            "probability": 0.011906502768397331,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": -0.7922015190124512,
+            "probability": 0.05288552865386009,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -2.534742832183838,
+            "probability": 0.031880468130111694,
+            "result": "uncertain"
+          },
+          "eye_result": "refer",
+          "any_uncertain": true
+        }
+      }
+    },
+    "4522_left.jpg": {
+      "patient_id": 4522,
+      "eye": "left",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": 2.7110280990600586,
+            "probability": 0.2360536903142929,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -0.7712887525558472,
+            "probability": 0.03326031565666199,
+            "result": "uncertain"
+          },
+          "eye_result": "refer",
+          "any_uncertain": true
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": 3.3448562622070312,
+            "probability": 0.608588695526123,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -0.25645118951797485,
+            "probability": 0.013103481382131577,
+            "result": "no_concern"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": 2.054875373840332,
+            "probability": 0.40674319863319397,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -0.8629441261291504,
+            "probability": 0.06769082695245743,
+            "result": "refer"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        }
+      }
+    },
+    "4601_right.jpg": {
+      "patient_id": 4601,
+      "eye": "right",
+      "diagnosis_text": "low image quality",
+      "evaluations": {
+        "seed_42": {
+          "cataract": {
+            "logit": 0.9729156494140625,
+            "probability": 0.040941085666418076,
+            "result": "refer"
+          },
+          "glaucoma": {
+            "logit": -3.0379035472869873,
+            "probability": 0.012829521670937538,
+            "result": "no_concern"
+          },
+          "eye_result": "refer",
+          "any_uncertain": false
+        },
+        "seed_43": {
+          "cataract": {
+            "logit": -2.762913703918457,
+            "probability": 0.007169587071985006,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -0.14225327968597412,
+            "probability": 0.013702250085771084,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        },
+        "seed_44": {
+          "cataract": {
+            "logit": -4.528068542480469,
+            "probability": 0.0020743634086102247,
+            "result": "no_concern"
+          },
+          "glaucoma": {
+            "logit": -3.7687177658081055,
+            "probability": 0.01804017461836338,
+            "result": "no_concern"
+          },
+          "eye_result": "no_concern",
+          "any_uncertain": false
+        }
+      }
+    }
+  }
+}
