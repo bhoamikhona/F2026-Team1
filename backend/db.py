@@ -9,6 +9,11 @@ import sqlite3
 from datetime import datetime
 from pathlib import Path
 
+import psycopg
+from psycopg.rows import dict_row
+from dotenv import load_dotenv
+
+
 STORAGE = Path(os.environ.get("DUAL_STORAGE", Path(__file__).resolve().parent / "storage"))
 
 SCHEMA = """
@@ -123,3 +128,32 @@ def next_id(conn, table, prefix, width):
         f"SELECT MAX(CAST(SUBSTR(id, {len(prefix) + 1}) AS INTEGER)) FROM {table}"
     ).fetchone()
     return f"{prefix}{(row[0] or 0) + 1:0{width}d}"
+
+
+def connect_postgres():
+    """Connect to Supabase PostgreSQL."""
+
+    load_dotenv()
+
+    database_url = os.environ.get("DATABASE_URL")
+
+    if not database_url:
+        raise RuntimeError(
+            "DATABASE_URL environment variable is missing"
+        )
+
+    return psycopg.connect(
+        database_url,
+        row_factory=dict_row,
+        connect_timeout=10,
+    )
+
+
+def get_postgres_db():
+    """Provide one PostgreSQL connection per request."""
+    conn = connect_postgres()
+
+    try:
+        yield conn
+    finally:
+        conn.close()

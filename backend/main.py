@@ -8,6 +8,7 @@ The model is a MOCK until Sprint 3 (see mock_model.py). Everything else
 """
 import os
 import sqlite3
+import psycopg
 from contextlib import asynccontextmanager
 from typing import Annotated, Literal, Optional
 
@@ -17,6 +18,15 @@ from fastapi.responses import FileResponse
 
 from . import db, reports, service
 from .auth import COOKIE, SESSION_HOURS, CurrentUser, new_session, session_token, verify_password
+from .auth import (
+    COOKIE,
+    SESSION_HOURS,
+    CurrentUser,
+    PostgresCurrentUser,
+    new_postgres_session,
+    session_token,
+    verify_password,
+)
 from .schemas import (Eye, Image, LoginIn, LoginOut, ModelVersion, NextId, Patient, PatientDetail,
                       PatientIn, Screening, ScreeningIn, ScreeningSummary, User)
 from .seed import init
@@ -26,6 +36,11 @@ MAX_UPLOAD_MB = 20
 ORIGINS = os.environ.get("DUAL_CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")
 
 Db = Annotated[sqlite3.Connection, Depends(db.get_db)]
+
+PgDb = Annotated[
+    psycopg.Connection,
+    Depends(db.get_postgres_db),
+]
 
 
 @asynccontextmanager
@@ -42,26 +57,83 @@ app.add_middleware(CORSMiddleware, allow_origins=ORIGINS, allow_credentials=True
 
 # ---------- login ----------
 
+# @app.post("/auth/login", response_model=LoginOut, tags=["auth"])
+# def login(body: LoginIn, response: Response, conn: Db):
+#     row = conn.execute("SELECT * FROM users WHERE email = ?", (body.email.strip().lower(),)).fetchone()
+#     if row is None or not verify_password(body.password, row["password_hash"]):
+#         raise HTTPException(401, "Wrong email or password")
+#     token = new_session(conn, row["id"])
+#     conn.commit()
+#     response.set_cookie(COOKIE, token, httponly=True, samesite="lax", max_age=SESSION_HOURS * 3600)
+#     return {"user": {k: row[k] for k in ("id", "name", "role", "email")}, "token": token}
+
+
+# @app.post("/auth/logout", status_code=204, tags=["auth"])
+# def logout(response: Response, conn: Db, user: CurrentUser, token: Annotated[str, Depends(session_token)]):
+#     conn.execute("DELETE FROM sessions WHERE token = ?", (token,))
+#     conn.commit()
+#     response.delete_cookie(COOKIE)
+
+
+# @app.get("/auth/me", response_model=User, tags=["auth"], summary="Signed-in user (header name)")
+# def me(user: CurrentUser):
+#     return user
+
+
 @app.post("/auth/login", response_model=LoginOut, tags=["auth"])
-def login(body: LoginIn, response: Response, conn: Db):
-    row = conn.execute("SELECT * FROM users WHERE email = ?", (body.email.strip().lower(),)).fetchone()
-    if row is None or not verify_password(body.password, row["password_hash"]):
+def login(body: LoginIn, response: Response, conn: PgDb):
+    row = conn.execute(
+        "SELECT * FROM users WHERE email = %s",
+        (body.email.strip().lower(),)
+    ).fetchone()
+
+    if row is None or not verify_password(
+        body.password, row["password_hash"]
+    ):
         raise HTTPException(401, "Wrong email or password")
-    token = new_session(conn, row["id"])
+
+    token = new_postgres_session(conn, row["id"])
     conn.commit()
-    response.set_cookie(COOKIE, token, httponly=True, samesite="lax", max_age=SESSION_HOURS * 3600)
-    return {"user": {k: row[k] for k in ("id", "name", "role", "email")}, "token": token}
+
+    response.set_cookie(
+        COOKIE,
+        token,
+        httponly=True,
+        samesite="lax",
+        max_age=SESSION_HOURS * 3600,
+    )
+
+    return {
+        "user": {
+            key: row[key]
+            for key in ("id", "name", "role", "email")
+        },
+        "token": token,
+    }
 
 
 @app.post("/auth/logout", status_code=204, tags=["auth"])
-def logout(response: Response, conn: Db, user: CurrentUser, token: Annotated[str, Depends(session_token)]):
-    conn.execute("DELETE FROM sessions WHERE token = ?", (token,))
+def logout(
+    response: Response,
+    conn: PgDb,
+    user: PostgresCurrentUser,
+    token: Annotated[str, Depends(session_token)],
+):
+    conn.execute(
+        "DELETE FROM sessions WHERE token = %s",
+        (token,)
+    )
     conn.commit()
     response.delete_cookie(COOKIE)
 
 
-@app.get("/auth/me", response_model=User, tags=["auth"], summary="Signed-in user (header name)")
-def me(user: CurrentUser):
+@app.get(
+    "/auth/me",
+    response_model=User,
+    tags=["auth"],
+    summary="Signed-in user",
+)
+def me(user: PostgresCurrentUser):
     return user
 
 

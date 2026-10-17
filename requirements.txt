@@ -7,4 +7,6 @@ numpy==2.5.3
 Pillow==12.3.0
 opencv-python-headless==4.14.0.94
 fpdf2==2.8.9
+psycopg[binary]==3.2.10
+python-dotenv
 -e .

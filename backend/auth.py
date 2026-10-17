@@ -61,3 +61,68 @@ def current_user(request: Request, conn=Depends(get_db)):
 
 
 CurrentUser = Annotated[dict, Depends(current_user)]
+
+
+from .db import get_postgres_db
+
+
+def new_postgres_session(conn, user_id):
+    """Create a new PostgreSQL-backed login session."""
+    token = secrets.token_urlsafe(32)
+
+    expires = (
+        datetime.now().astimezone()
+        + timedelta(hours=SESSION_HOURS)
+    ).isoformat(timespec="seconds")
+
+    conn.execute(
+        """
+        INSERT INTO sessions (token, user_id, expires_at)
+        VALUES (%s, %s, %s)
+        """,
+        (token, user_id, expires),
+    )
+
+    return token
+
+
+def current_postgres_user(
+    request: Request,
+    conn=Depends(get_postgres_db),
+):
+    """Retrieve the authenticated user from PostgreSQL."""
+    token = session_token(request)
+
+    if not token:
+        raise HTTPException(401, "Not signed in")
+
+    row = conn.execute(
+        """
+        SELECT u.id, u.name, u.role, u.email, s.expires_at
+        FROM sessions s
+        JOIN users u ON u.id = s.user_id
+        WHERE s.token = %s
+        """,
+        (token,),
+    ).fetchone()
+
+    if row is None:
+        raise HTTPException(401, "Not signed in")
+
+    if datetime.fromisoformat(
+        row["expires_at"]
+    ) < datetime.now().astimezone():
+        raise HTTPException(401, "Session expired")
+
+    return {
+        "id": row["id"],
+        "name": row["name"],
+        "role": row["role"],
+        "email": row["email"],
+    }
+
+
+PostgresCurrentUser = Annotated[
+    dict,
+    Depends(current_postgres_user),
+]
