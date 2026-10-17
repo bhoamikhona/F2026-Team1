@@ -36,7 +36,7 @@ def validate_vectors(probabilities, labels):
 
 
 def select_threshold(probabilities, labels):
-    """Maximize 0.6 sensitivity + 0.4 specificity, then specificity and cutoff."""
+    """Meet 90% sensitivity, then maximize specificity and the cutoff."""
     p, y = validate_vectors(probabilities, labels)
     positives, negatives = int(y.sum()), int((y == 0).sum())
     thresholds = np.unique(np.r_[0.0, p, np.nextafter(p.max(), np.inf)])
@@ -45,11 +45,11 @@ def select_threshold(probabilities, labels):
         referred = p >= threshold
         tp = int(np.sum(referred & (y == 1)))
         tn = int(np.sum(~referred & (y == 0)))
-        # Exact integer ranking avoids floating-point changes to mathematical ties.
-        rank = 3 * tp * negatives + 2 * tn * positives
-        candidates.append((rank, tn, float(threshold), tp))
-    _, tn, threshold, tp = max(candidates)
-    return threshold, 0.6 * tp / positives + 0.4 * tn / negatives
+        # Integer comparison means 35/39 does not round up to 90%.
+        if 10 * tp >= 9 * positives:
+            candidates.append((tn, float(threshold)))
+    tn, threshold = max(candidates)
+    return threshold, tn / negatives
 
 
 def choose_margin(probabilities, threshold, fraction=0.05):
@@ -135,7 +135,8 @@ def main():
                            prediction_sha256=metadata["prediction_sha256"],
                            method="platt", scale=scale, offset=offset, threshold=threshold,
                            uncertain_margin=margin, uncertainty_fraction_target=0.05,
-                           weighted_objective=objective, calibration_cv=cv, cv_fold_parameters=folds,
+                           selected_specificity=objective, sensitivity_floor=0.90,
+                           calibration_cv=cv, cv_fold_parameters=folds,
                            best_cv_method=min(cv, key=lambda m: cv[m]["log_loss"]),
                            fit_log_loss=calculate_log_loss(scale*logits+offset, labels),
                            threshold_only=base, including_uncertainty=combined)
@@ -158,13 +159,13 @@ def main():
                                                for name in ("select_calibration_settings.py", "calibrate_models.py",
                                                             "check_calibration_cv.py", "calibrate_shared_models.py")},
                     policy={"calibration":"Positive-scale Platt fit per model, head and seed",
-                            "threshold":"Maximize 0.6*sensitivity + 0.4*specificity before uncertainty",
+                            "threshold":"Sensitivity >= 0.90 before uncertainty; maximize specificity",
                             "tie_break":"Higher specificity, then higher threshold",
                             "uncertainty":"abs(p-threshold) <= kth nearest distance; k=ceil(0.05*n); include ties",
                             "referral":"Uncertain OR p >= threshold",
                             "aggregation":"No seed averaging or ensemble. Separate parameters for every checkpoint/head."},
                     limitations=["Validation reused for checkpoint and setting selection; not independent test performance.",
-                                 "Policy weights and 5% target are proposed design choices, not clinical guarantees.",
+                                 "The 90% validation floor and 5% margin target are not clinical guarantees.",
                                  "Earlier single-model holdout results already exist; they were not used by this script.",
                                  "Team approval is required before freezing. Deployment must use settings for its exact checkpoint/head."], runs=runs)
     (OUTPUT / "settings_review.json").write_text(json.dumps(settings, indent=2, allow_nan=False)+"\n")

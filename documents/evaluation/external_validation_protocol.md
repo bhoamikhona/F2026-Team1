@@ -71,9 +71,10 @@ whose exact bytes have been committed. It must contain `status=frozen`,
 Verify the checkpoint SHA-256 hashes, calibration parameters, thresholds, margins,
 label hashes and inference code versions. Archive these in the run manifest.
 
-Current `results/calibration/settings_review.json` is pending review and is not
-permission to run the final external test. The old single-model settings and files
-under `results/calibration/archive/` are historical, not the final freeze.
+The approved settings are in `results/calibration/frozen_settings.json` (17 October
+2026), with shared seed 42 selected for the app. Verify the exact committed file
+and checkpoint hashes before external testing. `settings_review.json` and files
+under `results/calibration/archive/` are historical proposals, not the final freeze.
 
 No training, early stopping, recalibration, threshold selection, margin adjustment,
 dataset rebalancing or preprocessing tuning may use external outcomes. Any choice

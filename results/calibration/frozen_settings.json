@@ -1,101 +1,525 @@
 {
-  "status": "superseded_single_model_trial",
-  "frozen": false,
-  "date_frozen": "2026-10-13",
+  "status": "frozen",
+  "frozen": true,
+  "date_frozen": "2026-10-17",
+  "review_reference": "https://github.com/htmw/F2026-Team1/pull/43",
+  "approval_note": "Reviewer approved the attached 90% floor CSV; user authorized completion on 17 October 2026.",
   "fit_split": "validation",
   "sample_count": 1024,
-  "methodology": {
-    "calibration": "Platt Scaling (logistic regression) fitted on 1,024 validation images",
-    "threshold_selection": "Weighted Youden J Index (w=0.60, weighting sensitivity 1.5x over specificity for screening safety)",
-    "abstention_rule": "Border-distance margin covering 5% validation density (abs(prob - threshold) <= margin labeled Uncertain, refer)"
+  "labels_sha256": "67d7d8bbc8cb70d8fcb382c264b1e6fa73b5f0c7adc1dbcda2d3b63d044e6ce7",
+  "approved_csv_sha256": "0fe8b9507fe20f97b32dc7002c068937e1d462fa9e0f689ec112b0bfb755f7f5",
+  "freeze_script_sha256": "0b33134dbba323602bdb851222c76a3b510ef0746da2003ad3c85001527b8d10",
+  "selection_script_sha256": "97e72b09ab262d86982da9910b7d992507c14058a2504477cc5ac70079aaddc6",
+  "deployment": {
+    "model_kind": "shared",
+    "seed": 42,
+    "selection_split": "validation",
+    "checkpoint": "checkpoints/task11/shared/shared_seed_42_best.pt"
   },
-  "provenance": {
-    "labels_file": {
-      "path": "labels/eye_labels_task7.csv",
-      "sha256": "67d7d8bbc8cb70d8fcb382c264b1e6fa73b5f0c7adc1dbcda2d3b63d044e6ce7"
-    },
-    "checkpoints": {
-      "cataract_42": "8379604cfed3ccbe2c65e1997139dc94a617bd5f22062e514aa9bc6c9102c32e",
-      "cataract_43": "7806ca48ec1ab1905f88da0dca4b640e3194a075a4fcb5c11762953c9d156b63",
-      "cataract_44": "c5be475f4e8fb32e684493cd88bd92f24037b6506f90713b633237cbbeaa7a31",
-      "glaucoma_42": "28e6d6839dcd8c34cb4a3de372e22ec2bbca4081419331954c5aa74c03483259",
-      "glaucoma_43": "132a11163f4e43a131b56610cad54c12087b8cf683340f34b66625676cb90da7",
-      "glaucoma_44": "9e47544f36b8f6a6c5dc76b07dc2e5b52ae7203997dc437b75b1b444ea84c992"
-    },
-    "validation_predictions": {
-      "cataract_42": "715f8c1f722284d74a12524f4723c5f087456cd13d9b96d811add005041c5f78",
-      "cataract_43": "659d5c924489e1e350405e7510b0f74c37df3b31650cc800d630cb68139a9d67",
-      "cataract_44": "f79da60e56afae4401c35a6e05b826694bfdca2f24ca0fdd834108b44783608b",
-      "glaucoma_42": "359a28551bdf6f19d2d6557474327932f4007453b1b0a42afb3e60b0ee6e3380",
-      "glaucoma_43": "7b9774a6d8bac11051c8bfcf058d4b3098d6a2f111f9fde546b24945dad65a5f",
-      "glaucoma_44": "9d4f903aaf14a3fe27ba009aee8d7838f8f49c26d051c6790dfd6f2b8063ab5a"
-    }
+  "policy": {
+    "threshold": "Sensitivity >= 0.90 before uncertainty; fewest false positives; highest threshold breaks ties",
+    "uncertainty": "Distance band containing ceil(0.05*N) nearest scores, including ties",
+    "referral": "Uncertain OR probability >= threshold",
+    "calibration": "Use exact reviewed Platt parameters for each checkpoint and head",
+    "scope": "All 12 head/seed pairs retained for reporting; shared seed 42 selected for the app before external testing"
   },
-  "conditions": {
-    "cataract": {
-      "threshold": 0.025,
-      "uncertain_margin": 0.008,
-      "uncertain_band": [
-        0.017,
-        0.033
-      ],
-      "decision_rules": {
-        "refer": "probability >= 0.025 and abs(probability - 0.025) > 0.008",
-        "uncertain": "abs(probability - 0.025) <= 0.008",
-        "no_concern": "probability < 0.025 and abs(probability - 0.025) > 0.008"
+  "limitations": [
+    "Validation selection results are not independent test estimates.",
+    "External sensitivity is not guaranteed to reach 90%.",
+    "Earlier single-model holdout observations exist and were not used to select these settings."
+  ],
+  "runs": [
+    {
+      "model_kind": "single",
+      "disease": "cataract",
+      "seed": 42,
+      "method": "platt",
+      "checkpoint": "checkpoints/task11/cataract/cataract_seed_42_best.pt",
+      "checkpoint_sha256": "8379604cfed3ccbe2c65e1997139dc94a617bd5f22062e514aa9bc6c9102c32e",
+      "prediction_sha256": "715f8c1f722284d74a12524f4723c5f087456cd13d9b96d811add005041c5f78",
+      "scale": 1.138810175548822,
+      "offset": -4.261784530950902,
+      "threshold": 0.07342738865959281,
+      "uncertain_margin": 0.040642423714307443,
+      "threshold_only": {
+        "tp": 42,
+        "fp": 40,
+        "tn": 938,
+        "fn": 4,
+        "sensitivity": 0.9130434782608695,
+        "specificity": 0.9591002044989775,
+        "referral_count": 82,
+        "referral_rate": 0.080078125,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 82,
+        "no_concern_count": 942
       },
-      "validation_expected_performance": {
-        "sensitivity": 0.985,
-        "specificity": 0.872,
-        "referral_rate": 0.165
-      },
-      "platt_parameters": {
-        "seed_42": {
-          "scale": 1.138810175548822,
-          "offset": -4.261784530950902
-        },
-        "seed_43": {
-          "scale": 0.8795511058721477,
-          "offset": -2.500588264906972
-        },
-        "seed_44": {
-          "scale": 0.8808489376678519,
-          "offset": -2.187480111166645
-        }
+      "including_uncertainty": {
+        "tp": 44,
+        "fp": 78,
+        "tn": 900,
+        "fn": 2,
+        "sensitivity": 0.9565217391304348,
+        "specificity": 0.9202453987730062,
+        "referral_count": 122,
+        "referral_rate": 0.119140625,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 70,
+        "no_concern_count": 902
       }
     },
-    "glaucoma": {
-      "threshold": 0.03,
-      "uncertain_margin": 0.004,
-      "uncertain_band": [
-        0.026,
-        0.034
-      ],
-      "decision_rules": {
-        "refer": "probability >= 0.030 and abs(probability - 0.030) > 0.004",
-        "uncertain": "abs(probability - 0.030) <= 0.004",
-        "no_concern": "probability < 0.030 and abs(probability - 0.030) > 0.004"
+    {
+      "model_kind": "single",
+      "disease": "cataract",
+      "seed": 43,
+      "method": "platt",
+      "checkpoint": "checkpoints/task11/cataract/cataract_seed_43_best.pt",
+      "checkpoint_sha256": "7806ca48ec1ab1905f88da0dca4b640e3194a075a4fcb5c11762953c9d156b63",
+      "prediction_sha256": "659d5c924489e1e350405e7510b0f74c37df3b31650cc800d630cb68139a9d67",
+      "scale": 0.8795508831474563,
+      "offset": -2.5005876865135304,
+      "threshold": 0.0617338689203872,
+      "uncertain_margin": 0.03430546690011296,
+      "threshold_only": {
+        "tp": 42,
+        "fp": 45,
+        "tn": 933,
+        "fn": 4,
+        "sensitivity": 0.9130434782608695,
+        "specificity": 0.9539877300613497,
+        "referral_count": 87,
+        "referral_rate": 0.0849609375,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 87,
+        "no_concern_count": 937
       },
-      "validation_expected_performance": {
-        "sensitivity": 0.88,
-        "specificity": 0.784,
-        "referral_rate": 0.23
+      "including_uncertainty": {
+        "tp": 44,
+        "fp": 81,
+        "tn": 897,
+        "fn": 2,
+        "sensitivity": 0.9565217391304348,
+        "specificity": 0.9171779141104295,
+        "referral_count": 125,
+        "referral_rate": 0.1220703125,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 73,
+        "no_concern_count": 899
+      }
+    },
+    {
+      "model_kind": "single",
+      "disease": "cataract",
+      "seed": 44,
+      "method": "platt",
+      "checkpoint": "checkpoints/task11/cataract/cataract_seed_44_best.pt",
+      "checkpoint_sha256": "c5be475f4e8fb32e684493cd88bd92f24037b6506f90713b633237cbbeaa7a31",
+      "prediction_sha256": "f79da60e56afae4401c35a6e05b826694bfdca2f24ca0fdd834108b44783608b",
+      "scale": 0.8808490936535575,
+      "offset": -2.187479709848141,
+      "threshold": 0.12366315469468402,
+      "uncertain_margin": 0.0812464364863545,
+      "threshold_only": {
+        "tp": 42,
+        "fp": 40,
+        "tn": 938,
+        "fn": 4,
+        "sensitivity": 0.9130434782608695,
+        "specificity": 0.9591002044989775,
+        "referral_count": 82,
+        "referral_rate": 0.080078125,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 82,
+        "no_concern_count": 942
       },
-      "platt_parameters": {
-        "seed_42": {
-          "scale": 0.4295081033282277,
-          "offset": -3.038289456250965
-        },
-        "seed_43": {
-          "scale": 0.3965824960309998,
-          "offset": -4.219983177969305
-        },
-        "seed_44": {
-          "scale": 0.4729326880053913,
-          "offset": -2.2145992928503895
-        }
+      "including_uncertainty": {
+        "tp": 43,
+        "fp": 71,
+        "tn": 907,
+        "fn": 3,
+        "sensitivity": 0.9347826086956522,
+        "specificity": 0.9274028629856851,
+        "referral_count": 114,
+        "referral_rate": 0.111328125,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 62,
+        "no_concern_count": 910
+      }
+    },
+    {
+      "model_kind": "single",
+      "disease": "glaucoma",
+      "seed": 42,
+      "method": "platt",
+      "checkpoint": "checkpoints/task11/glaucoma/glaucoma_seed_42_best.pt",
+      "checkpoint_sha256": "28e6d6839dcd8c34cb4a3de372e22ec2bbca4081419331954c5aa74c03483259",
+      "prediction_sha256": "359a28551bdf6f19d2d6557474327932f4007453b1b0a42afb3e60b0ee6e3380",
+      "scale": 0.4295081227760487,
+      "offset": -3.038289150081515,
+      "threshold": 0.01887661902327415,
+      "uncertain_margin": 0.0011622566169944143,
+      "threshold_only": {
+        "tp": 36,
+        "fp": 368,
+        "tn": 617,
+        "fn": 3,
+        "sensitivity": 0.9230769230769231,
+        "specificity": 0.6263959390862944,
+        "referral_count": 404,
+        "referral_rate": 0.39453125,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 404,
+        "no_concern_count": 620
+      },
+      "including_uncertainty": {
+        "tp": 36,
+        "fp": 399,
+        "tn": 586,
+        "fn": 3,
+        "sensitivity": 0.9230769230769231,
+        "specificity": 0.5949238578680203,
+        "referral_count": 435,
+        "referral_rate": 0.4248046875,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 383,
+        "no_concern_count": 589
+      }
+    },
+    {
+      "model_kind": "single",
+      "disease": "glaucoma",
+      "seed": 43,
+      "method": "platt",
+      "checkpoint": "checkpoints/task11/glaucoma/glaucoma_seed_43_best.pt",
+      "checkpoint_sha256": "132a11163f4e43a131b56610cad54c12087b8cf683340f34b66625676cb90da7",
+      "prediction_sha256": "7b9774a6d8bac11051c8bfcf058d4b3098d6a2f111f9fde546b24945dad65a5f",
+      "scale": 0.39658211684533745,
+      "offset": -4.219983473406177,
+      "threshold": 0.01579841929802752,
+      "uncertain_margin": 0.0012641273172626158,
+      "threshold_only": {
+        "tp": 36,
+        "fp": 273,
+        "tn": 712,
+        "fn": 3,
+        "sensitivity": 0.9230769230769231,
+        "specificity": 0.7228426395939086,
+        "referral_count": 309,
+        "referral_rate": 0.3017578125,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 309,
+        "no_concern_count": 715
+      },
+      "including_uncertainty": {
+        "tp": 37,
+        "fp": 296,
+        "tn": 689,
+        "fn": 2,
+        "sensitivity": 0.9487179487179487,
+        "specificity": 0.6994923857868021,
+        "referral_count": 333,
+        "referral_rate": 0.3251953125,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 281,
+        "no_concern_count": 691
+      }
+    },
+    {
+      "model_kind": "single",
+      "disease": "glaucoma",
+      "seed": 44,
+      "method": "platt",
+      "checkpoint": "checkpoints/task11/glaucoma/glaucoma_seed_44_best.pt",
+      "checkpoint_sha256": "9e47544f36b8f6a6c5dc76b07dc2e5b52ae7203997dc437b75b1b444ea84c992",
+      "prediction_sha256": "9d4f903aaf14a3fe27ba009aee8d7838f8f49c26d051c6790dfd6f2b8063ab5a",
+      "scale": 0.4729327894548348,
+      "offset": -2.2145990533132562,
+      "threshold": 0.018854329948008564,
+      "uncertain_margin": 0.0024628730883046457,
+      "threshold_only": {
+        "tp": 36,
+        "fp": 295,
+        "tn": 690,
+        "fn": 3,
+        "sensitivity": 0.9230769230769231,
+        "specificity": 0.700507614213198,
+        "referral_count": 331,
+        "referral_rate": 0.3232421875,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 331,
+        "no_concern_count": 693
+      },
+      "including_uncertainty": {
+        "tp": 36,
+        "fp": 323,
+        "tn": 662,
+        "fn": 3,
+        "sensitivity": 0.9230769230769231,
+        "specificity": 0.6720812182741117,
+        "referral_count": 359,
+        "referral_rate": 0.3505859375,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 307,
+        "no_concern_count": 665
+      }
+    },
+    {
+      "model_kind": "shared",
+      "disease": "cataract",
+      "seed": 42,
+      "method": "platt",
+      "checkpoint": "checkpoints/task11/shared/shared_seed_42_best.pt",
+      "checkpoint_sha256": "9c4b9e7b4de308dd428af3f22a1eae0b5f3d857aa91464067c7e287b7dc910c7",
+      "prediction_sha256": "c391a72422939556a1263ad4baaeb5f3db49045efacf735a4d8a7f6110577943",
+      "scale": 0.963153294487912,
+      "offset": -2.9092682403195282,
+      "threshold": 0.05983278334695957,
+      "uncertain_margin": 0.04416100366427216,
+      "threshold_only": {
+        "tp": 42,
+        "fp": 48,
+        "tn": 930,
+        "fn": 4,
+        "sensitivity": 0.9130434782608695,
+        "specificity": 0.950920245398773,
+        "referral_count": 90,
+        "referral_rate": 0.087890625,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 90,
+        "no_concern_count": 934
+      },
+      "including_uncertainty": {
+        "tp": 45,
+        "fp": 84,
+        "tn": 894,
+        "fn": 1,
+        "sensitivity": 0.9782608695652174,
+        "specificity": 0.9141104294478528,
+        "referral_count": 129,
+        "referral_rate": 0.1259765625,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 77,
+        "no_concern_count": 895
+      }
+    },
+    {
+      "model_kind": "shared",
+      "disease": "cataract",
+      "seed": 43,
+      "method": "platt",
+      "checkpoint": "checkpoints/task11/shared/shared_seed_43_best.pt",
+      "checkpoint_sha256": "ab1be7650397e95f9da0236526fb84f38ee151c232a12b2cf2e58f7d19c1f83d",
+      "prediction_sha256": "64e81ef461c867cbda97e3ccd9a0b7be7a2b36e4543c73dc427ff3a9e3f9ab9c",
+      "scale": 0.7534291856932669,
+      "offset": -2.640980616557845,
+      "threshold": 0.05228055003323356,
+      "uncertain_margin": 0.028173443570392795,
+      "threshold_only": {
+        "tp": 42,
+        "fp": 41,
+        "tn": 937,
+        "fn": 4,
+        "sensitivity": 0.9130434782608695,
+        "specificity": 0.9580777096114519,
+        "referral_count": 83,
+        "referral_rate": 0.0810546875,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 83,
+        "no_concern_count": 941
+      },
+      "including_uncertainty": {
+        "tp": 42,
+        "fp": 84,
+        "tn": 894,
+        "fn": 4,
+        "sensitivity": 0.9130434782608695,
+        "specificity": 0.9141104294478528,
+        "referral_count": 126,
+        "referral_rate": 0.123046875,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 74,
+        "no_concern_count": 898
+      }
+    },
+    {
+      "model_kind": "shared",
+      "disease": "cataract",
+      "seed": 44,
+      "method": "platt",
+      "checkpoint": "checkpoints/task11/shared/shared_seed_44_best.pt",
+      "checkpoint_sha256": "809fe9d70a23e42c417b579bc7792f5d7de5dd36efe6c21bda640d8d170aeffe",
+      "prediction_sha256": "de617273971a241dbbb42e78c9ef612b097c67c84e4666536d15720a00fb5690",
+      "scale": 0.6458388374633676,
+      "offset": -2.9793588408783434,
+      "threshold": 0.1253429533477849,
+      "uncertain_margin": 0.0872570854386309,
+      "threshold_only": {
+        "tp": 42,
+        "fp": 29,
+        "tn": 949,
+        "fn": 4,
+        "sensitivity": 0.9130434782608695,
+        "specificity": 0.9703476482617587,
+        "referral_count": 71,
+        "referral_rate": 0.0693359375,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 71,
+        "no_concern_count": 953
+      },
+      "including_uncertainty": {
+        "tp": 43,
+        "fp": 64,
+        "tn": 914,
+        "fn": 3,
+        "sensitivity": 0.9347826086956522,
+        "specificity": 0.934560327198364,
+        "referral_count": 107,
+        "referral_rate": 0.1044921875,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 55,
+        "no_concern_count": 917
+      }
+    },
+    {
+      "model_kind": "shared",
+      "disease": "glaucoma",
+      "seed": 42,
+      "method": "platt",
+      "checkpoint": "checkpoints/task11/shared/shared_seed_42_best.pt",
+      "checkpoint_sha256": "9c4b9e7b4de308dd428af3f22a1eae0b5f3d857aa91464067c7e287b7dc910c7",
+      "prediction_sha256": "c391a72422939556a1263ad4baaeb5f3db49045efacf735a4d8a7f6110577943",
+      "scale": 0.462037431009386,
+      "offset": -3.698524127813093,
+      "threshold": 0.014734399926332933,
+      "uncertain_margin": 0.0012025481990117094,
+      "threshold_only": {
+        "tp": 36,
+        "fp": 313,
+        "tn": 672,
+        "fn": 3,
+        "sensitivity": 0.9230769230769231,
+        "specificity": 0.682233502538071,
+        "referral_count": 349,
+        "referral_rate": 0.3408203125,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 349,
+        "no_concern_count": 675
+      },
+      "including_uncertainty": {
+        "tp": 38,
+        "fp": 339,
+        "tn": 646,
+        "fn": 1,
+        "sensitivity": 0.9743589743589743,
+        "specificity": 0.6558375634517767,
+        "referral_count": 377,
+        "referral_rate": 0.3681640625,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 325,
+        "no_concern_count": 647
+      }
+    },
+    {
+      "model_kind": "shared",
+      "disease": "glaucoma",
+      "seed": 43,
+      "method": "platt",
+      "checkpoint": "checkpoints/task11/shared/shared_seed_43_best.pt",
+      "checkpoint_sha256": "ab1be7650397e95f9da0236526fb84f38ee151c232a12b2cf2e58f7d19c1f83d",
+      "prediction_sha256": "64e81ef461c867cbda97e3ccd9a0b7be7a2b36e4543c73dc427ff3a9e3f9ab9c",
+      "scale": 0.6669984670650342,
+      "offset": -3.882749036080196,
+      "threshold": 0.016360977083808247,
+      "uncertain_margin": 0.0016546415417054011,
+      "threshold_only": {
+        "tp": 36,
+        "fp": 269,
+        "tn": 716,
+        "fn": 3,
+        "sensitivity": 0.9230769230769231,
+        "specificity": 0.7269035532994924,
+        "referral_count": 305,
+        "referral_rate": 0.2978515625,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 305,
+        "no_concern_count": 719
+      },
+      "including_uncertainty": {
+        "tp": 36,
+        "fp": 298,
+        "tn": 687,
+        "fn": 3,
+        "sensitivity": 0.9230769230769231,
+        "specificity": 0.6974619289340102,
+        "referral_count": 334,
+        "referral_rate": 0.326171875,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 282,
+        "no_concern_count": 690
+      }
+    },
+    {
+      "model_kind": "shared",
+      "disease": "glaucoma",
+      "seed": 44,
+      "method": "platt",
+      "checkpoint": "checkpoints/task11/shared/shared_seed_44_best.pt",
+      "checkpoint_sha256": "809fe9d70a23e42c417b579bc7792f5d7de5dd36efe6c21bda640d8d170aeffe",
+      "prediction_sha256": "de617273971a241dbbb42e78c9ef612b097c67c84e4666536d15720a00fb5690",
+      "scale": 0.3392020220707645,
+      "offset": -2.878182647827327,
+      "threshold": 0.02116850761264739,
+      "uncertain_margin": 0.001803153995131597,
+      "threshold_only": {
+        "tp": 36,
+        "fp": 254,
+        "tn": 731,
+        "fn": 3,
+        "sensitivity": 0.9230769230769231,
+        "specificity": 0.7421319796954314,
+        "referral_count": 290,
+        "referral_rate": 0.283203125,
+        "uncertain_count": 0,
+        "uncertain_rate": 0.0,
+        "ordinary_referral_count": 290,
+        "no_concern_count": 734
+      },
+      "including_uncertainty": {
+        "tp": 36,
+        "fp": 282,
+        "tn": 703,
+        "fn": 3,
+        "sensitivity": 0.9230769230769231,
+        "specificity": 0.7137055837563452,
+        "referral_count": 318,
+        "referral_rate": 0.310546875,
+        "uncertain_count": 52,
+        "uncertain_rate": 0.05078125,
+        "ordinary_referral_count": 266,
+        "no_concern_count": 706
       }
     }
-  },
-  "review_note": "Historical single-model experiment. Shared-model settings are being recalculated in settings_review.json. Do not use these rounded values for deployment or further holdout evaluation."
+  ]
 }

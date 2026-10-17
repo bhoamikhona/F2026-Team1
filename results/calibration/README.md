@@ -1,7 +1,33 @@
 # Validation calibration work
 
-These are trial comparisons, not frozen deployment settings or independent
-test results. Work is on `task-12-ablation-freeze`; no merge is performed here.
+## Approved freeze: 17 October 2026
+
+The final settings are in `frozen_settings.json`, using the reviewed values in
+`approved_settings_90pct_floor.csv`. Review: https://github.com/htmw/F2026-Team1/pull/43.
+The user relayed the reviewer's approval and authorized the freeze. All twelve
+head/seed combinations were independently reproduced from validation predictions.
+
+The agreed rule replaces the earlier weighted Youden proposal: require at least
+90% sensitivity **before uncertainty**, then choose the fewest false positives
+(highest specificity). Ties prefer the highest threshold. Calculate the 5%
+distance margin around that cutoff; it includes 52/1,024 validation eyes here.
+The uncertainty band may add referrals beyond the threshold-only result.
+
+**Shared seed 42 is selected for the app**, before external testing. With uncertain
+referrals included it finds 38/39 glaucoma and 45/46 cataract validation eyes.
+All three seeds remain in the paper. These results are not a guarantee of external
+performance. This selection records the app model; connecting real inference to
+the app remains the integration task.
+
+The approved CSV coefficients are retained at full precision. Tiny optimizer
+rounding differences from earlier trial coefficients were checked for equivalence;
+the approved thresholds, margins, counts and rates reproduce exactly to the
+recorded comparison tolerances. The freeze script refuses to overwrite a frozen
+file. Do not refit after viewing holdout or test outcomes.
+
+Commit the frozen file before the 21-eye check. The resulting report is
+`final_holdout_report.json`. Old `settings_review.*` files describe the superseded
+weighted-rule proposal, not the settings used by that report.
 
 ## Reproduce the comparisons
 
@@ -78,12 +104,12 @@ within 0.0001 of checkpoint metadata. Predictions and hashes are stored under
 The second command compares uncalibrated, temperature and Platt probabilities
 using five patient-grouped folds, then fits Platt on the full validation split.
 It calculates separate settings for all twelve head/seed pairs from nine models.
-It maximizes `0.6*sensitivity + 0.4*specificity` before uncertainty. Ties prefer
-higher specificity, then a higher threshold. The uncertainty margin includes the
+It requires at least 90% sensitivity before uncertainty, then maximizes
+specificity. Ties prefer a higher threshold. The uncertainty margin includes the
 nearest `ceil(0.05*n)` probabilities to the cutoff, including boundary ties.
 For 1,024 images this means at least 52 uncertain eyes per head. Total referrals
 include both ordinary referrals and uncertain referrals. No averaging of seeds
-or rounded cutoffs is used. These policy choices require team review.
+or rounded cutoffs is used. These policy choices were approved in the review relayed on 17 October 2026.
 
 `settings_review.json` contains full precision parameters and provenance.
 `settings_review.csv` and `settings_review.md` summarize the operating points.
@@ -106,16 +132,15 @@ their outcomes to tune the new rules. The present selection scripts read validat
 only. Referral counts alone do not establish safety because reliable disease
 labels are unavailable for these low-quality eyes.
 
-## Remaining steps
+## Final holdout procedure
 
-Review the proposed policy and numerical settings, then commit the
-approved frozen settings. Only afterward run the low-quality holdout report with
+Commit the approved frozen settings. Only afterward run the low-quality holdout report with
 those fixed settings. Do not tune on holdout, internal test or external test data.
 
 The prepared command is:
 
 ```bash
-python scripts/evaluate_calibration_holdout.py --settings results/calibration/settings_review.json
+python scripts/evaluate_calibration_holdout.py --settings results/calibration/frozen_settings.json
 ```
 
 It deliberately stops while `frozen` is false. After review, record the review

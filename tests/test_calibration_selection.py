@@ -11,12 +11,12 @@ from select_calibration_settings import select_threshold, choose_margin, decisio
 from evaluate_calibration_holdout import verify_settings
 
 
-def test_sensitivity_weight_changes_operating_point():
-    # Catching the second positive costs one false positive; 1.5x weighting prefers it.
+def test_sensitivity_floor_changes_operating_point():
+    # Both positives must be found to reach 90% in this small example.
     p, y = np.array([0.9, 0.8, 0.7, 0.1]), np.array([1, 0, 1, 0])
     threshold, objective = select_threshold(p, y)
     assert threshold == 0.7
-    assert objective == pytest.approx(0.8)
+    assert objective == pytest.approx(0.5)
 
 
 def test_exhaustive_objective_matches_independent_reference():
@@ -28,7 +28,8 @@ def test_exhaustive_objective_matches_independent_reference():
         for t in np.r_[0, p, np.nextafter(max(p), np.inf)]:
             sensitivity = np.mean(p[y == 1] >= t)
             specificity = np.mean(p[y == 0] < t)
-            reference.append(0.6*sensitivity + 0.4*specificity)
+            if sensitivity >= 0.90:
+                reference.append(specificity)
         assert score == pytest.approx(max(reference))
         assert threshold in np.r_[0, p, np.nextafter(max(p), np.inf)]
 
@@ -72,3 +73,10 @@ def test_holdout_requires_review_reference(tmp_path):
     path.write_text('{"status":"frozen","frozen":true}')
     with pytest.raises(ValueError, match="review reference"):
         verify_settings(path)
+
+
+def test_35_of_39_does_not_meet_floor():
+    p = np.linspace(0.01, 0.99, 40)
+    y = np.r_[np.ones(39), 0]
+    threshold, _ = select_threshold(p, y)
+    assert int(np.sum((p >= threshold) & (y == 1))) == 36
