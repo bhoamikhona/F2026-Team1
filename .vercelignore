@@ -1,0 +1,9 @@
+data/
+labels/
+notebooks/
+results/
+scripts/
+tests/
+documents/
+frontend/
+requirements-training.txt
