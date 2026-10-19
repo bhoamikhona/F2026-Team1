@@ -1,6 +1,7 @@
 .summary-strip {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--space-4);
 
   background-color: var(--bg-subtle);
@@ -9,25 +10,20 @@
   padding: var(--space-3) var(--space-4);
 }
 
-.summary-strip__item {
-  min-width: 0;
+.summary-strip__aside {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
 }
 
-.summary-strip__label {
-  color: var(--text-secondary);
-  margin-bottom: var(--space-1);
-}
-
-.summary-strip__file {
-  overflow-wrap: anywhere;
-}
-
-.summary-strip__file--empty {
+.summary-strip__aside-label {
   color: var(--text-secondary);
 }
 
 @media (max-width: 36em) {
   .summary-strip {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

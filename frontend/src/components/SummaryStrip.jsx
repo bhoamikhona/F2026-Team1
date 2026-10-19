@@ -1,29 +1,22 @@
+import MetaList from "./MetaList.jsx";
 import "../styles/summary-strip.css";
 
-function SummaryStrip({ patient, eye, fileName }) {
+function SummaryStrip({ items, asideLabel, children }) {
   return (
-    <dl className="summary-strip">
-      <div className="summary-strip__item">
-        <dt className="summary-strip__label label-mono">Patient</dt>
-        <dd className="body-semibold">{patient || "—"}</dd>
-      </div>
+    <div className="summary-strip">
+      <MetaList items={items} />
 
-      <div className="summary-strip__item">
-        <dt className="summary-strip__label label-mono">Eye</dt>
-        <dd className="body-semibold">{eye || "—"}</dd>
-      </div>
-
-      <div className="summary-strip__item">
-        <dt className="summary-strip__label label-mono">File name</dt>
-        <dd
-          className={`summary-strip__file mono-meta${
-            fileName ? "" : " summary-strip__file--empty"
-          }`}
-        >
-          {fileName || "No file selected"}
-        </dd>
-      </div>
-    </dl>
+      {children && (
+        <div className="summary-strip__aside">
+          {asideLabel && (
+            <span className="summary-strip__aside-label label-mono">
+              {asideLabel}
+            </span>
+          )}
+          {children}
+        </div>
+      )}
+    </div>
   );
 }
 

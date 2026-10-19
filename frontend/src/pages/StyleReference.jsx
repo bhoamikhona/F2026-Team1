@@ -8,6 +8,8 @@ import {
   HelpCircle,
   AlertTriangle,
   CheckCircle2,
+  ShieldCheck,
+  ArrowLeft,
 } from "lucide-react";
 import Button from "../components/Button.jsx";
 import Chip from "../components/Chip.jsx";
@@ -28,6 +30,14 @@ import MetaList from "../components/MetaList.jsx";
 import Table from "../components/Table";
 import { SCREENING_COLUMNS } from "../data/screeningColumns.js";
 import { SCREENINGS } from "../data/screenings.js";
+import RiskRing from "../components/RiskRing.jsx";
+import SegmentedControl from "../components/SegmentedControl.jsx";
+import HeatmapPanel from "../components/results/HeatmapPanel.jsx";
+import cataractHeatmap from "../assets/images/cataractHeatmap.png";
+import glaucomaHeatmap from "../assets/images/glaucomaHeatmap.png";
+import eyePhoto from "../assets/images/eye.png";
+import RiskSummary from "../components/results/RiskSummary.jsx";
+import Banner from "../components/Banner.jsx";
 
 function StyleReference() {
   const [patientId, setPatientId] = useState("");
@@ -38,6 +48,8 @@ function StyleReference() {
   const [formPatient, setFormPatient] = useState("");
   const [formEye, setFormEye] = useState("OD");
   const [formFile, setFormFile] = useState(null);
+
+  const [condition, setCondition] = useState("glaucoma");
 
   return (
     <main className="style-main">
@@ -83,6 +95,10 @@ function StyleReference() {
         Full width
       </Button>
 
+      <Button variant="secondary" icon={ArrowLeft} to="/upload">
+        New screening
+      </Button>
+
       <Chip mono>Demo data</Chip>
       <Chip mono>JPG OR PNG</Chip>
       <Chip tone="success" icon={Check} mono>
@@ -102,6 +118,12 @@ function StyleReference() {
         DUAL flags eyes that may need a specialist review for cataract or
         glaucoma. It does not diagnose. Every Refer or Uncertain result needs a
         full eye examination.
+      </InfoNote>
+
+      <InfoNote icon={ShieldCheck} title="Triage, not diagnosis">
+        This screening tool assists qualified practitioners in prioritizing
+        clinical evaluations. It does not provide definitive diagnostic
+        findings.
       </InfoNote>
 
       <Card title="Fundus preview" aside="Awaiting capture">
@@ -128,15 +150,41 @@ function StyleReference() {
       </div>
 
       <div style={{ width: "60rem" }}>
-        <SummaryStrip />
+        <SummaryStrip
+          items={[
+            { label: "Patient", value: "—" },
+            { label: "Eye", value: "—" },
+            { label: "File name", value: "No file selected", mono: true },
+          ]}
+        />
       </div>
 
       <div style={{ width: "60rem" }}>
         <SummaryStrip
-          patient="P-001, Maria Lopez, 67"
-          eye="Right eye (OD)"
-          fileName="maria_lopez_right_fundus.jpg"
+          items={[
+            { label: "Patient", value: "P-001, Maria Lopez, 67" },
+            { label: "Eye", value: "Right eye (OD)" },
+            {
+              label: "File name",
+              value: "maria_lopez_right_fundus.jpg",
+              mono: true,
+            },
+          ]}
         />
+      </div>
+
+      <div style={{ width: "128rem" }}>
+        <SummaryStrip
+          items={[
+            { label: "Patient", value: "Maria Lopez, P-001" },
+            { label: "Eye", value: "Right eye, OD" },
+            { label: "Date", value: "Oct 9, 2026" },
+            { label: "Screening ID", value: "SCR-0008", mono: true },
+          ]}
+          asideLabel="Overall result:"
+        >
+          <ResultChip result="refer" />
+        </SummaryStrip>
       </div>
 
       <PageHeader eyebrow="Clinical triage intake" title="New screening" />
@@ -215,6 +263,15 @@ function StyleReference() {
         <BackLink to="/history">Back to History</BackLink>
       </div>
 
+      <div style={{ display: "flex", alignItems: "center", gap: "1.6rem" }}>
+        <Button variant="secondary" icon={ArrowLeft} to="/upload">
+          New screening
+        </Button>
+        <BackLink to="/history" arrow={false}>
+          or back to History
+        </BackLink>
+      </div>
+
       <div>
         <ConditionCard condition="Cataract" result="no_concern">
           <p className="body-rg">Risk score 0.14 (14%)</p>
@@ -235,7 +292,7 @@ function StyleReference() {
             { label: "Patient", value: "Maria Lopez, P-001" },
             { label: "Eye", value: "Right eye, OD" },
             { label: "Date", value: "Sep 22, 2026" },
-            { label: "Screening ID", value: "#SCR-2026-8841" },
+            { label: "Screening ID", value: "#SCR-2026-8841", mono: true },
           ]}
         />
       </div>
@@ -245,8 +302,68 @@ function StyleReference() {
           label="Past screenings"
           columns={SCREENING_COLUMNS}
           rows={SCREENINGS}
-          rowHref={(row) => `/history/${row.id}`}
+          rowHref={(row) => `/results/${row.id}`}
         />
+      </div>
+
+      <div style={{ display: "flex", gap: "2.4rem" }}>
+        <RiskRing value={0.14} result="no_concern" />
+        <RiskRing value={0.78} result="refer" />
+        <RiskRing value={0.5} result="uncertain" />
+        <RiskRing value={0} result="no_concern" />
+        <RiskRing value={1} result="refer" />
+      </div>
+
+      <div>
+        <SegmentedControl
+          label="Heatmap condition"
+          options={[
+            { value: "cataract", label: "Cataract" },
+            { value: "glaucoma", label: "Glaucoma" },
+          ]}
+          value={condition}
+          onChange={setCondition}
+        />
+      </div>
+
+      <div style={{ width: "70rem" }}>
+        <HeatmapPanel
+          photoUrl={eyePhoto}
+          conditions={[
+            { condition: "cataract", heatmap_url: null },
+            { condition: "glaucoma", heatmap_url: null },
+          ]}
+        />
+
+        <HeatmapPanel
+          photoUrl={eyePhoto}
+          conditions={[
+            { condition: "cataract", heatmap_url: cataractHeatmap },
+            { condition: "glaucoma", heatmap_url: glaucomaHeatmap },
+          ]}
+        />
+      </div>
+
+      <div>
+        <ConditionCard condition="Cataract" result="no_concern">
+          <RiskSummary
+            score={0.14}
+            threshold={0.35}
+            result="no_concern"
+            isExample
+          />
+        </ConditionCard>
+        <ConditionCard condition="Glaucoma" result="refer">
+          <RiskSummary score={0.78} threshold={0.5} result="refer" isExample />
+        </ConditionCard>
+      </div>
+
+      <div>
+        <Banner title="Triage, not diagnosis">
+          This screening tool assists qualified practitioners in prioritizing
+          clinical evaluations. It does not provide definitive diagnostic
+          findings.
+        </Banner>
       </div>
     </main>
   );
