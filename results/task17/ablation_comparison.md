@@ -90,27 +90,29 @@ Input hashes and settings: [analysis manifest](paired_analysis_manifest.json).
 
 ## Conclusion
 
-The shared model had a slightly higher average AUROC for both
-diseases on the internal test. For external glaucoma testing,
-it did better on ACRIMA and retina_dataset_2016, but worse on
-ORIGA and DRISHTI-GS. So, sharing one backbone did not improve
-the results on every dataset.
-
-Both models had lower glaucoma AUROC on the external datasets
-than on the internal test. ACRIMA was especially difficult.
-Even though the shared model did better there, its average
-AUROC was only 0.5551, which is close to chance.
-
-These results do not show one model as the clear winner.
-We compared three seeds, but we have not tested whether the
-differences are statistically significant.
+Sharing one backbone did not give a consistent improvement across the tests.
+Internally, the shared model had higher AUROC for both diseases in all three
+seeds, but five of the six paired intervals include zero; only cataract seed 42
+has an interval entirely above zero. Externally, shared glaucoma AUROC was
+lower on ORIGA in all seeds, although all three intervals include zero.
+On ACRIMA, shared AUROC was higher in all seeds and all three intervals exclude
+zero, but its mean AUROC was still only 0.5551, compared with 0.4078 for the
+single model. On DRISHTI-GS and retina_dataset_2016, the direction changed
+across seeds and all intervals include zero. The results therefore show a
+clearer advantage on ACRIMA for these fitted models, but not a general advantage
+from sharing the backbone. These individual intervals are not adjusted for
+multiple comparisons, and intervals containing zero do not prove equivalence.
 
 ## Evaluation notes
 
 - We used the saved test results without retraining the models.
 - We kept the calibration and thresholds fixed.
 - The standard deviation shows how much results varied across seeds.
-- Internal confidence intervals were calculated by resampling patients.
-  External intervals used images because patient IDs were unavailable.
+- Paired internal confidence intervals resample patients and retain both eyes.
+  Paired external intervals resample images because patient IDs were unavailable.
+  Possible dependence between fellow eyes may make external intervals too narrow.
+- Both models use identical resamples within each comparison. The analysis
+  reproduced the original individual-model AUROCs and intervals before saving
+  paired results. Calibration and thresholds were not refitted.
 - The datasets contain different images and patient groups.
   We cannot tell from these results alone why performance changed.
