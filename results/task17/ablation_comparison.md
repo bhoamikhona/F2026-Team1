@@ -42,6 +42,27 @@ There is no consistent improvement across all external datasets.
 
 Source: [External test results](../external/frozen_run_20261030/external_results.md).
 
+## Internal versus external glaucoma AUROC
+
+Values are means across the three seeds. Drop is internal minus external
+AUROC, calculated from the displayed means. These comparisons describe
+different test populations, not paired observations across datasets.
+
+| Dataset | Model | Internal AUROC | External AUROC | Drop |
+|---|---|---:|---:|---:|
+| ORIGA | single | 0.9241 | 0.7687 | 0.1554 |
+| ORIGA | shared | 0.9309 | 0.7487 | 0.1822 |
+| DRISHTI-GS | single | 0.9241 | 0.8846 | 0.0395 |
+| DRISHTI-GS | shared | 0.9309 | 0.8820 | 0.0489 |
+| ACRIMA | single | 0.9241 | 0.4078 | 0.5163 |
+| ACRIMA | shared | 0.9309 | 0.5551 | 0.3758 |
+| retina_dataset_2016 | single | 0.9241 | 0.7411 | 0.1830 |
+| retina_dataset_2016 | shared | 0.9309 | 0.7521 | 0.1788 |
+
+Both model types have lower mean glaucoma AUROC on every external dataset
+than on ODIR. The largest drop is on ACRIMA. This does not identify the
+cause of the change.
+
 ## Paired differences
 
 Each value is shared minus single AUROC for the same training seed.
