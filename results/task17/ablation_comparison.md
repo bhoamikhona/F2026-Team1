@@ -42,6 +42,31 @@ There is no consistent improvement across all external datasets.
 
 Source: [External test results](../external/frozen_run_20261030/external_results.md).
 
+## Paired differences
+
+Each value is shared minus single AUROC for the same training seed.
+Both models use the same 2,000 bootstrap samples (random seed 42).
+The 95% intervals are the 2.5th and 97.5th percentiles of the paired
+differences, not differences between separate interval endpoints.
+
+| Test | Seed 42 [95% CI] | Seed 43 [95% CI] | Seed 44 [95% CI] | Mean ± SD |
+|---|---:|---:|---:|---:|
+| ODIR internal, cataract | +0.0078 [+0.0017, +0.0149] | +0.0011 [-0.0025, +0.0056] | +0.0026 [-0.0014, +0.0073] | +0.0038 ± 0.0035 |
+| ODIR internal, glaucoma | +0.0041 [-0.0366, +0.0453] | +0.0005 [-0.0341, +0.0302] | +0.0159 [-0.0413, +0.0805] | +0.0068 ± 0.0081 |
+| ORIGA, glaucoma | -0.0131 [-0.0517, +0.0252] | -0.0341 [-0.0700, +0.0013] | -0.0129 [-0.0466, +0.0187] | -0.0200 ± 0.0122 |
+| DRISHTI-GS, glaucoma | +0.0028 [-0.0579, +0.0667] | -0.0161 [-0.0576, +0.0255] | +0.0055 [-0.0617, +0.0709] | -0.0026 ± 0.0118 |
+| ACRIMA, glaucoma | +0.1954 [+0.1553, +0.2363] | +0.1370 [+0.0946, +0.1787] | +0.1094 [+0.0775, +0.1412] | +0.1473 ± 0.0439 |
+| retina_dataset_2016, glaucoma | -0.0117 [-0.0703, +0.0503] | +0.0201 [-0.0246, +0.0661] | +0.0247 [-0.0342, +0.0827] | +0.0110 ± 0.0198 |
+
+Intervals describe test-sample uncertainty for each fitted model pair; SD describes
+variation in the point differences across training seeds. An interval containing
+zero is not evidence that the models are equivalent. These are individual 95%
+intervals without adjustment for multiple comparisons.
+
+Source: [Paired AUROC differences](paired_auroc_differences.csv).
+Reproduce with `python scripts/compute_task17_paired_differences.py`.
+Input hashes and settings: [analysis manifest](paired_analysis_manifest.json).
+
 ## Conclusion
 
 The shared model had a slightly higher average AUROC for both
