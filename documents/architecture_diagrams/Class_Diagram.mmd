@@ -36,12 +36,6 @@ classDiagram
     +len(dataset)
     +dataset[index] image, labels
   }
-  class ExternalTestLoading {
-    <<planned>>
-    +labels_csv labels/external/*.csv
-    +path column per image
-    +glaucoma-only labels, cataract in retina only
-  }
   class train_dual {
     <<built script, first version>>
     +calculate_positive_weights(labels_csv)
@@ -75,14 +69,59 @@ classDiagram
     +choose_margin(probabilities, threshold) uncertain band
     +decision_metrics() refer, uncertain, no concern
   }
-  class GradCAM {
-    <<planned>>
-    +heatmap(model, image, head)
-    +disc_overlap(heatmap, mask)
+  class evaluate_internal_test {
+    <<built script>>
+    +run_preflight() frozen settings and paths
+    +load_models(kind, seed) shared or single-disease
+    +calibrate_and_decide() refer, uncertain, no concern
+    +run_internal_test() prediction CSVs
   }
-  class Evaluator {
-    <<planned>>
-    +evaluate(model, dataset) metrics
+  class compute_internal_auc_ci {
+    <<built script>>
+    +bootstrap_patient_indices() patient-clustered
+    +compute_results() AUROC with 95% CI
+  }
+  class evaluate_external {
+    <<built script>>
+    +read_dataset() labels/external/*.csv
+    +preflight()
+    +infer()
+    +evaluate()
+    +write_report()
+  }
+  class external_metrics {
+    <<built>>
+    +calculate_metrics()
+    +bootstrap_indices()
+    +add_intervals() 95% CI
+  }
+  class compute_task17_paired_differences {
+    <<built script>>
+    +paired_result() shared minus single-disease AUROC
+  }
+  class GlaucomaGradCAM {
+    <<built>>
+    +generate(image_tensor) heatmap
+    +close()
+  }
+  class CataractGradCAM {
+    <<built>>
+    +generate(image_tensor) heatmap
+    +close()
+  }
+  class evaluate_glaucoma_optic_disc_hits {
+    <<built script>>
+    +evaluate_origa() disc mask
+    +evaluate_drishti() softmap
+  }
+  class evaluate_synthetic_blur {
+    <<built script>>
+    +select_validation_images()
+    +run_synthetic_blur_experiment()
+  }
+  class evaluate_media_opacity_holdout {
+    <<built script>>
+    +build_media_opacity_predictions() 63 held-out eyes
   }
   class mock_model {
     <<mock>>
@@ -93,6 +132,8 @@ classDiagram
   class ScreeningAPI {
     <<built>>
     +main.py endpoints
+    +auth.py sign-in and sessions
+    +reports.py PDF exports
     +service.py upload, screen, history, Supabase Storage
     +results.py per condition and overall result
     +db.py PostgreSQL tables on Supabase
@@ -112,14 +153,30 @@ classDiagram
   Calibrator ..> DualNet : uses scores
   Calibrator ..> GlaucomaNet : uses scores
   Calibrator ..> CataractOnlyNet : uses scores
-  GradCAM ..> DualNet : hooks layers
-  Evaluator --> DualNet
-  Evaluator --> Calibrator
-  Evaluator --> FundusDataset
-  Evaluator --> ExternalTestLoading
-  ExternalTestLoading ..> FundusDataset : extends
+  evaluate_internal_test --> DualNet
+  evaluate_internal_test --> GlaucomaNet
+  evaluate_internal_test --> CataractOnlyNet
+  evaluate_internal_test --> FundusDataset
+  evaluate_internal_test ..> Calibrator : frozen settings
+  compute_internal_auc_ci ..> evaluate_internal_test : reads predictions
+  evaluate_external --> DualNet
+  evaluate_external --> GlaucomaNet
+  evaluate_external --> CataractOnlyNet
+  evaluate_external ..> Calibrator : frozen settings
+  evaluate_external --> external_metrics
+  compute_task17_paired_differences ..> compute_internal_auc_ci : internal predictions
+  compute_task17_paired_differences ..> evaluate_external : external predictions
+  GlaucomaGradCAM ..> DualNet : hooks layers, seed 42
+  CataractGradCAM ..> DualNet : hooks layers, seed 42
+  evaluate_glaucoma_optic_disc_hits ..> GlaucomaGradCAM : reads heatmaps
+  evaluate_synthetic_blur --> DualNet
+  evaluate_synthetic_blur ..> Calibrator : frozen settings
+  evaluate_media_opacity_holdout --> DualNet
+  evaluate_media_opacity_holdout --> FundusDataset
+  evaluate_media_opacity_holdout ..> Calibrator : frozen settings
   ScreeningAPI --> quality_check
   ScreeningAPI ..> preprocess_images : crop_fundus
   ScreeningAPI --> mock_model : until the real model (Sprint 3)
   mock_model ..> Calibrator : replaced by
-  mock_model ..> GradCAM : replaced by
+  mock_model ..> GlaucomaGradCAM : replaced by
+  mock_model ..> CataractGradCAM : replaced by
