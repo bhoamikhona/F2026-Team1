@@ -1,36 +1,28 @@
 import { useParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
-import BackLink from "../components/BackLink.jsx";
+import { ArrowLeft, ChevronRight } from "lucide-react";
 import Banner from "../components/Banner.jsx";
 import Button from "../components/Button.jsx";
 import ConditionCard from "../components/ConditionCard.jsx";
 import InfoNote from "../components/InfoNote.jsx";
 import ResultChip from "../components/ResultChip.jsx";
 import SummaryStrip from "../components/SummaryStrip.jsx";
+import TextLink from "../components/TextLink.jsx";
 import HeatmapPanel from "../components/results/HeatmapPanel.jsx";
 import RiskSummary from "../components/results/RiskSummary.jsx";
 import { useScreening } from "../hooks/useScreening.js";
 import { assetUrl } from "../services/api.js";
 import "../styles/results/results.css";
+import { EYE_LABELS, CONDITION_LABELS } from "../data/labels.js";
+import { formatDate } from "../utils/format.js";
 
-const EYE_LABELS = { right: "Right eye, OD", left: "Left eye, OS" };
-const CONDITION_LABELS = { cataract: "Cataract", glaucoma: "Glaucoma" };
 const UNCERTAIN_MESSAGE =
   "Low image quality or the model is uncertain. Please refer for a full eye examination.";
-
-function formatDate(iso) {
-  return new Date(iso).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
 
 function ResultsMessage({ children }) {
   return (
     <main className="main results">
       <div className="results__back">
-        <BackLink to="/history">Back to History</BackLink>
+        <TextLink to="/history">Back to History</TextLink>
       </div>
       <p className="body-md">{children}</p>
     </main>
@@ -75,9 +67,7 @@ function Results() {
         <Button variant="secondary" icon={ArrowLeft} to="/upload">
           New screening
         </Button>
-        <BackLink to="/history" arrow={false}>
-          or back to History
-        </BackLink>
+        <TextLink to="/history">or back to History</TextLink>
       </div>
 
       <Banner title="Triage, not diagnosis">
@@ -89,7 +79,14 @@ function Results() {
       <SummaryStrip
         variant="panel"
         items={[
-          { label: "Patient", value: `${patient.full_name}, ${patient.id}` },
+          {
+            label: "Patient",
+            value: (
+              <TextLink to={`/patients/${patient.id.toLowerCase()}`} accent>
+                {patient.full_name}, {patient.id}
+              </TextLink>
+            ),
+          },
           { label: "Eye", value: EYE_LABELS[eye] },
           { label: "Date", value: formatDate(screening.created_at) },
           { label: "Screening ID", value: screening.id, tag: true },
@@ -97,6 +94,13 @@ function Results() {
         asideLabel="Overall result:"
       >
         <ResultChip result={screening.overall_result} />
+        <TextLink
+          to={`/results/${screening.id}/record`}
+          trailingIcon={ChevronRight}
+          strong
+        >
+          View full record
+        </TextLink>
       </SummaryStrip>
 
       <div className="results__layout">
