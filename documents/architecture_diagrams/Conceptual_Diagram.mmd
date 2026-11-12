@@ -21,10 +21,10 @@ flowchart LR
   SH --> CAL["Step 3: Calibration, uncertainty<br/>cutoff, thresholds<br/>Platt, per model, head and seed<br/>90% sensitivity floor<br/>fit on validation only, frozen"]
   GO --> CAL
   CO --> CAL
-  CAL --> EVAL["Step 4: Evaluation, read once after freeze<br/>internal test + external sets<br/>haze check: 63 media-opacity eyes<br/>uncertain check: 21 low-quality eyes"]
-  BB --> GC["Grad-CAM disc check<br/>ORIGA + DRISHTI-GS"]
+  CAL --> EVAL["Step 4: Evaluation, read once after freeze<br/>internal test + external sets<br/>haze check: 63 media-opacity eyes<br/>uncertain check: 21 low-quality eyes<br/>shared vs single-disease models:<br/>paired AUROC differences"]
+  CAL -- "frozen shared model,<br/>seed 42" --> GC["Safety checks<br/>glaucoma Grad-CAM: optic disc hits,<br/>ORIGA + DRISHTI-GS<br/>cataract Grad-CAM: internal test examples<br/>synthetic blur: validation photos"]
   subgraph APP["Step 5: Screening app"]
     UI["React web app<br/>Vite, hosted on Vercel"] <--> API["FastAPI<br/>hosted on Render"]
     API <--> DB[("Supabase<br/>PostgreSQL + Storage")]
   end
-  CAL -- "frozen shared model, seed 42<br/>(mock model in Sprint 1)" --> API
+  CAL -- "frozen shared model, seed 42<br/>(app uses a mock model<br/>in Sprints 1 and 2)" --> API

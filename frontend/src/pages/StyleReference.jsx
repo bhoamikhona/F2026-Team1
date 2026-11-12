@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   ShieldCheck,
   ArrowLeft,
+  Plus,
 } from "lucide-react";
 import Button from "../components/Button.jsx";
 import Chip from "../components/Chip.jsx";
@@ -24,7 +25,6 @@ import RadioCardGroup from "../components/RadioCardGroup.jsx";
 import FundusPreview from "../components/upload/FundusPreview.jsx";
 import ScreeningForm from "../components/upload/ScreeningForm.jsx";
 import ResultChip from "../components/ResultChip.jsx";
-import BackLink from "../components/BackLink.jsx";
 import ConditionCard from "../components/ConditionCard.jsx";
 import MetaList from "../components/MetaList.jsx";
 import Table from "../components/Table";
@@ -38,6 +38,13 @@ import glaucomaHeatmap from "../assets/images/glaucomaHeatmap.png";
 import eyePhoto from "../assets/images/eye.png";
 import RiskSummary from "../components/results/RiskSummary.jsx";
 import Banner from "../components/Banner.jsx";
+import TextLink from "../components/TextLink.jsx";
+import Meter from "../components/Meter.jsx";
+import HeatmapTile from "../components/record/HeatmapTile.jsx";
+import ConditionDetail from "../components/record/ConditionDetail.jsx";
+import TriageTile from "../components/patient/TriageTile.jsx";
+import EyeSummaryCard from "../components/patient/EyeSummaryCard.jsx";
+import PatientHeader from "../components/patient/PatientHeader.jsx";
 
 function StyleReference() {
   const [patientId, setPatientId] = useState("");
@@ -260,19 +267,6 @@ function StyleReference() {
       </div>
 
       <div>
-        <BackLink to="/history">Back to History</BackLink>
-      </div>
-
-      <div style={{ display: "flex", alignItems: "center", gap: "1.6rem" }}>
-        <Button variant="secondary" icon={ArrowLeft} to="/upload">
-          New screening
-        </Button>
-        <BackLink to="/history" arrow={false}>
-          or back to History
-        </BackLink>
-      </div>
-
-      <div>
         <ConditionCard condition="Cataract" result="no_concern">
           <p className="body-rg">Risk score 0.14 (14%)</p>
         </ConditionCard>
@@ -364,6 +358,156 @@ function StyleReference() {
           clinical evaluations. It does not provide definitive diagnostic
           findings.
         </Banner>
+      </div>
+
+      <div>
+        <TextLink to="/history" leadingArrow>
+          Back to History
+        </TextLink>
+        <TextLink to="/history">or back to History</TextLink>
+      </div>
+
+      <div>
+        <h1>Meter Component</h1>
+        <Meter value={0.14} result="no_concern" label="Calibrated risk" />
+        <Meter value={0.78} result="refer" label="Calibrated risk" />
+        <Meter value={0.5} result="uncertain" label="Calibrated risk" />
+        <Meter
+          value={0.14}
+          marker={0.35}
+          result="no_concern"
+          label="Calibrated risk against threshold"
+        />
+        <Meter
+          value={0.78}
+          marker={0.5}
+          result="refer"
+          label="Calibrated risk against threshold"
+        />
+      </div>
+
+      <div>
+        <HeatmapTile
+          title="Cataract heatmap"
+          description="Low influence intensity"
+          result="no_concern"
+          resultLabel="No concern"
+          imageUrl={cataractHeatmap}
+        />
+        <HeatmapTile
+          title="Glaucoma heatmap"
+          description="Elevated influence pattern"
+          result="refer"
+          resultLabel="Refer"
+          imageUrl={glaucomaHeatmap}
+        />
+        <HeatmapTile
+          title="Cataract heatmap"
+          description="Influence unclear"
+          result="uncertain"
+          resultLabel="Uncertain, refer"
+          imageUrl={eyePhoto}
+        />
+      </div>
+
+      <div>
+        <ConditionCard
+          condition="Cataract"
+          eyebrow="Condition"
+          result="no_concern"
+        >
+          <ConditionDetail
+            isExample
+            item={{
+              calibrated_score: 0.14,
+              raw_score: 0.12,
+              threshold: 0.35,
+              result: "no_concern",
+              flag_reason:
+                "Calibrated risk 0.14 is below the referral threshold 0.35.",
+            }}
+          />
+        </ConditionCard>
+        <ConditionCard condition="Glaucoma" eyebrow="Condition" result="refer">
+          <ConditionDetail
+            isExample
+            item={{
+              calibrated_score: 0.78,
+              raw_score: 0.81,
+              threshold: 0.5,
+              result: "refer",
+              flag_reason:
+                "Calibrated risk 0.78 is at or above the referral threshold 0.50.",
+            }}
+          />
+        </ConditionCard>
+        <ConditionCard
+          condition="Cataract"
+          eyebrow="Condition"
+          result="uncertain"
+        >
+          <ConditionDetail
+            item={{
+              calibrated_score: 0.5,
+              raw_score: 0.5,
+              threshold: 0.35,
+              result: "uncertain",
+              flag_reason:
+                "Low image quality or the model is uncertain. Please refer for a full eye examination.",
+            }}
+          />
+        </ConditionCard>
+      </div>
+      <div>
+        <TriageTile label="Cataract triage" score={0.14} result="no_concern" />
+        <TriageTile label="Glaucoma triage" score={0.78} result="refer" />
+        <TriageTile label="Cataract triage" score={0.5} result="uncertain" />
+        <TriageTile label="Glaucoma triage" />
+      </div>
+      <div>
+        <EyeSummaryCard
+          eye="right"
+          screening={{
+            id: "SCR-0841",
+            created_at: "2026-09-22T18:15:00Z",
+            overall_result: "refer",
+            conditions: [
+              {
+                condition: "cataract",
+                calibrated_score: 0.14,
+                result: "no_concern",
+              },
+              {
+                condition: "glaucoma",
+                calibrated_score: 0.78,
+                result: "refer",
+              },
+            ],
+          }}
+        />
+        <EyeSummaryCard eye="left" screening={null} />
+      </div>
+      <div>
+        <PatientHeader
+          patient={{
+            id: "P-001",
+            full_name: "Maria Lopez",
+            age: 67,
+            sex: "female",
+          }}
+          lastEncounter="Sep 22, 2026"
+          protocolComplete
+          actions={
+            <>
+              <Button variant="secondary" icon={Download}>
+                Export Dossier
+              </Button>
+              <Button icon={Plus} to="/upload">
+                New screening
+              </Button>
+            </>
+          }
+        />
       </div>
     </main>
   );
