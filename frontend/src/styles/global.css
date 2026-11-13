@@ -286,6 +286,18 @@ body {
   text-transform: uppercase;
 }
 
+@media (min-width: 90em) {
+  html {
+    font-size: 68.75%;
+  }
+}
+
+@media (min-width: 112.5em) {
+  html {
+    font-size: 75%;
+  }
+}
+
 @media (max-width: 50em) {
   .main {
     padding: var(--space-12) var(--space-6);

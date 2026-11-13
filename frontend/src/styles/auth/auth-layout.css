@@ -88,6 +88,33 @@
   gap: var(--space-4);
 }
 
+.auth-demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.auth-demo__divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.auth-demo__divider::before,
+.auth-demo__divider::after {
+  content: "";
+  flex: 1;
+  height: 0.1rem;
+  background-color: var(--border-default);
+}
+
+.auth-demo__note {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
 @media (max-width: 40em) {
   .auth__body {
     padding: var(--space-2);

@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { LogIn, Mail, Lock } from "lucide-react";
+import { LogIn, Mail, Lock, UserRound } from "lucide-react";
 import Alert from "../components/Alert.jsx";
 import AuthLayout from "../components/auth/AuthLayout.jsx";
 import Button from "../components/Button.jsx";
 import Input from "../components/Input.jsx";
 import useAuth from "../hooks/useAuth.js";
+
+const DEMO_EMAIL = import.meta.env.VITE_DEV_EMAIL;
+const DEMO_PASSWORD = import.meta.env.VITE_DEV_PASSWORD;
 
 function validate({ email, password }) {
   const errors = {};
@@ -33,20 +36,29 @@ function Login() {
     setValues((prev) => ({ ...prev, [name]: value }));
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setSubmitted(true);
+  async function signIn(email, password) {
     setSubmitError(null);
-
-    if (Object.keys(validate(values)).length > 0) return;
-
     setIsSubmitting(true);
     try {
-      await login(values.email.trim(), values.password);
+      await login(email, password);
     } catch (err) {
       setSubmitError(err.message);
       setIsSubmitting(false);
     }
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    setSubmitted(true);
+
+    if (Object.keys(validate(values)).length > 0) return;
+
+    signIn(values.email.trim(), values.password);
+  }
+
+  function handleDemo() {
+    setSubmitted(false);
+    signIn(DEMO_EMAIL, DEMO_PASSWORD);
   }
 
   if (isLoading) return null;
@@ -65,6 +77,7 @@ function Login() {
           name="email"
           type="email"
           icon={Mail}
+          placeholder="name@clinic.com"
           autoComplete="email"
           value={values.email}
           onChange={handleChange}
@@ -75,6 +88,7 @@ function Login() {
           name="password"
           type="password"
           icon={Lock}
+          placeholder="Enter your password"
           autoComplete="current-password"
           value={values.password}
           onChange={handleChange}
@@ -84,6 +98,24 @@ function Login() {
           {isSubmitting ? "Signing in" : "Sign in"}
         </Button>
       </form>
+
+      <div className="auth-demo">
+        <p className="auth-demo__divider caption-md">or</p>
+
+        <Button
+          variant="secondary"
+          icon={UserRound}
+          fullWidth
+          disabled={isSubmitting}
+          onClick={handleDemo}
+        >
+          Use demo account
+        </Button>
+
+        <p className="auth-demo__note caption-rg">
+          Try DUAL with sample patients and mock results.
+        </p>
+      </div>
     </AuthLayout>
   );
 }

@@ -28,11 +28,12 @@ function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
 
-      <Route element={<RequireAuth />}>
-        <Route element={<AppLayout />}>
-          <Route path="/" element={<Home />} />
+      <Route element={<AppLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+
+        <Route element={<RequireAuth />}>
           <Route path="/history" element={<History />} />
-          <Route path="/about" element={<About />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/results/:id" element={<Results />} />
           <Route path="/results/:id/record" element={<Record />} />
