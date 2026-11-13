@@ -35,20 +35,16 @@ function Navbar() {
           <div className="vertical-line" role="presentation"></div>
 
           <ul className="nav__list">
-            {user && (
-              <>
-                <li className="nav__list-item">
-                  <NavLink className="nav__link body-md" to="/upload">
-                    Upload
-                  </NavLink>
-                </li>
-                <li className="nav__list-item">
-                  <NavLink className="nav__link body-md" to="/history">
-                    History
-                  </NavLink>
-                </li>
-              </>
-            )}
+            <li className="nav__list-item">
+              <NavLink className="nav__link body-md" to="/upload">
+                Upload
+              </NavLink>
+            </li>
+            <li className="nav__list-item">
+              <NavLink className="nav__link body-md" to="/history">
+                History
+              </NavLink>
+            </li>
             <li className="nav__list-item">
               <NavLink className="nav__link body-md" to="/about">
                 About
