@@ -117,6 +117,17 @@
   color: var(--danger);
 }
 
+.nav__btn--signin:link,
+.nav__btn--signin:visited {
+  text-decoration: none;
+  color: var(--text-secondary);
+}
+
+.nav__btn--signin:hover,
+.nav__btn--signin:active {
+  color: var(--accent);
+}
+
 @media (max-width: 49.375em) {
   .nav__logo-text-container {
     display: none;

@@ -1,12 +1,13 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle.jsx";
 import "../styles/navbar.css";
 import logo from "../assets/images/logo.png";
 import useAuth from "../hooks/useAuth.js";
 
 function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, isLoading, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   async function signout() {
     await logout();
@@ -34,16 +35,20 @@ function Navbar() {
           <div className="vertical-line" role="presentation"></div>
 
           <ul className="nav__list">
-            <li className="nav__list-item">
-              <NavLink className="nav__link body-md" to="/upload">
-                Upload
-              </NavLink>
-            </li>
-            <li className="nav__list-item">
-              <NavLink className="nav__link body-md" to="/history">
-                History
-              </NavLink>
-            </li>
+            {user && (
+              <>
+                <li className="nav__list-item">
+                  <NavLink className="nav__link body-md" to="/upload">
+                    Upload
+                  </NavLink>
+                </li>
+                <li className="nav__list-item">
+                  <NavLink className="nav__link body-md" to="/history">
+                    History
+                  </NavLink>
+                </li>
+              </>
+            )}
             <li className="nav__list-item">
               <NavLink className="nav__link body-md" to="/about">
                 About
@@ -53,14 +58,29 @@ function Navbar() {
         </div>
         <div className="nav__right">
           <ThemeToggle />
-          <div className="user chip chip--neutral">
-            <div className="user-status" role="presentation"></div>
-            <p className="caption-md">{user?.name}</p>
-          </div>
 
-          <button onClick={signout} className="nav__btn--signout body-md">
-            Sign Out
-          </button>
+          {!isLoading && user && (
+            <>
+              <div className="user chip chip--neutral">
+                <div className="user-status" role="presentation"></div>
+                <p className="caption-md">{user.name}</p>
+              </div>
+
+              <button onClick={signout} className="nav__btn--signout body-md">
+                Sign Out
+              </button>
+            </>
+          )}
+
+          {!isLoading && !user && (
+            <Link
+              to="/login"
+              state={{ from: location }}
+              className="nav__btn--signin body-md"
+            >
+              Sign In
+            </Link>
+          )}
         </div>
       </div>
     </nav>
