@@ -65,6 +65,7 @@ function Login() {
           name="email"
           type="email"
           icon={Mail}
+          placeholder="name@clinic.com"
           autoComplete="email"
           value={values.email}
           onChange={handleChange}
@@ -75,6 +76,7 @@ function Login() {
           name="password"
           type="password"
           icon={Lock}
+          placeholder="Enter your password"
           autoComplete="current-password"
           value={values.password}
           onChange={handleChange}
