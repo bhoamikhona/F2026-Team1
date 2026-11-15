@@ -4,8 +4,28 @@
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb,graphicx,booktabs,longtable,url}
 \usepackage{xcolor,soul}
+\usepackage{colortbl}
 % Remove the wrapper after revising a highlighted passage.
 \newcommand{\pendingedit}[1]{\hl{#1}}
+
+% Light red marks original wording proposed for replacement; text is retained.
+\definecolor{reviewred}{RGB}{255,220,220}
+\newcommand{\proposedreplacement}[1]{{\sethlcolor{reviewred}\hl{#1}}}
+
+% Light green marks suggested replacement wording for review.
+\definecolor{reviewgreen}{RGB}{220,245,220}
+\newcommand{\suggestedwording}[1]{{\sethlcolor{reviewgreen}\hl{[Suggested replacement: #1]}}}
+
+% Peach blocks mark additions proposed for team review.
+\definecolor{reviewpeach}{RGB}{255,218,185}
+\newcommand{\peachaddition}[1]{%
+  \par\smallskip\noindent
+  \begingroup\setlength{\fboxsep}{5pt}%
+  \colorbox{reviewpeach}{\begin{minipage}{\dimexpr\linewidth-2\fboxsep\relax}
+  #1
+  \end{minipage}}\endgroup\par\smallskip
+}
+
 \usepackage[hidelinks]{hyperref}
 \title{DUAL: Dual Ocular Screener for Cataract and Glaucoma Triage from Fundus Photographs}
 \author{\IEEEauthorblockN{Anel Bazarbayeva, Negar Kamvij, Shridhi Patel, Bhoami Khona,\\
@@ -245,8 +265,8 @@ unnecessary referrals.
 
 An eye is marked ``Uncertain, refer'' for a condition when its calibrated probability lies within a
 fixed margin of the threshold, on either side, with the boundary included. The margin was set so
-that the band covers the 5\% of validation eyes closest to the threshold, which is 52 of the 1,024
-eyes for each head. Uncertain eyes are referred, so the total number of referrals is the sum of
+that the band covers the 5\% of validation eyes closest to the threshold, \proposedreplacement{which is 52 of the 1,024
+eyes for each head} \suggestedwording{with the margin determined by the 52nd closest validation eye for each head and all ties at that distance included}. Uncertain eyes are referred, so the total number of referrals is the sum of
 ordinary and uncertain referrals. In terms of who is referred, the band therefore works like a
 slightly lower threshold. The separate label adds information for clinic staff: it shows that the
 result is borderline, so a new photograph or a closer review may be useful. The overall result for
@@ -277,6 +297,39 @@ are not rejected, because haze is often a sign of cataract itself. These photogr
 receive ``Uncertain, refer'' when the model is not confident. The thresholds of the quality check
 were set on ODIR-5K training photographs only, and the check is not part of the evaluation pipeline,
 so it does not affect which test images are scored.
+
+
+\peachaddition{
+\textbf{Calibration and decision rules.}
+For a raw logit $z$, Platt calibration gives
+\[
+p=\sigma(az+b)=\frac{1}{1+\exp[-(az+b)]}.
+\]
+The parameters $a$ and $b$ are fitted on validation data for each head and seed.
+Let $\mathcal{T}$ be the candidate validation thresholds. The selected threshold is
+\[
+t^*=\underset{t\in\mathcal{T}:\,\mathrm{Sensitivity}(t)\geq0.90}
+{\operatorname{arg\,max}}\;\mathrm{Specificity}(t).
+\]
+The highest threshold breaks ties. Sensitivity here uses the threshold-only
+decision, before uncertain referrals. The 90\% floor is the agreed screening
+target; this optimization determines a threshold satisfying that target.
+}
+
+\peachaddition{
+\textbf{Uncertainty margin.}
+For $N$ validation eyes, define $d_i=|p_i-t^*|$ and sort these distances in
+ascending order. The margin is
+\[
+k=\lceil0.05N\rceil,\qquad m=d_{(k)}.
+\]
+An eye is labelled Uncertain, refer when $|p-t^*|\leq m$.
+For $N=1{,}024$, $k=52$. Ties at the boundary are included, so the band can
+contain more than 52 eyes. The final referral rule is
+\[
+R(p)=\mathbf{1}\{p\geq t^*\ \text{or}\ |p-t^*|\leq m\}.
+\]
+}
 
 \section{Results}
 
@@ -339,7 +392,7 @@ application model, the cataract AUROC fell from 0.995 internally to 0.909 on ret
 and the glaucoma AUROC fell from 0.921 to 0.869 on DRISHTI-GS, 0.766 on ORIGA, 0.760 on
 retina\_dataset\_2016 and 0.510 on ACRIMA. On ACRIMA, every model scored near or below chance (0.31
 to 0.64). Its photographs are tight crops of the optic disc rather than full fundus photographs,
-which is the most likely reason the models did not transfer.
+\proposedreplacement{which is the most likely reason the models did not transfer} \suggestedwording{which is a possible explanation for the performance drop, although the effect of cropping was not isolated from other dataset differences}.
 
 For the application model, sensitivity also fell below the 90\% floor that every setting had met on
 validation. With uncertain eyes counted as referrals, it referred 73.0\% of the cataract-positive
@@ -358,6 +411,14 @@ had the higher AUROC on ORIGA (by 0.013 to 0.034) and for cataract on retina\_da
 below chance. On DRISHTI-GS and for glaucoma on retina\_dataset\_2016, the direction of the
 difference changed from seed to seed.
 
+
+\peachaddition{
+\textbf{Interpretation of ACRIMA performance.}
+The difference between optic-disc crops and full fundus photographs is a possible
+explanation for the observed performance drop. These experiments did not isolate
+the effect of cropping from other differences between datasets.
+}
+
 \begin{table*}[t]
 \caption{External AUROC (application model with 95\% CI; mean (SD) over three seeds for the shared and single-task designs)}
 \label{tab:II}\centering\small
@@ -368,7 +429,29 @@ DRISHTI-GS, glaucoma & 101 (70) & 0.869 (0.794 to 0.929) & 0.882 (0.012) & 0.885
 ACRIMA, glaucoma & 705 (396) & 0.510 (0.467 to 0.554) & 0.555 (0.075) & 0.408 (0.095) \\
 retina\_dataset\_2016, glaucoma & 601 (101) & 0.760 (0.702 to 0.813) & 0.752 (0.045) & 0.741 (0.054) \\
 retina\_dataset\_2016, cataract & 601 (100) & 0.909 (0.874 to 0.939) & 0.910 (0.010) & 0.922 (0.005) \\ \bottomrule
-\end{tabular}\end{table*}
+\end{tabular}
+
+\medskip
+\textbf{Proposed expanded table for review (new columns in peach)}
+\par\smallskip
+{\footnotesize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.35}
+\begin{tabular*}{0.94\textwidth}{@{\extracolsep{\fill}}llccc>{\columncolor{reviewpeach}}c>{\columncolor{reviewpeach}}c>{\columncolor{reviewpeach}}c>{\columncolor{reviewpeach}}c@{}}\toprule
+Dataset, condition & Photos & App. model & Shared & Single & Sens. & Spec. & Referral & Brier \\[4pt]
+& (positive) & AUROC (95\% CI) & mean (SD) & mean (SD) & (\%) & (\%) & (\%) & score \\ \midrule
+ORIGA, glaucoma & 650 (168) & \shortstack{0.766\\(0.724--0.806)} & \shortstack{0.749\\(0.016)} & \shortstack{0.769\\(0.016)} & 69.6 & 68.5 & 41.4 & 0.228 \\[4pt]
+\shortstack[l]{DRISHTI-GS,\\glaucoma} & 101 (70) & \shortstack{0.869\\(0.794--0.929)} & \shortstack{0.882\\(0.012)} & \shortstack{0.885\\(0.020)} & 77.1 & 74.2 & 61.4 & 0.545 \\[4pt]
+ACRIMA, glaucoma & 705 (396) & \shortstack{0.510\\(0.467--0.554)} & \shortstack{0.555\\(0.075)} & \shortstack{0.408\\(0.095)} & 14.6 & 83.2 & 15.6 & 0.554 \\[4pt]
+Retina, glaucoma & 601 (101) & \shortstack{0.760\\(0.702--0.813)} & \shortstack{0.752\\(0.045)} & \shortstack{0.741\\(0.054)} & 72.3 & 62.4 & 43.4 & 0.148 \\[4pt]
+Retina, cataract & 601 (100) & \shortstack{0.909\\(0.874--0.939)} & \shortstack{0.910\\(0.010)} & \shortstack{0.922\\(0.005)} & 73.0 & 90.0 & 20.5 & 0.114 \\[4pt] \bottomrule
+\end{tabular*}}
+\peachaddition{\footnotesize
+The application model is shared seed 42. Retina denotes retina\_dataset\_2016.
+Sensitivity, specificity and referral rate include uncertain eyes as referrals.
+Brier scores use calibrated probabilities: $N^{-1}\sum_{i=1}^{N}(p_i-y_i)^2$,
+where $y_i\in\{0,1\}$ is the recorded disease label.
+The added metrics come from the frozen external evaluation metrics file.
+}
+\end{table*}
 
 \subsection{Multi-Task vs Single-Task Ablation}
 
@@ -380,8 +463,8 @@ between seeds, and the per-seed confidence intervals overlapped widely. At the f
 the two designs made similar trade-offs. The cataract-only models referred 39 or 40 of the 40
 cataract eyes at a specificity of 91.3\% to 92.4\%, compared with 40 of 40 at 91.5\% to 93.8\% for
 the shared model. The glaucoma-only models referred 42 to 44 of the 45 glaucoma eyes at 61.6\% to
-71.5\%, compared with 40 to 44 at 67.3\% to 73.0\% for the shared model. These results show that
-sharing one backbone between the two conditions did not reduce accuracy, while the application needs
+71.5\%, compared with 40 to 44 at 67.3\% to 73.0\% for the shared model. \proposedreplacement{These results show that
+sharing one backbone between the two conditions did not reduce accuracy} \suggestedwording{The shared model had slightly higher mean internal AUROC, but external performance differences varied by dataset; these results do not establish equivalence or non-inferiority}, while the application needs
 only one network instead of two. They do not show that sharing improves accuracy.
 
 Paired differences, computed with the same 2,000 bootstrap resamples for both designs
@@ -391,6 +474,15 @@ higher in all six head and seed pairs, but only cataract with seed 42 had a 95\%
 the shared model (+0.109 to +0.195), and on that set both designs were near or below chance. All
 other intervals included zero. The full comparison is reported in
 \path{results/task17/ablation_comparison.md}.
+
+
+\peachaddition{
+\textbf{Scope of the ablation conclusion.}
+The shared model had slightly higher average internal AUROC, while external
+differences varied by dataset. A paired confidence interval containing zero
+does not establish equivalence or non-inferiority. The individual 95\%
+bootstrap intervals were not adjusted for multiple comparisons.
+}
 
 \subsection{Calibration and Abstention}
 
@@ -405,7 +497,7 @@ glaucoma. With only 40 to 45 positive eyes per condition, the calibration error 
 read as descriptive.
 
 On the test split, the uncertainty band held a similar share of eyes as on validation, where it was
-set to 52 of 1,024 eyes (5\%) per head. For the application model, 46 test eyes (4.4\%) were
+\proposedreplacement{set to 52 of 1,024 eyes (5\%) per head} \suggestedwording{chosen using the 52nd closest of 1,024 validation eyes per head (approximately 5\%), including ties at the boundary}. For the application model, 46 test eyes (4.4\%) were
 Uncertain, refer for cataract and 45 (4.3\%) for glaucoma, and 87 eyes (8.4\%) were uncertain for at
 least one condition. Across all twelve combinations, the count per head ranged from 37 to 65 eyes
 (3.6\% to 6.3\%). Few uncertain eyes were true cases: 1 of 46 for cataract and 2 of 45 for glaucoma.

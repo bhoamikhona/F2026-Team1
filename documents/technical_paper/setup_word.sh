@@ -4,4 +4,4 @@ set -eu
 cd "$(dirname "$0")"
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements-word.txt
-.venv/bin/python -c 'from docx import Document; print("Word exporter is ready.")'
+.venv/bin/python -c 'from docx import Document; import latex2mathml.converter; import mathml2omml; print("Word exporter is ready.")'

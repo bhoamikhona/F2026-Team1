@@ -40,5 +40,20 @@ are also required. After setup, save paper.tex in VS Code to rebuild both copies
 The generated paper.docx has editable text, tables, references and captions.
 Only the three original figures are images. Word and LaTeX can paginate
 differently, so inspect the Word copy before submission. Direct Word edits are
-replaced on the next export. The exporter supports the current manuscript's
-LaTeX commands; new equation environments need exporter support and verification.
+replaced on the next export. The exporter supports the manuscript's peach additions, red replacement markers,
+green replacement text, and yellow pending notes. Formulas are exported as editable
+Word equations. Both the original and expanded review tables are included, with
+peach shading on the added metric columns.
+
+After pulling an exporter update, rerun `sh documents/technical_paper/setup_word.sh`
+to install any added dependencies. The default VS Code recipe builds both PDF and
+Word on save. If the Word export fails, check the LaTeX Workshop output; the existing
+Word file is retained until an export completes successfully.
+
+To export Word manually from the repository root:
+
+```sh
+documents/technical_paper/.venv/bin/python documents/technical_paper/export_word.py
+```
+
+New LaTeX commands or table layouts still need exporter support and verification.

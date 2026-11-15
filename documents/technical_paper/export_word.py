@@ -7,7 +7,9 @@ from docx import Document
 from docx.shared import Inches, Pt, Mm, RGBColor
 from docx.enum.section import WD_SECTION
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_COLOR_INDEX
-from docx.oxml import OxmlElement
+from docx.oxml import OxmlElement, parse_xml
+from latex2mathml.converter import convert as latex_to_mathml
+from mathml2omml import convert as mathml_to_omml
 from docx.oxml.ns import qn
 
 os.chdir(Path(__file__).resolve().parent)
@@ -68,9 +70,83 @@ def clean(x):
         .replace(r"\%", "%")
         .replace(r"\_", "_")
         .replace(r"\&", "&")
-        .replace("~", " ").replace("``", "“").replace("''", "”")
+        .replace("--", "–").replace("~", " ").replace("``", "“").replace("''", "”")
         .split()
     )
+
+
+
+REVIEW_COLORS = {
+    "pendingedit": "FFFF00", "peachaddition": "FFDAB9",
+    "proposedreplacement": "FFDCDC", "suggestedwording": "DCF5DC",
+}
+format_stack = []
+
+
+def braced(text, start):
+    """Read a balanced TeX argument, preserving nested formula braces."""
+    if text[start] != "{":
+        raise ValueError("Expected a braced LaTeX argument")
+    depth = 1
+    i = start + 1
+    while i < len(text):
+        if text[i] == "\\" and i + 1 < len(text) and text[i + 1] in "{}":
+            i += 2
+            continue
+        if text[i] == "{":
+            depth += 1
+        elif text[i] == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start + 1:i], i + 1
+        i += 1
+    raise ValueError("Unclosed LaTeX argument")
+
+
+def review_markup(text):
+    """Translate review wrappers to markers without dropping their contents."""
+    pattern = re.compile(r"\\(" + "|".join(REVIEW_COLORS) + r"|textbf)\{")
+    result = []
+    pos = 0
+    while match := pattern.search(text, pos):
+        result.append(text[pos:match.start()])
+        content, end = braced(text, match.end() - 1)
+        name = match[1]
+        result.append("\x01" + name + "\x02")
+        if name == "suggestedwording":
+            content = "[Suggested replacement: " + content + "]"
+        result.append(review_markup(content))
+        result.append("\x01end\x02")
+        pos = end
+    result.append(text[pos:])
+    return "".join(result)
+
+
+def shade(properties, fill):
+    element = OxmlElement("w:shd")
+    element.set(qn("w:fill"), fill)
+    element.set(qn("w:val"), "clear")
+    properties.append(element)
+
+
+def active_color():
+    return next((REVIEW_COLORS[f] for f in reversed(format_stack)
+                 if f in REVIEW_COLORS), None)
+
+
+def equation(p, tex):
+    """Convert LaTeX math to native, editable Office Math."""
+    tex = tex.replace(r"\operatorname{arg\,max}", r"\text{arg max}")
+    tex = re.sub(r"\\mathrm\{([^}]+)\}", r"\\text{\1}", tex)
+    xml = mathml_to_omml(latex_to_mathml(tex.strip()))
+    xml = xml.replace("<m:oMath>", '<m:oMath xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">', 1)
+    node = parse_xml(xml)
+    if active_color():
+        for run in node.iter(qn("m:r")):
+            properties = OxmlElement("w:rPr")
+            shade(properties, active_color())
+            run.insert(0, properties)
+    p._p.append(node)
 
 
 def write(x, style=None, center=False):
@@ -80,10 +156,31 @@ def write(x, style=None, center=False):
         p.paragraph_format.first_line_indent = Inches(0.14)
     if center:
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    for j, t in enumerate(re.split(r"\\pendingedit\{([^}]*)\}", clean(x))):
-        run = p.add_run(t)
-        if j % 2:
-            run.font.highlight_color = WD_COLOR_INDEX.YELLOW
+    if x.strip().startswith(r"\["):
+        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        p.paragraph_format.first_line_indent = Pt(0)
+    tokens = re.split(r"(\x01[^\x02]+\x02|\\\[.*?\\\]|\\\(.*?\\\)|\$[^$]+\$)", x, flags=re.S)
+    for token in tokens:
+        if token.startswith("\x01"):
+            name = token[1:-1]
+            if name == "end":
+                format_stack.pop()
+            else:
+                format_stack.append(name)
+        elif token.startswith((r"\[", r"\(", "$")):
+            equation(p, token[1:-1] if token.startswith("$") else token[2:-2])
+        elif token:
+            # Keep spaces on both sides of inline math and review spans.
+            value = clean(token)
+            if token[0].isspace():
+                value = " " + value
+            if token[-1].isspace():
+                value += " "
+            run = p.add_run(value)
+            if active_color():
+                shade(run._r.get_or_add_rPr(), active_color())
+            if "textbf" in format_stack:
+                run.bold = True
     if x.startswith(("Abstract  ", "Index Terms  ")):
         first = p.runs[0]
         label, _, rest = first.text.partition(" ")
@@ -107,7 +204,7 @@ def caption(text, center=False):
         run.font.size = Pt(8)
 
 
-def table(rows, widths, grid=False):
+def table(rows, widths, grid=False, review_columns=(), header_rows=1):
     t = d.add_table(rows=0, cols=len(widths))
     if grid:
         t.style = "Table Grid"
@@ -124,8 +221,12 @@ def table(rows, widths, grid=False):
         col.width = Inches(w)
     for i, row in enumerate(rows):
         assert len(row) == len(widths), row
-        for cell, txt, w in zip(t.add_row().cells, row, widths):
-            if i == 0 and not grid:
+        row_element = t.add_row()
+        row_element._tr.get_or_add_trPr().append(OxmlElement("w:cantSplit"))
+        for column, (cell, txt, w) in enumerate(zip(row_element.cells, row, widths)):
+            if column in review_columns:
+                shade(cell._tc.get_or_add_tcPr(), "FFDAB9")
+            if i == header_rows - 1 and not grid:
                 borders = OxmlElement("w:tcBorders")
                 rule = OxmlElement("w:bottom")
                 rule.set(qn("w:val"), "single")
@@ -135,10 +236,10 @@ def table(rows, widths, grid=False):
             cell.width = Inches(w)
             p = cell.paragraphs[0]
             p.paragraph_format.space_after = Pt(2)
-            p.paragraph_format.keep_with_next = i == 0
+            p.paragraph_format.keep_with_next = i < header_rows
             r = p.add_run(clean(txt))
-            r.font.size = Pt(9)
-            r.bold = i == 0
+            r.font.size = Pt(8 if len(widths) > 5 else 9)
+            r.bold = i < header_rows
 
 
 src = Path("paper.tex").read_text(encoding="utf-8")
@@ -191,15 +292,29 @@ for x in re.split(pat, body, flags=re.S):
             caption("Fig. " + label[2] + ". " + cap)
         else:
             caption("TABLE " + label[2] + "\n" + cap, True)
-            data = (
-                x.split(r"\toprule")[1]
-                .split(r"\bottomrule")[0]
-                .replace(r"\midrule", "")
-            )
-            table(
-                [r.strip().split(" & ") for r in data.split(r"\\") if r.strip()],
-                [1.12, 1, 1.15] if not wide else [1.72, 0.90, 1.77, 1.24, 1.24],
-            )
+            blocks = list(re.finditer(r"\\toprule(.*?)\\bottomrule", x, re.S))
+            for index, block in enumerate(blocks):
+                if index:
+                    write("Proposed expanded table for review (new columns in peach)", center=True)
+                data = block[1].replace(r"\midrule", "")
+                # Flatten nested shortstack cells before splitting row delimiters.
+                while match := re.search(r"\\shortstack(?:\[[^]]*\])?\{", data):
+                    content, end = braced(data, match.end() - 1)
+                    data = data[:match.start()] + content.replace(r"\\", " ") + data[end:]
+                data = re.sub(r"\\\\\[[^]]*\]", lambda m: r"\\", data)
+                rows = [re.split(r"\s*&\s*", row.strip()) for row in data.split(r"\\") if row.strip()]
+                count = len(rows[0])
+                widths = {3: [1.12, 1, 1.15], 5: [1.72, 0.90, 1.77, 1.24, 1.24],
+                          9: [1.3, .65, 1.12, .78, .78, .55, .55, .65, .55]}[count]
+                table(rows, widths, review_columns=range(5, 9) if count == 9 else (),
+                      header_rows=2 if count == 9 else 1)
+            # Preserve the explanatory peach note after the tables.
+            tail = x[blocks[-1].end():]
+            note = re.search(r"\\peachaddition\{", tail)
+            if note:
+                content, end = braced(tail, note.end() - 1)
+                content = re.sub(r"\\footnotesize\s*", "", content)
+                write(review_markup(r"\peachaddition{" + content + "}"))
         if wide:
             cols(2)
     elif x.startswith((r"\section", r"\subsection")):
@@ -216,6 +331,8 @@ for x in re.split(pat, body, flags=re.S):
             sub = 0
             write(title, "Heading 1", True)
     else:
+        x = review_markup(x)
+        x = re.sub(r"(\\\[.*?\\\])", r"\n\n\1\n\n", x, flags=re.S)
         for a in re.split(r"\n\s*\n", x):
             if a.strip():
                 p = write(a)

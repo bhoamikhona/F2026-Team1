@@ -5,16 +5,36 @@
     {
       "name": "latexmk",
       "command": "latexmk",
-      "args": ["-pdf", "-synctex=1", "-interaction=nonstopmode", "-halt-on-error", "%DOC%"]
+      "args": [
+        "-pdf",
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "%DOC%"
+      ]
     },
     {
       "name": "export-paper-word",
-      "command": "./.venv/bin/python",
-      "args": ["%DIR%/export_word.py"]
+      "command": "%DIR%/.venv/bin/python",
+      "args": [
+        "%DIR%/export_word.py"
+      ]
     }
   ],
   "latex-workshop.latex.recipes": [
-    {"name": "LaTeX PDF", "tools": ["latexmk"]},
-    {"name": "DUAL paper PDF and Word", "tools": ["latexmk", "export-paper-word"]}
-  ]
+    {
+      "name": "DUAL paper PDF and Word",
+      "tools": [
+        "latexmk",
+        "export-paper-word"
+      ]
+    },
+    {
+      "name": "LaTeX PDF",
+      "tools": [
+        "latexmk"
+      ]
+    }
+  ],
+  "latex-workshop.latex.recipe.default": "first"
 }
