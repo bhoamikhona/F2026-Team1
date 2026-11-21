@@ -27,7 +27,9 @@ CREATE TABLE public.patients (
     sex TEXT NOT NULL,
     phone TEXT,
     email TEXT,
-    created_at TEXT NOT NULL
+    created_at TEXT NOT NULL,
+    created_by INTEGER
+        REFERENCES public.users(id)
 );
 
 CREATE TABLE public.images (
@@ -87,5 +89,8 @@ CREATE TABLE public.heatmaps (
         REFERENCES public.condition_results(id),
     stored_path TEXT NOT NULL
 );
+
+CREATE INDEX patients_created_by_idx ON public.patients (created_by);
+CREATE INDEX screenings_created_by_idx ON public.screenings (created_by);
 
 COMMIT;
