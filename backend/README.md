@@ -9,6 +9,7 @@ PDF exports are real. When the trained model is ready, only `mock_model.py`
 changes; the endpoints and the JSON stay the same.
 
 ## Run it
+
 From the repo folder, with the virtual environment active (see Setup in the
 main README):
 
@@ -24,6 +25,7 @@ To set up a new, empty database from `database/schema.sql`, see "New database"
 in the main README.
 
 ## Calling it from the frontend
+
 - Add `credentials: "include"` to every fetch. Login sets a session cookie, and
   the browser then sends it with every request, including `<img>` tags for
   photos and heatmaps.
@@ -31,8 +33,9 @@ in the main README.
   with `DUAL_CORS_ORIGINS`, separated by commas.
 - Photo and heatmap URLs come back as paths, for example `/heatmaps/HM-0001`.
   Put `http://localhost:8000` in front.
-- Errors come back as `{"detail": "..."}`: 401 not signed in, 404 not found,
-  409 not allowed (for example screening a photo that failed the check),
+- Errors come back as `{"detail": "..."}`: 401 not signed in, 403 another
+  user's records, 404 not found, 409 not allowed (for example screening a
+  photo that failed the check),
   422 a missing or wrong field.
 - Thresholds are placeholders until the trained model replaces the mock. Read
   them from `GET /model` or from each condition in a screening; don't hard-code
@@ -42,33 +45,37 @@ in the main README.
 
 ## Endpoints
 
-| Method and path | Screen | Returns or does |
-|---|---|---|
-| POST /auth/login | Login | The user; sets the session cookie |
-| POST /auth/logout | Sign out | Ends the session |
-| GET /auth/me | Header | The signed-in user |
-| GET /patients?query= | New screening, History filter | Patients, sorted by last name |
-| GET /patients/next-id | Add patient | The ID the next patient will get |
-| POST /patients | Add patient | The new patient |
-| GET /patients/{id} | Patient page | Patient, last encounter, latest screening per eye |
-| GET /patients/{id}/screenings?date=today | Upload (today's visit), Patient page | Screenings, newest first |
-| GET /patients/{id}/export | Patient page: Export Dossier | PDF |
-| POST /images (form: file, patient_id, eye) | New screening | The image with quality_status and quality_reason |
-| GET /images/{id} | Results | 512 x 512 preprocessed photo |
-| GET /images/{id}/original | Screening record | Photo as uploaded |
-| DELETE /images/{id} | Photo quality failed: Retake | Discards the photo |
-| POST /screenings | Screen this photo, Skip eye | Screening with both results and heatmaps |
-| GET /screenings?query=&patient=&date=&eye=&result= | History | Screenings, newest first |
-| GET /screenings/{id} | Results, Screening record | Screening, patient, image, results, heatmaps, model version |
-| GET /screenings/{id}/export | Screening record: Export summary | PDF |
-| GET /heatmaps/{id} | Results, Screening record | Heatmap image |
-| GET /model | About, Screening record | Model version and thresholds |
-| GET /health | None (server check, no sign-in) | `{"status": "ok"}` |
+| Method and path                                               | Screen                               | Returns or does                                                                                    |
+| ------------------------------------------------------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| POST /auth/login                                              | Login                                | The user; sets the session cookie                                                                  |
+| POST /auth/logout                                             | Sign out                             | Ends the session                                                                                   |
+| GET /auth/me                                                  | Header                               | The signed-in user                                                                                 |
+| GET /patients?query=                                          | New screening, History filter        | Patients, sorted by last name, each with last screening, screening count and latest result per eye |
+| GET /patients/next-id                                         | Add patient                          | The ID the next patient will get                                                                   |
+| POST /patients                                                | Add patient                          | The new patient                                                                                    |
+| GET /patients/{id}                                            | Patient page                         | Patient, last encounter, latest screening per eye                                                  |
+| GET /patients/{id}/screenings?date=today                      | Upload (today's visit), Patient page | Screenings, newest first                                                                           |
+| GET /patients/{id}/export                                     | Patient page: Export Dossier         | PDF                                                                                                |
+| POST /images (form: file, patient_id, eye)                    | New screening                        | The image with quality_status and quality_reason                                                   |
+| GET /images/{id}                                              | Results                              | 512 x 512 preprocessed photo                                                                       |
+| GET /images/{id}/original                                     | Screening record                     | Photo as uploaded                                                                                  |
+| DELETE /images/{id}                                           | Photo quality failed: Retake         | Discards the photo                                                                                 |
+| POST /screenings                                              | Screen this photo, Skip eye          | Screening with both results and heatmaps                                                           |
+| GET /screenings?query=&patient=&date=&eye=&result=            | History                              | Screenings, newest first, each with the clinician who ran it                                       |
+| GET /screenings/{id}                                          | Results, Screening record            | Screening, patient, image, results, heatmaps, model version                                        |
+| GET /screenings/{id}/export                                   | Screening record: Export summary     | PDF                                                                                                |
+| GET /heatmaps/{id}                                            | Results, Screening record            | Heatmap image                                                                                      |
+| GET /users/{id}/patients?query=                               | Patients                             | Patients the user added or screened, with latest result per eye                                    |
+| GET /users/{id}/screenings?query=&patient=&date=&eye=&result= | Dashboard                            | Screenings the user ran, newest first                                                              |
+| GET /users/{id}/summary                                       | Dashboard                            | Today's counts, patients to follow up, eyes to rescreen and this week's results                    |
+| GET /model                                                    | About, Screening record              | Model version and thresholds                                                                       |
+| GET /health                                                   | None (server check, no sign-in)      | `{"status": "ok"}`                                                                                 |
 
 To skip an eye, send `POST /screenings` with
 `{"patient_id": "P-001", "eye": "left", "skipped": true, "skip_reason": "..."}`.
 
 ## Rules the server enforces
+
 - The model only runs on a photo that passed the quality check, was uploaded
   for the same patient and eye, and has not been screened before.
 - Per condition: a score within 0.05 of the threshold, on either side, is
@@ -84,13 +91,17 @@ To skip an eye, send `POST /screenings` with
   or a retake. Every screening is kept; the newest one per eye is shown on the
   patient page.
 - The same photo is never screened twice for the same eye, even if it is
-  uploaded again or "Screen this photo" is clicked twice. The second try gets
-  409.
+  uploaded again or "Screen this photo" is clicked twice. The second try gets 409.
 - Every endpoint except login and /health needs a session. Passwords are stored hashed.
 - Only clinic staff have accounts; patients never log in. Every signed-in user
   can see every patient.
+- The `/users/{id}` endpoints only return the signed-in user's own records.
+  Any other ID gets 403.
+- Each patient records who added them (`created_by`). A user's patients are the
+  ones they added or have screened.
 
 ## Files
+
 - `main.py` the endpoints
 - `service.py` what each endpoint does (database, files, quality check, model)
 - `mock_model.py` made-up scores, calibration and heatmaps, replaced in Sprint 3
@@ -100,6 +111,7 @@ To skip an eye, send `POST /screenings` with
 - `seed.py` the demo user, patients and screenings
 - `db.py` the PostgreSQL connection and readable IDs (P-001, IMG-0001)
 - `../database/schema.sql` the database tables, for setting up a new database
+- `../database/migrations/` changes to run once on the existing database
 - `schemas.py` request and response shapes (shown on /docs)
 
 ## Tests
