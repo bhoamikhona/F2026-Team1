@@ -1,4 +1,3 @@
-
 """Dual Eye Q FastAPI backend."""
 
 import os
@@ -30,6 +29,7 @@ from .auth import (
     verify_password,
 )
 from .schemas import (
+    DashboardSummary,
     Eye,
     Image,
     LoginIn,
@@ -39,6 +39,7 @@ from .schemas import (
     Patient,
     PatientDetail,
     PatientIn,
+    PatientSummary,
     Screening,
     ScreeningIn,
     ScreeningSummary,
@@ -235,19 +236,24 @@ def me(user: PostgresCurrentUser):
 
 @app.get(
     "/patients",
-    response_model=list[Patient],
+    response_model=list[PatientSummary],
     tags=["patients"],
 )
 def patients(
     conn: PgDb,
     user: PostgresCurrentUser,
     query: Optional[str] = None,
+    mine: bool = False,
 ):
-    """Retrieve patients with optional search filtering."""
+    """Retrieve patients with optional search filtering.
+
+    With mine=true, only patients the signed-in clinician added or screened.
+    """
 
     return service.list_patients(
         conn,
         query,
+        user["id"] if mine else None,
     )
 
 
@@ -299,6 +305,7 @@ def add_patient(
     patient = service.create_patient(
         conn,
         body.model_dump(),
+        created_by=user["id"],
     )
 
     conn.commit()
@@ -625,8 +632,12 @@ def history(
     result: Optional[
         Literal["no_concern", "refer"]
     ] = None,
+    mine: bool = False,
 ):
-    """Retrieve screening history with optional filters."""
+    """Retrieve screening history with optional filters.
+
+    With mine=true, only screenings run by the signed-in clinician.
+    """
 
     return service.list_screenings(
         conn,
@@ -635,6 +646,7 @@ def history(
         date,
         eye,
         result,
+        user["id"] if mine else None,
     )
 
 
@@ -687,6 +699,25 @@ def export_screening(
     return _pdf_response(
         pdf,
         f"{screening_id}_summary.pdf",
+    )
+
+
+# ---------- Dashboard ----------
+
+@app.get(
+    "/dashboard/summary",
+    response_model=DashboardSummary,
+    tags=["dashboard"],
+)
+def dashboard_summary(
+    conn: PgDb,
+    user: PostgresCurrentUser,
+):
+    """Today's counts, patients to follow up, eyes to rescreen and this week's results for the signed-in clinician."""
+
+    return service.dashboard_summary(
+        conn,
+        user["id"],
     )
 
 
