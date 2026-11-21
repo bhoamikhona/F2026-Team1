@@ -243,17 +243,12 @@ def patients(
     conn: PgDb,
     user: PostgresCurrentUser,
     query: Optional[str] = None,
-    mine: bool = False,
 ):
-    """Retrieve patients with optional search filtering.
-
-    With mine=true, only patients the signed-in clinician added or screened.
-    """
+    """Retrieve patients with optional search filtering."""
 
     return service.list_patients(
         conn,
         query,
-        user["id"] if mine else None,
     )
 
 
@@ -632,12 +627,8 @@ def history(
     result: Optional[
         Literal["no_concern", "refer"]
     ] = None,
-    mine: bool = False,
 ):
-    """Retrieve screening history with optional filters.
-
-    With mine=true, only screenings run by the signed-in clinician.
-    """
+    """Retrieve screening history with optional filters."""
 
     return service.list_screenings(
         conn,
@@ -646,7 +637,6 @@ def history(
         date,
         eye,
         result,
-        user["id"] if mine else None,
     )
 
 
@@ -702,22 +692,89 @@ def export_screening(
     )
 
 
-# ---------- Dashboard ----------
+# ---------- Clinicians ----------
+
+def own_clinician(clinician_id, user):
+    """Allow clinicians to read only their own records."""
+
+    if clinician_id != user["id"]:
+        raise HTTPException(
+            status_code=403,
+            detail="You can only view your own records",
+        )
+
 
 @app.get(
-    "/dashboard/summary",
-    response_model=DashboardSummary,
-    tags=["dashboard"],
+    "/clinicians/{clinician_id}/patients",
+    response_model=list[PatientSummary],
+    tags=["clinicians"],
 )
-def dashboard_summary(
+def clinician_patients(
+    clinician_id: int,
+    conn: PgDb,
+    user: PostgresCurrentUser,
+    query: Optional[str] = None,
+):
+    """Patients the clinician added or screened, with the latest result per eye."""
+
+    own_clinician(clinician_id, user)
+
+    return service.list_patients(
+        conn,
+        query,
+        clinician_id,
+    )
+
+
+@app.get(
+    "/clinicians/{clinician_id}/screenings",
+    response_model=list[ScreeningSummary],
+    tags=["clinicians"],
+)
+def clinician_screenings(
+    clinician_id: int,
+    conn: PgDb,
+    user: PostgresCurrentUser,
+    query: Optional[str] = None,
+    patient: Optional[str] = None,
+    date: Optional[str] = None,
+    eye: Optional[Eye] = None,
+    result: Optional[
+        Literal["no_concern", "refer"]
+    ] = None,
+):
+    """Screenings run by the clinician, newest first."""
+
+    own_clinician(clinician_id, user)
+
+    return service.list_screenings(
+        conn,
+        query,
+        patient,
+        date,
+        eye,
+        result,
+        clinician_id,
+    )
+
+
+@app.get(
+    "/clinicians/{clinician_id}/dashboard",
+    response_model=DashboardSummary,
+    tags=["clinicians"],
+)
+def clinician_dashboard(
+    clinician_id: int,
     conn: PgDb,
     user: PostgresCurrentUser,
 ):
-    """Today's counts, patients to follow up, eyes to rescreen and this week's results for the signed-in clinician."""
+    """Today's counts, patients to follow up, eyes to rescreen and this week's results for the clinician."""
+
+    own_clinician(clinician_id, user)
 
     return service.dashboard_summary(
         conn,
-        user["id"],
+        clinician_id,
     )
 
 
