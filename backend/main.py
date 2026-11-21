@@ -8,7 +8,6 @@ from typing import Annotated, Literal, Optional
 import psycopg
 
 from fastapi import (
-    APIRouter,
     Depends,
     FastAPI,
     File,
@@ -36,6 +35,7 @@ from .schemas import (
     LoginIn,
     LoginOut,
     ModelVersion,
+    NextId,
     Patient,
     PatientDetail,
     PatientIn,
@@ -136,18 +136,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-api = APIRouter(prefix=service.API_PREFIX)
 
+# ---------- Authentication ----------
 
-# ---------- Session ----------
-
-@api.post(
-    "/session",
+@app.post(
+    "/auth/login",
     response_model=LoginOut,
-    status_code=201,
-    tags=["session"],
+    tags=["auth"],
 )
-def create_session(
+def login(
     body: LoginIn,
     response: Response,
     conn: PgDb,
@@ -195,12 +192,12 @@ def create_session(
     }
 
 
-@api.delete(
-    "/session",
+@app.post(
+    "/auth/logout",
     status_code=204,
-    tags=["session"],
+    tags=["auth"],
 )
-def delete_session(
+def logout(
     response: Response,
     request: Request,
     conn: PgDb,
@@ -224,12 +221,12 @@ def delete_session(
     clear_session_cookie(response)
 
 
-@api.get(
-    "/session",
+@app.get(
+    "/auth/me",
     response_model=User,
-    tags=["session"],
+    tags=["auth"],
 )
-def current_session(user: PostgresCurrentUser):
+def me(user: PostgresCurrentUser):
     """Return the currently authenticated clinician."""
 
     return user
@@ -237,7 +234,7 @@ def current_session(user: PostgresCurrentUser):
 
 # ---------- Patients ----------
 
-@api.get(
+@app.get(
     "/patients",
     response_model=list[PatientSummary],
     tags=["patients"],
@@ -245,17 +242,49 @@ def current_session(user: PostgresCurrentUser):
 def patients(
     conn: PgDb,
     user: PostgresCurrentUser,
-    search: Optional[str] = None,
+    query: Optional[str] = None,
 ):
     """Retrieve patients with optional search filtering."""
 
     return service.list_patients(
         conn,
-        search,
+        query,
     )
 
 
-@api.post(
+@app.get(
+    "/patients/next-id",
+    response_model=NextId,
+    tags=["patients"],
+)
+def next_patient_id(
+    conn: PgDb,
+    user: PostgresCurrentUser,
+):
+    """Preview the next available patient ID."""
+
+    row = conn.execute(
+        """
+        SELECT COALESCE(
+            MAX(
+                CAST(
+                    SUBSTRING(id FROM 3)
+                    AS INTEGER
+                )
+            ),
+            0
+        ) + 1 AS next_number
+        FROM patients
+        WHERE id ~ '^P-[0-9]+$'
+        """
+    ).fetchone()
+
+    return {
+        "id": f"P-{row['next_number']:03d}"
+    }
+
+
+@app.post(
     "/patients",
     response_model=Patient,
     status_code=201,
@@ -279,7 +308,7 @@ def add_patient(
     return patient
 
 
-@api.get(
+@app.get(
     "/patients/{patient_id}",
     response_model=PatientDetail,
     tags=["patients"],
@@ -297,7 +326,7 @@ def patient(
     )
 
 
-@api.get(
+@app.get(
     "/patients/{patient_id}/screenings",
     response_model=list[ScreeningSummary],
     tags=["patients"],
@@ -319,8 +348,8 @@ def patient_screenings(
     )
 
 
-@api.get(
-    "/patients/{patient_id}/report",
+@app.get(
+    "/patients/{patient_id}/export",
     tags=["patients"],
     response_class=Response,
     responses={
@@ -331,7 +360,7 @@ def patient_screenings(
         }
     },
 )
-def patient_report(
+def export_patient(
     patient_id: str,
     conn: PgDb,
     user: PostgresCurrentUser,
@@ -361,7 +390,7 @@ def patient_report(
 
 # ---------- Images ----------
 
-@api.post(
+@app.post(
     "/images",
     response_model=Image,
     status_code=201,
@@ -429,8 +458,8 @@ async def upload_image(
     return image
 
 
-@api.get(
-    "/images/{image_id}/processed",
+@app.get(
+    "/images/{image_id}",
     tags=["images"],
     response_class=Response,
 )
@@ -450,7 +479,7 @@ def image_512(
     )
 
 
-@api.get(
+@app.get(
     "/images/{image_id}/original",
     tags=["images"],
     response_class=Response,
@@ -472,7 +501,7 @@ def image_original(
     )
 
 
-@api.delete(
+@app.delete(
     "/images/{image_id}",
     status_code=204,
     tags=["images"],
@@ -492,7 +521,7 @@ def discard_image(
     conn.commit()
 
 
-@api.get(
+@app.get(
     "/heatmaps/{heatmap_id}",
     tags=["images"],
     response_class=Response,
@@ -515,7 +544,7 @@ def heatmap(
 
 # ---------- Screenings ----------
 
-@api.post(
+@app.post(
     "/screenings",
     response_model=Screening,
     status_code=201,
@@ -583,7 +612,7 @@ def screen(
     )
 
 
-@api.get(
+@app.get(
     "/screenings",
     response_model=list[ScreeningSummary],
     tags=["screenings"],
@@ -591,8 +620,8 @@ def screen(
 def history(
     conn: PgDb,
     user: PostgresCurrentUser,
-    search: Optional[str] = None,
-    patient_id: Optional[str] = None,
+    query: Optional[str] = None,
+    patient: Optional[str] = None,
     date: Optional[str] = None,
     eye: Optional[Eye] = None,
     result: Optional[
@@ -603,15 +632,15 @@ def history(
 
     return service.list_screenings(
         conn,
-        search,
-        patient_id,
+        query,
+        patient,
         date,
         eye,
         result,
     )
 
 
-@api.get(
+@app.get(
     "/screenings/{screening_id}",
     response_model=Screening,
     tags=["screenings"],
@@ -629,8 +658,8 @@ def screening(
     )
 
 
-@api.get(
-    "/screenings/{screening_id}/report",
+@app.get(
+    "/screenings/{screening_id}/export",
     tags=["screenings"],
     response_class=Response,
     responses={
@@ -641,7 +670,7 @@ def screening(
         }
     },
 )
-def screening_report(
+def export_screening(
     screening_id: str,
     conn: PgDb,
     user: PostgresCurrentUser,
@@ -675,7 +704,7 @@ def own_records(user_id, user):
         )
 
 
-@api.get(
+@app.get(
     "/users/{user_id}/patients",
     response_model=list[PatientSummary],
     tags=["users"],
@@ -684,7 +713,7 @@ def user_patients(
     user_id: int,
     conn: PgDb,
     user: PostgresCurrentUser,
-    search: Optional[str] = None,
+    query: Optional[str] = None,
 ):
     """Patients the user added or screened, with the latest result per eye."""
 
@@ -692,12 +721,12 @@ def user_patients(
 
     return service.list_patients(
         conn,
-        search,
+        query,
         user_id,
     )
 
 
-@api.get(
+@app.get(
     "/users/{user_id}/screenings",
     response_model=list[ScreeningSummary],
     tags=["users"],
@@ -706,8 +735,8 @@ def user_screenings(
     user_id: int,
     conn: PgDb,
     user: PostgresCurrentUser,
-    search: Optional[str] = None,
-    patient_id: Optional[str] = None,
+    query: Optional[str] = None,
+    patient: Optional[str] = None,
     date: Optional[str] = None,
     eye: Optional[Eye] = None,
     result: Optional[
@@ -720,8 +749,8 @@ def user_screenings(
 
     return service.list_screenings(
         conn,
-        search,
-        patient_id,
+        query,
+        patient,
         date,
         eye,
         result,
@@ -729,7 +758,7 @@ def user_screenings(
     )
 
 
-@api.get(
+@app.get(
     "/users/{user_id}/summary",
     response_model=DashboardSummary,
     tags=["users"],
@@ -749,24 +778,20 @@ def user_summary(
     )
 
 
-# ---------- Model Versions ----------
+# ---------- Model ----------
 
-@api.get(
-    "/model-versions/{version_id}",
+@app.get(
+    "/model",
     response_model=ModelVersion,
-    tags=["model versions"],
+    tags=["model"],
 )
-def model_version(
-    version_id: str,
+def current_model(
     conn: PgDb,
     user: PostgresCurrentUser,
 ):
-    """Retrieve a model version and its thresholds."""
+    """Retrieve the current mock model metadata."""
 
-    return service.model_version(
-        conn,
-        version_id,
-    )
+    return service.model_version(conn)
 
 
 # ---------- System ----------
@@ -781,11 +806,6 @@ def health():
     return {
         "status": "ok"
     }
-
-
-# ---------- Routes ----------
-
-app.include_router(api)
 
 
 # ---------- PDF Response ----------
