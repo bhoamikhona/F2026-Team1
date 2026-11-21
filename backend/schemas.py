@@ -35,6 +35,14 @@ class PatientIn(BaseModel):
 class Patient(PatientIn):
     id: str = Field(examples=["P-001"])
     created_at: str
+    created_by: Optional[int] = Field(None, description="ID of the clinician who added the patient")
+
+
+class PatientSummary(Patient):
+    last_screening_at: Optional[str] = Field(description="None when the patient has never been screened")
+    screening_count: int
+    latest_right: Optional[Literal["no_concern", "refer"]] = Field(description="Latest overall result for the right eye; None if not screened or skipped")
+    latest_left: Optional[Literal["no_concern", "refer"]] = Field(description="Latest overall result for the left eye; None if not screened or skipped")
 
 
 class NextId(BaseModel):
@@ -109,6 +117,7 @@ class ScreeningSummary(BaseModel):
     overall_result: Optional[Literal["no_concern", "refer"]]
     cataract: Optional[Result]
     glaucoma: Optional[Result]
+    created_by: Optional[str] = Field(None, description="Name of the clinician who ran the screening")
 
 
 class LatestPerEye(BaseModel):
@@ -120,3 +129,43 @@ class PatientDetail(BaseModel):
     patient: Patient
     last_encounter: Optional[str]
     latest: LatestPerEye
+
+
+class TodayCounts(BaseModel):
+    screened: int = Field(description="Completed screenings today, skipped eyes not included")
+    referred: int = Field(description="Overall Refer today, including eyes referred because a condition was Uncertain")
+    uncertain: int = Field(description="Screenings today with at least one Uncertain condition")
+    skipped: int
+
+
+class FollowUpPatient(BaseModel):
+    patient_id: str
+    patient_name: str
+    right: Optional[Literal["no_concern", "refer"]]
+    left: Optional[Literal["no_concern", "refer"]]
+    uncertain: bool = Field(description="True when a latest result has an Uncertain condition")
+    latest_screening_id: str
+    latest_screening_at: str
+
+
+class RescreenEye(BaseModel):
+    screening_id: str
+    patient_id: str
+    patient_name: str
+    eye: Eye
+    skip_reason: Optional[str]
+    skipped_at: str
+
+
+class WeekCounts(BaseModel):
+    refer: int = Field(description="Refer with no Uncertain condition")
+    uncertain: int = Field(description="At least one Uncertain condition")
+    no_concern: int
+    completed: int
+
+
+class DashboardSummary(BaseModel):
+    today: TodayCounts
+    follow_up: list[FollowUpPatient]
+    rescreen: list[RescreenEye]
+    week: WeekCounts
