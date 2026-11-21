@@ -36,6 +36,8 @@ logger = logging.getLogger(__name__)
 
 EYES = ("right", "left")
 
+API_PREFIX = "/api/v1"
+
 
 # ---------- Supabase Storage ----------
 
@@ -485,12 +487,12 @@ def image_out(row):
         ),
         "uploaded_at": row["uploaded_at"],
         "url": (
-            f"/images/{row['id']}"
+            f"{API_PREFIX}/images/{row['id']}/processed"
             if has_file
             else None
         ),
         "original_url": (
-            f"/images/{row['id']}/original"
+            f"{API_PREFIX}/images/{row['id']}/original"
             if has_file
             else None
         ),
@@ -1134,7 +1136,7 @@ def screening_detail(conn, screening_id):
                 ),
                 "heatmap_id": item["heatmap_id"],
                 "heatmap_url": (
-                    f"/heatmaps/{item['heatmap_id']}"
+                    f"{API_PREFIX}/heatmaps/{item['heatmap_id']}"
                     if item["heatmap_id"]
                     else None
                 ),
