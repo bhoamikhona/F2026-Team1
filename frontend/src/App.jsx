@@ -34,6 +34,7 @@ function App() {
       <Route element={<AppLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/style" element={<StyleReference />} />
 
         <Route element={<RequireAuth />}>
           <Route path="/dashboard" element={<Dashboard />} />
@@ -44,7 +45,6 @@ function App() {
           <Route path="/patients" element={<Patients />} />
           <Route path="/patients/new" element={<NewPatient />} />
           <Route path="/patients/:id" element={<Patient />} />
-          <Route path="/style" element={<StyleReference />} />
         </Route>
       </Route>
     </Routes>

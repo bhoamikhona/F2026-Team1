@@ -98,25 +98,6 @@
   gap: 1.6rem;
 }
 
-.user-status {
-  width: 0.8rem;
-  height: 0.8rem;
-  background-color: var(--success);
-  border-radius: var(--radius-pill);
-  margin-right: 0.1rem;
-}
-
-.nav__btn--signout {
-  color: var(--text-secondary);
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-}
-
-.nav__btn--signout:hover {
-  color: var(--danger);
-}
-
 .nav__btn--signin:link,
 .nav__btn--signin:visited {
   text-decoration: none;
@@ -135,7 +116,7 @@
 }
 
 @media (max-width: 31.25em) {
-  .user.chip {
+  .nav__user .dropdown__trigger--user > .caption-md {
     display: none;
   }
 }
