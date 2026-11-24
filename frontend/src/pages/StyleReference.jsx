@@ -55,6 +55,7 @@ import TriageTile from "../components/patient/TriageTile.jsx";
 import EyeSummaryCard from "../components/patient/EyeSummaryCard.jsx";
 import PatientHeader from "../components/patient/PatientHeader.jsx";
 import Dropdown from "../components/Dropdown.jsx";
+import RadioGroup from "../components/RadioGroup.jsx";
 
 function StyleReference() {
   const [patientId, setPatientId] = useState("");
@@ -69,6 +70,9 @@ function StyleReference() {
   const [condition, setCondition] = useState("glaucoma");
 
   const [dropdownPatient, setDropdownPatient] = useState("P-001");
+
+  const [gender, setGender] = useState("female");
+  const [diabetes, setDiabetes] = useState("");
 
   return (
     <main className="style-main">
@@ -577,6 +581,40 @@ function StyleReference() {
             { label: "Export dossier", icon: Download },
             { type: "divider" },
             { label: "Delete photo", icon: Trash2, tone: "danger" },
+          ]}
+        />
+      </div>
+
+      <div style={{ width: "60rem" }}>
+        <p className="input__label body-md" id="style-gender-label">
+          Gender
+        </p>
+        <RadioGroup
+          name="style-gender"
+          aria-labelledby="style-gender-label"
+          value={gender}
+          onChange={setGender}
+          options={[
+            { value: "female", label: "Female" },
+            { value: "male", label: "Male" },
+            { value: "other", label: "Other" },
+          ]}
+        />
+      </div>
+
+      <div style={{ width: "60rem" }}>
+        <p className="input__label body-md" id="style-diabetes-label">
+          Diabetes
+        </p>
+        <RadioGroup
+          name="style-diabetes"
+          aria-labelledby="style-diabetes-label"
+          value={diabetes}
+          onChange={setDiabetes}
+          options={[
+            { value: "yes", label: "Yes" },
+            { value: "no", label: "No" },
+            { value: "unknown", label: "Not sure" },
           ]}
         />
       </div>

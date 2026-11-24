@@ -19,7 +19,7 @@ function Navbar() {
   const userMenuItems = [
     { label: "Dashboard", icon: LayoutDashboard, to: "/dashboard" },
     { label: "My patients", icon: Users, to: "/patients" },
-    { label: "New patient", icon: UserPlus, to: "/patients/new" },
+    { label: "Add new patient", icon: UserPlus, to: "/patients/new" },
     { type: "divider" },
     { label: "Sign out", icon: LogOut, tone: "danger", onClick: signout },
   ];
