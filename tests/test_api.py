@@ -1299,6 +1299,54 @@ def test_rescreened_eye_leaves_rescreen_list(
     assert summary["rescreen"] == []
 
 
+def test_rescreen_includes_eyes_skipped_by_colleague(
+    other_user,
+    client,
+    demo_record,
+):
+    user_id = demo_record["user_id"]
+    patient_id = demo_record["patient_id"]
+
+    skipped = skip_eye(client, patient_id, eye="right")
+
+    assert skipped.status_code == 201, skipped.text
+
+    colleague_skip_id = "SCR-TEST-" + uuid.uuid4().hex
+
+    with db.connect_postgres() as conn:
+        conn.execute(
+            """
+            INSERT INTO screenings (
+                id,
+                patient_id,
+                eye,
+                created_at,
+                created_by,
+                skipped,
+                skip_reason
+            )
+            VALUES (%s, %s, %s, %s, %s, 1, %s)
+            """,
+            (
+                colleague_skip_id,
+                patient_id,
+                "left",
+                db.now(),
+                other_user,
+                "Patient declined",
+            ),
+        )
+
+        conn.commit()
+
+    summary = client.get(f"/users/{user_id}/summary").json()
+
+    assert {
+        entry["screening_id"]
+        for entry in summary["rescreen"]
+    } == {skipped.json()["id"], colleague_skip_id}
+
+
 def test_new_user_summary_is_empty(client, demo_record):
     response = client.get(
         f"/users/{demo_record['user_id']}/summary"
