@@ -11,15 +11,5 @@ SET created_by = (
 )
 WHERE p.created_by IS NULL;
 
-UPDATE patients
-SET created_by = (
-    SELECT id
-    FROM users
-    WHERE role = 'clinician'
-    ORDER BY id
-    LIMIT 1
-)
-WHERE created_by IS NULL;
-
 CREATE INDEX IF NOT EXISTS patients_created_by_idx ON patients (created_by);
 CREATE INDEX IF NOT EXISTS screenings_created_by_idx ON screenings (created_by);
