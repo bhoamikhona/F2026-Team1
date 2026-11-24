@@ -204,6 +204,51 @@ def demo_record():
 
 
 @pytest.fixture
+def other_user():
+    """Create a second test-only clinician with no records."""
+
+    marker = uuid.uuid4().hex
+    email = f"test-other-{marker}@example.invalid"
+
+    with db.connect_postgres() as conn:
+        row = conn.execute(
+            """
+            INSERT INTO users (
+                name,
+                role,
+                email,
+                password_hash
+            )
+            VALUES (%s, %s, %s, %s)
+            RETURNING id
+            """,
+            (
+                "Other Test Clinician",
+                "clinician",
+                email,
+                auth.hash_password("Temporary-Test-Password!"),
+            ),
+        ).fetchone()
+
+        conn.commit()
+
+    try:
+        yield row["id"]
+
+    finally:
+        with db.connect_postgres() as conn:
+            conn.execute(
+                """
+                DELETE FROM users
+                WHERE id = %s AND email = %s
+                """,
+                (row["id"], email),
+            )
+
+            conn.commit()
+
+
+@pytest.fixture
 def passed_quality(monkeypatch):
     """Make valid synthetic images pass the quality check."""
 
@@ -609,6 +654,10 @@ def test_unauthorized_and_wrong_password(
         assert response.status_code == 401
         assert api.get("/patients").status_code == 401
 
+        assert api.get(
+            f"/users/{demo_record['user_id']}/summary"
+        ).status_code == 401
+
 
 # ---------- Restored Patient Regression Tests ----------
 
@@ -633,6 +682,7 @@ def test_create_patient_and_read_back(
     demo_record["created_patients"].append(patient["id"])
 
     assert patient["full_name"] == "Temporary Additional Patient"
+    assert patient["created_by"] == demo_record["user_id"]
 
     fetched = client.get(f"/patients/{patient['id']}")
 
@@ -998,3 +1048,295 @@ def test_unknown_ids_return_404(
     response = getattr(client, method)(path)
 
     assert response.status_code == 404, response.text
+
+
+# ---------- User Endpoint Tests ----------
+
+def skip_eye(client, patient_id, eye="left"):
+    """Create a skipped screening through the FastAPI endpoint."""
+
+    return client.post(
+        "/screenings",
+        json={
+            "patient_id": patient_id,
+            "eye": eye,
+            "skipped": True,
+            "skip_reason": "Patient declined",
+        },
+    )
+
+
+def test_user_patients_lists_added_and_screened(
+    client,
+    demo_record,
+):
+    user_id = demo_record["user_id"]
+    patient_id = demo_record["patient_id"]
+
+    added = client.post(
+        "/patients",
+        json={
+            "full_name": "Temporary Owned Patient",
+            "age": 51,
+            "sex": "male",
+        },
+    )
+
+    assert added.status_code == 201, added.text
+
+    added_id = added.json()["id"]
+    demo_record["created_patients"].append(added_id)
+
+    before = client.get(f"/users/{user_id}/patients")
+
+    assert before.status_code == 200, before.text
+
+    assert {
+        patient["id"]
+        for patient in before.json()
+    } == {added_id}
+
+    skipped = skip_eye(client, patient_id, eye="right")
+
+    assert skipped.status_code == 201, skipped.text
+
+    after = client.get(f"/users/{user_id}/patients")
+
+    assert after.status_code == 200, after.text
+
+    patients = {
+        patient["id"]: patient
+        for patient in after.json()
+    }
+
+    assert set(patients) == {added_id, patient_id}
+
+    screened = patients[patient_id]
+
+    assert screened["screening_count"] == 1
+    assert screened["last_screening_at"] == skipped.json()["created_at"]
+    assert screened["latest_right"] is None
+    assert screened["latest_left"] is None
+
+    owned = patients[added_id]
+
+    assert owned["created_by"] == user_id
+    assert owned["screening_count"] == 0
+    assert owned["last_screening_at"] is None
+
+    searched = client.get(
+        f"/users/{user_id}/patients",
+        params={"query": added_id},
+    )
+
+    assert searched.status_code == 200
+
+    assert [
+        patient["id"]
+        for patient in searched.json()
+    ] == [added_id]
+
+
+def test_user_screenings_returns_only_own(
+    client,
+    demo_record,
+    passed_quality,
+):
+    user_id = demo_record["user_id"]
+    patient_id = demo_record["patient_id"]
+
+    uploaded = upload_photo(client, patient_id, eye="right")
+
+    assert uploaded.status_code == 201, uploaded.text
+
+    screened = create_screening(
+        client,
+        patient_id,
+        uploaded.json()["id"],
+        eye="right",
+    )
+
+    assert screened.status_code == 201, screened.text
+
+    skipped = skip_eye(client, patient_id, eye="left")
+
+    assert skipped.status_code == 201, skipped.text
+
+    response = client.get(f"/users/{user_id}/screenings")
+
+    assert response.status_code == 200, response.text
+
+    items = response.json()
+
+    assert {
+        item["id"]
+        for item in items
+    } == {screened.json()["id"], skipped.json()["id"]}
+
+    assert all(
+        item["created_by"] == "Isolated Test Clinician"
+        for item in items
+    )
+
+    left = client.get(
+        f"/users/{user_id}/screenings",
+        params={"eye": "left"},
+    )
+
+    assert left.status_code == 200
+
+    assert [
+        item["id"]
+        for item in left.json()
+    ] == [skipped.json()["id"]]
+
+
+def test_user_summary_counts(
+    client,
+    demo_record,
+    passed_quality,
+):
+    """Check summary counts against a known set of screenings.
+
+    The mock model's result depends on the photo, so the
+    expected counts are worked out from the screening response.
+    """
+
+    user_id = demo_record["user_id"]
+    patient_id = demo_record["patient_id"]
+
+    uploaded = upload_photo(client, patient_id, eye="right")
+
+    assert uploaded.status_code == 201, uploaded.text
+
+    screened = create_screening(
+        client,
+        patient_id,
+        uploaded.json()["id"],
+        eye="right",
+    )
+
+    assert screened.status_code == 201, screened.text
+
+    skipped = skip_eye(client, patient_id, eye="left")
+
+    assert skipped.status_code == 201, skipped.text
+
+    result = screened.json()
+
+    referred = result["overall_result"] == "refer"
+
+    uncertain = any(
+        condition["result"] == "uncertain"
+        for condition in result["conditions"]
+    )
+
+    response = client.get(f"/users/{user_id}/summary")
+
+    assert response.status_code == 200, response.text
+
+    summary = response.json()
+
+    assert summary["today"] == {
+        "screened": 1,
+        "referred": int(referred),
+        "uncertain": int(uncertain),
+        "skipped": 1,
+    }
+
+    assert summary["week"] == {
+        "refer": int(referred and not uncertain),
+        "uncertain": int(uncertain),
+        "no_concern": int(not referred),
+        "completed": 1,
+    }
+
+    follow_up = {
+        entry["patient_id"]: entry
+        for entry in summary["follow_up"]
+    }
+
+    assert (patient_id in follow_up) == referred
+
+    if referred:
+        assert follow_up[patient_id]["right"] == "refer"
+        assert follow_up[patient_id]["left"] is None
+        assert follow_up[patient_id]["uncertain"] == uncertain
+
+    assert [
+        entry["screening_id"]
+        for entry in summary["rescreen"]
+    ] == [skipped.json()["id"]]
+
+
+def test_rescreened_eye_leaves_rescreen_list(
+    client,
+    demo_record,
+    passed_quality,
+):
+    user_id = demo_record["user_id"]
+    patient_id = demo_record["patient_id"]
+
+    skipped = skip_eye(client, patient_id, eye="left")
+
+    assert skipped.status_code == 201, skipped.text
+
+    uploaded = upload_photo(client, patient_id, eye="left")
+
+    assert uploaded.status_code == 201, uploaded.text
+
+    screened = create_screening(
+        client,
+        patient_id,
+        uploaded.json()["id"],
+        eye="left",
+    )
+
+    assert screened.status_code == 201, screened.text
+
+    summary = client.get(f"/users/{user_id}/summary").json()
+
+    assert summary["rescreen"] == []
+
+
+def test_new_user_summary_is_empty(client, demo_record):
+    response = client.get(
+        f"/users/{demo_record['user_id']}/summary"
+    )
+
+    assert response.status_code == 200, response.text
+
+    assert response.json() == {
+        "today": {
+            "screened": 0,
+            "referred": 0,
+            "uncertain": 0,
+            "skipped": 0,
+        },
+        "follow_up": [],
+        "rescreen": [],
+        "week": {
+            "refer": 0,
+            "uncertain": 0,
+            "no_concern": 0,
+            "completed": 0,
+        },
+    }
+
+
+@pytest.mark.parametrize(
+    "path",
+    [
+        "/users/{user_id}/patients",
+        "/users/{user_id}/screenings",
+        "/users/{user_id}/summary",
+    ],
+)
+def test_other_users_records_return_403(
+    client,
+    other_user,
+    path,
+):
+    response = client.get(path.format(user_id=other_user))
+
+    assert response.status_code == 403, response.text
