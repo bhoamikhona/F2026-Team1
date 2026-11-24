@@ -1191,7 +1191,6 @@ SELECT
             screening_id = s.id
             AND condition = 'glaucoma'
     ) AS glaucoma,
-    s.created_by AS created_by_id,
     u.name AS created_by
 FROM screenings s
 JOIN patients p
@@ -1391,7 +1390,6 @@ def dashboard_summary(conn, user_id):
         }
         for item in latest.values()
         if item["skipped"]
-        and item["created_by_id"] == user_id
     ]
 
     weeks = [
