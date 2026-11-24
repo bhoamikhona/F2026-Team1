@@ -17,6 +17,7 @@ import numpy as np
 from fastapi import HTTPException
 
 from . import db
+from .schemas import age_from_birth_date
 from . import mock_model as model
 from .results import (
     condition_result,
@@ -290,7 +291,14 @@ def get_patient(conn, patient_id):
             f"Patient {patient_id} not found",
         )
 
-    return dict(row)
+    return patient_out(row)
+
+
+def patient_out(row):
+    patient = dict(row)
+    if patient.get("date_of_birth") is not None:
+        patient["age"] = age_from_birth_date(patient["date_of_birth"])
+    return patient
 
 
 PATIENT_SUMMARY_SQL = """
@@ -306,25 +314,41 @@ SELECT
         FROM screenings s
         WHERE s.patient_id = p.id
     ) AS screening_count,
-    (
-        SELECT s.overall_result
-        FROM screenings s
-        WHERE
-            s.patient_id = p.id
-            AND s.eye = 'right'
-        ORDER BY s.created_at DESC, s.id DESC
-        LIMIT 1
-    ) AS latest_right,
-    (
-        SELECT s.overall_result
-        FROM screenings s
-        WHERE
-            s.patient_id = p.id
-            AND s.eye = 'left'
-        ORDER BY s.created_at DESC, s.id DESC
-        LIMIT 1
-    ) AS latest_left
+    r.overall_result AS latest_right,
+    l.overall_result AS latest_left,
+    COALESCE(r.status, 'not_screened') AS right_status,
+    COALESCE(l.status, 'not_screened') AS left_status
 FROM patients p
+LEFT JOIN LATERAL (
+    SELECT s.overall_result,
+        CASE
+            WHEN s.skipped = 1 THEN 'skipped'
+            WHEN EXISTS (
+                SELECT 1 FROM condition_results cr
+                WHERE cr.screening_id = s.id AND cr.result = 'uncertain'
+            ) THEN 'uncertain'
+            ELSE s.overall_result
+        END AS status
+    FROM screenings s
+    WHERE s.patient_id = p.id AND s.eye = 'right'
+    ORDER BY s.created_at DESC, s.id DESC
+    LIMIT 1
+) r ON TRUE
+LEFT JOIN LATERAL (
+    SELECT s.overall_result,
+        CASE
+            WHEN s.skipped = 1 THEN 'skipped'
+            WHEN EXISTS (
+                SELECT 1 FROM condition_results cr
+                WHERE cr.screening_id = s.id AND cr.result = 'uncertain'
+            ) THEN 'uncertain'
+            ELSE s.overall_result
+        END AS status
+    FROM screenings s
+    WHERE s.patient_id = p.id AND s.eye = 'left'
+    ORDER BY s.created_at DESC, s.id DESC
+    LIMIT 1
+) l ON TRUE
 """
 
 
@@ -373,7 +397,7 @@ def list_patients(conn, query=None, user_id=None):
         )
 
     rows = [
-        dict(row)
+        patient_out(row)
         for row in conn.execute(sql, params)
     ]
 
@@ -406,9 +430,13 @@ def create_patient(conn, data, created_at=None, created_by=None):
             phone,
             email,
             created_at,
-            created_by
+            created_by,
+            date_of_birth,
+            known_eye_conditions,
+            family_history_glaucoma,
+            diabetes
         )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """,
         (
             patient_id,
@@ -419,6 +447,10 @@ def create_patient(conn, data, created_at=None, created_by=None):
             data.get("email"),
             created_at or db.now(),
             created_by,
+            data.get("date_of_birth"),
+            data.get("known_eye_conditions"),
+            data.get("family_history_glaucoma"),
+            data.get("diabetes"),
         ),
     )
 

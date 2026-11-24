@@ -14,6 +14,8 @@ import asyncio
 import io
 import uuid
 
+from datetime import date, timedelta
+
 import cv2
 import numpy as np
 import psycopg
@@ -633,7 +635,7 @@ def test_screening_commit_failure_invokes_heatmap_cleanup(
     ]
 
 
-# ---------- Restored Authentication Regression ----------
+# ---------- Authentication Regression ----------
 
 def test_unauthorized_and_wrong_password(
     demo_record,
@@ -659,7 +661,7 @@ def test_unauthorized_and_wrong_password(
         ).status_code == 401
 
 
-# ---------- Restored Patient Regression Tests ----------
+# ---------- Patient Regression Tests ----------
 
 def test_create_patient_and_read_back(
     client,
@@ -736,7 +738,7 @@ def test_patient_search(client, demo_record):
     assert demo_record["patient_id"] in patient_ids
 
 
-# ---------- Restored Image Regression Tests ----------
+# ---------- Image Regression Tests ----------
 
 def test_image_read_and_delete(
     client,
@@ -824,7 +826,7 @@ def test_missing_patient_image_upload_rejected(
     assert response.status_code == 404
 
 
-# ---------- Restored Screening Regression Tests ----------
+# ---------- Screening Regression Tests ----------
 
 def test_same_image_cannot_be_screened_twice(
     client,
@@ -836,7 +838,7 @@ def test_same_image_cannot_be_screened_twice(
         demo_record["patient_id"],
     )
 
-    assert response.status_code == 201, response.text
+    assert response.status_code == 201
 
     image_id = response.json()["id"]
 
@@ -872,7 +874,7 @@ def test_database_enforces_unique_screening_image(
         demo_record["patient_id"],
     )
 
-    assert response.status_code == 201, response.text
+    assert response.status_code == 201
 
     image_id = response.json()["id"]
 
@@ -1029,7 +1031,7 @@ def test_second_image_same_photo_rejected_after_screening(
     assert duplicate.status_code == 409
 
 
-# ---------- Restored Unknown-ID Tests ----------
+# ---------- Unknown-ID Tests ----------
 
 @pytest.mark.parametrize(
     "method,path",
@@ -1388,3 +1390,197 @@ def test_other_users_records_return_403(
     response = client.get(path.format(user_id=other_user))
 
     assert response.status_code == 403, response.text
+
+
+# ---------- Patient Registration and Medical History ----------
+
+def test_create_patient_with_medical_history(
+    client,
+    demo_record,
+):
+    """Verify that the new registration fields are persisted."""
+
+    response = client.post(
+        "/patients",
+        json={
+            "full_name": "Temporary Medical History Patient",
+            "date_of_birth": "1985-06-15",
+            "sex": "female",
+            "phone": "555-0100",
+            "email": "patient@example.invalid",
+            "known_eye_conditions": "Cataract",
+            "family_history_glaucoma": True,
+            "diabetes": False,
+        },
+    )
+
+    assert response.status_code == 201, response.text
+
+    patient = response.json()
+    demo_record["created_patients"].append(patient["id"])
+
+    assert patient["created_by"] == demo_record["user_id"]
+
+    fetched = client.get(f"/patients/{patient['id']}")
+
+    assert fetched.status_code == 200, fetched.text
+
+    # GET /patients/{patient_id} returns a PatientDetail.
+    # Patient information is nested inside "patient".
+    saved = fetched.json()["patient"]
+
+    assert saved["date_of_birth"] == "1985-06-15"
+    assert saved["known_eye_conditions"] == "Cataract"
+    assert saved["family_history_glaucoma"] is True
+    assert saved["diabetes"] is False
+    assert saved["phone"] == "555-0100"
+    assert saved["email"] == "patient@example.invalid"
+    assert saved["created_by"] == demo_record["user_id"]
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {"date_of_birth": "2999-01-01"},
+        {"date_of_birth": "1800-01-01"},
+        {"date_of_birth": "invalid-date"},
+        {},
+    ],
+)
+def test_invalid_date_of_birth_returns_422(
+    client,
+    demo_record,
+    payload,
+):
+    """Reject invalid birth dates and missing age information."""
+
+    response = client.post(
+        "/patients",
+        json={
+            "full_name": "Invalid Birth Date Patient",
+            "sex": "female",
+            **payload,
+        },
+    )
+
+    # Register any unexpectedly created record for cleanup.
+    if response.status_code == 201:
+        demo_record["created_patients"].append(
+            response.json()["id"]
+        )
+
+    assert response.status_code == 422, response.text
+
+
+def test_patient_age_calculated_from_birth_date(
+    client,
+    demo_record,
+):
+    """Verify that age is calculated automatically from DOB."""
+
+    today = date.today()
+    birth_date = today - timedelta(days=10)
+
+    response = client.post(
+        "/patients",
+        json={
+            "full_name": "Temporary Age Test Patient",
+            "date_of_birth": birth_date.isoformat(),
+            "sex": "female",
+        },
+    )
+
+    assert response.status_code == 201, response.text
+
+    patient = response.json()
+    demo_record["created_patients"].append(patient["id"])
+
+    assert patient["age"] == 0
+    assert patient["date_of_birth"] == birth_date.isoformat()
+
+    fetched = client.get(f"/patients/{patient['id']}")
+
+    assert fetched.status_code == 200, fetched.text
+
+    # PatientDetail contains the patient as a nested object.
+    assert fetched.json()["patient"]["age"] == 0
+
+
+# ---------- Patient Eye Status Tests ----------
+
+def test_patient_summary_distinguishes_eye_status(
+    client,
+    demo_record,
+):
+    """Distinguish an explicitly skipped eye from an unscreened eye."""
+
+    user_id = demo_record["user_id"]
+    patient_id = demo_record["patient_id"]
+
+    skipped = skip_eye(client, patient_id, eye="left")
+
+    assert skipped.status_code == 201, skipped.text
+
+    response = client.get(f"/users/{user_id}/patients")
+
+    assert response.status_code == 200, response.text
+
+    patient = next(
+        item
+        for item in response.json()
+        if item["id"] == patient_id
+    )
+
+    assert patient["left_status"] == "skipped"
+    assert patient["right_status"] == "not_screened"
+    assert patient["latest_left"] is None
+    assert patient["latest_right"] is None
+
+
+def test_patient_summary_completed_eye_status(
+    client,
+    demo_record,
+    passed_quality,
+):
+    """Verify that completed eyes expose the appropriate status."""
+
+    user_id = demo_record["user_id"]
+    patient_id = demo_record["patient_id"]
+
+    uploaded = upload_photo(client, patient_id, eye="right")
+
+    assert uploaded.status_code == 201, uploaded.text
+
+    screened = create_screening(
+        client,
+        patient_id,
+        uploaded.json()["id"],
+        eye="right",
+    )
+
+    assert screened.status_code == 201, screened.text
+
+    result = screened.json()
+
+    expected_status = result["overall_result"]
+
+    if any(
+        condition["result"] == "uncertain"
+        for condition in result["conditions"]
+    ):
+        expected_status = "uncertain"
+
+    response = client.get(f"/users/{user_id}/patients")
+
+    assert response.status_code == 200, response.text
+
+    patient = next(
+        item
+        for item in response.json()
+        if item["id"] == patient_id
+    )
+
+    assert patient["right_status"] == expected_status
+    assert patient["left_status"] == "not_screened"
+    assert patient["latest_right"] == result["overall_result"]
+    assert patient["latest_left"] is None

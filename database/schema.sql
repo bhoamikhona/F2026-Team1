@@ -27,6 +27,10 @@ CREATE TABLE public.patients (
     sex TEXT NOT NULL,
     phone TEXT,
     email TEXT,
+    date_of_birth DATE,
+    known_eye_conditions TEXT,
+    family_history_glaucoma BOOLEAN,
+    diabetes BOOLEAN,
     created_at TEXT NOT NULL,
     created_by INTEGER
         REFERENCES public.users(id)
