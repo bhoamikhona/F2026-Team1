@@ -56,6 +56,7 @@ import EyeSummaryCard from "../components/patient/EyeSummaryCard.jsx";
 import PatientHeader from "../components/patient/PatientHeader.jsx";
 import Dropdown from "../components/Dropdown.jsx";
 import RadioGroup from "../components/RadioGroup.jsx";
+import Breadcrumbs from "../components/Breadcrumbs.jsx";
 
 function StyleReference() {
   const [patientId, setPatientId] = useState("");
@@ -73,6 +74,12 @@ function StyleReference() {
 
   const [gender, setGender] = useState("female");
   const [diabetes, setDiabetes] = useState("");
+
+  const BREADCRUMBS = [
+    { label: "Dashboard", to: "/dashboard" },
+    { label: "My patients", to: "/patients" },
+    { label: "New patient" },
+  ];
 
   return (
     <main className="style-main">
@@ -618,6 +625,7 @@ function StyleReference() {
           ]}
         />
       </div>
+      <Breadcrumbs items={BREADCRUMBS} />
     </main>
   );
 }
