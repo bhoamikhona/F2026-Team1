@@ -1,0 +1,60 @@
+.patients .breadcrumbs {
+  margin-bottom: var(--space-8);
+}
+
+.patients__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin: var(--space-6) 0 var(--space-5);
+}
+
+.patients__search {
+  flex: 1 1 28rem;
+  max-width: 48rem;
+}
+
+.patients__person {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: left;
+}
+
+.patients__avatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 3.6rem;
+  height: 3.6rem;
+
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--accent);
+  border-radius: var(--radius-md);
+}
+
+.patients__who {
+  display: flex;
+  flex-direction: column;
+}
+
+.patients .patients__name {
+  color: var(--text-primary);
+}
+
+.patients__id {
+  color: var(--text-secondary);
+}
+
+.patients__empty {
+  padding: var(--space-10) 0;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.patients__count {
+  margin-top: var(--space-4);
+  color: var(--text-secondary);
+}
