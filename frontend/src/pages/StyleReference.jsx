@@ -11,6 +11,15 @@ import {
   ShieldCheck,
   ArrowLeft,
   Plus,
+  LayoutDashboard,
+  Users,
+  Settings,
+  LogOut,
+  FileText,
+  Printer,
+  Filter,
+  MoreHorizontal,
+  Trash2,
 } from "lucide-react";
 import Button from "../components/Button.jsx";
 import Chip from "../components/Chip.jsx";
@@ -45,6 +54,9 @@ import ConditionDetail from "../components/record/ConditionDetail.jsx";
 import TriageTile from "../components/patient/TriageTile.jsx";
 import EyeSummaryCard from "../components/patient/EyeSummaryCard.jsx";
 import PatientHeader from "../components/patient/PatientHeader.jsx";
+import Dropdown from "../components/Dropdown.jsx";
+import RadioGroup from "../components/RadioGroup.jsx";
+import Breadcrumbs from "../components/Breadcrumbs.jsx";
 
 function StyleReference() {
   const [patientId, setPatientId] = useState("");
@@ -57,6 +69,17 @@ function StyleReference() {
   const [formFile, setFormFile] = useState(null);
 
   const [condition, setCondition] = useState("glaucoma");
+
+  const [dropdownPatient, setDropdownPatient] = useState("P-001");
+
+  const [gender, setGender] = useState("female");
+  const [diabetes, setDiabetes] = useState("");
+
+  const BREADCRUMBS = [
+    { label: "Dashboard", to: "/dashboard" },
+    { label: "My patients", to: "/patients" },
+    { label: "New patient" },
+  ];
 
   return (
     <main className="style-main">
@@ -509,6 +532,100 @@ function StyleReference() {
           }
         />
       </div>
+      <div style={{ display: "flex", gap: "2.4rem", flexWrap: "wrap" }}>
+        <Dropdown
+          variant="user"
+          label="Dr. Daniel Huntington"
+          header={{
+            title: "Dr. Daniel Huntington",
+            subtitle: "daniel.huntington@example.com",
+          }}
+          items={[
+            { label: "Dashboard", icon: LayoutDashboard, to: "/style" },
+            { label: "My patients", icon: Users, to: "/style" },
+            { label: "Profile & settings", icon: Settings, to: "/style" },
+            { type: "divider" },
+            { label: "Sign out", icon: LogOut, tone: "danger" },
+          ]}
+        />
+
+        <Dropdown
+          label="Export"
+          icon={Download}
+          items={[
+            {
+              label: "Screening summary",
+              icon: FileText,
+              description: "PDF of this screening",
+            },
+            {
+              label: "Patient dossier",
+              icon: FileText,
+              description: "PDF of all screenings",
+            },
+            { label: "Print", icon: Printer, meta: "Ctrl P" },
+          ]}
+        />
+
+        <Dropdown
+          variant="select"
+          label={dropdownPatient === "P-001" ? "Maria Lopez" : "James Chen"}
+          icon={Filter}
+          value={dropdownPatient}
+          onChange={setDropdownPatient}
+          items={[
+            { type: "label", label: "Patients" },
+            { label: "Maria Lopez", value: "P-001", meta: "P-001" },
+            { label: "James Chen", value: "P-002", meta: "P-002" },
+          ]}
+        />
+
+        <Dropdown
+          variant="icon"
+          label="More actions"
+          icon={MoreHorizontal}
+          items={[
+            { label: "Export dossier", icon: Download },
+            { type: "divider" },
+            { label: "Delete photo", icon: Trash2, tone: "danger" },
+          ]}
+        />
+      </div>
+
+      <div style={{ width: "60rem" }}>
+        <p className="input__label body-md" id="style-gender-label">
+          Gender
+        </p>
+        <RadioGroup
+          name="style-gender"
+          aria-labelledby="style-gender-label"
+          value={gender}
+          onChange={setGender}
+          options={[
+            { value: "female", label: "Female" },
+            { value: "male", label: "Male" },
+            { value: "other", label: "Other" },
+          ]}
+        />
+      </div>
+
+      <div style={{ width: "60rem" }}>
+        <p className="input__label body-md" id="style-diabetes-label">
+          Diabetes
+        </p>
+        <RadioGroup
+          name="style-diabetes"
+          aria-labelledby="style-diabetes-label"
+          value={diabetes}
+          onChange={setDiabetes}
+          options={[
+            { value: "yes", label: "Yes" },
+            { value: "no", label: "No" },
+            { value: "unknown", label: "Not sure" },
+          ]}
+        />
+      </div>
+      <Breadcrumbs items={BREADCRUMBS} />
     </main>
   );
 }

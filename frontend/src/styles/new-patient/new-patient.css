@@ -1,0 +1,144 @@
+.new-patient {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.new-patient__top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.new-patient .page-header {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.new-patient__card {
+  padding: var(--space-8);
+}
+
+.new-patient__muted {
+  color: color-mix(in srgb, var(--text-secondary) 75%, transparent);
+}
+
+.new-patient__section {
+  display: grid;
+  grid-template-columns: 1fr 2.5fr;
+  gap: calc(var(--space-16) * 3);
+
+  padding: var(--space-8) 0;
+  border-bottom: 0.1rem solid var(--border-default);
+}
+
+.new-patient__section:first-child {
+  padding-top: 0;
+}
+
+.new-patient__section-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.new-patient__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.new-patient__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.new-patient__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.new-patient__field .radio-group {
+  padding-top: var(--space-1);
+}
+
+.new-patient__field--beside-input .radio-group {
+  min-height: 4.6rem;
+  padding-top: 0;
+}
+
+.new-patient__field .dropdown {
+  display: flex;
+  width: 100%;
+}
+
+.new-patient__field .dropdown__trigger {
+  flex: 1;
+  width: 100%;
+}
+
+.new-patient input[type="date"] {
+  color-scheme: light;
+}
+
+[data-theme="dark"] .new-patient input[type="date"] {
+  color-scheme: dark;
+}
+
+.new-patient__actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+
+  padding-top: var(--space-6);
+}
+
+.new-patient__actions button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+@media (max-width: 53em) {
+  .new-patient__card {
+    padding: var(--space-5);
+  }
+
+  .new-patient__section {
+    gap: var(--space-4);
+  }
+
+  .new-patient__section,
+  .new-patient__row {
+    grid-template-columns: 1fr;
+  }
+
+  .new-patient__actions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 36em) {
+  .new-patient__actions {
+    flex-wrap: nowrap;
+    gap: var(--space-2);
+  }
+
+  .new-patient__actions > * {
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: var(--space-1);
+    padding: var(--space-2);
+    font-size: 1.2rem;
+    white-space: nowrap;
+  }
+
+  .new-patient__actions svg {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+}

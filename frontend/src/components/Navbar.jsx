@@ -1,5 +1,7 @@
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { LayoutDashboard, LogOut, UserPlus, Users } from "lucide-react";
 import ThemeToggle from "./ThemeToggle.jsx";
+import Dropdown from "./Dropdown.jsx";
 import "../styles/navbar.css";
 import logo from "../assets/images/logo.png";
 import useAuth from "../hooks/useAuth.js";
@@ -13,6 +15,14 @@ function Navbar() {
     await logout();
     navigate("/login", { replace: true });
   }
+
+  const userMenuItems = [
+    { label: "Dashboard", icon: LayoutDashboard, to: "/dashboard" },
+    { label: "My patients", icon: Users, to: "/patients" },
+    { label: "Add new patient", icon: UserPlus, to: "/patients/new" },
+    { type: "divider" },
+    { label: "Sign out", icon: LogOut, tone: "danger", onClick: signout },
+  ];
 
   return (
     <nav className="nav">
@@ -56,16 +66,15 @@ function Navbar() {
           <ThemeToggle />
 
           {!isLoading && user && (
-            <>
-              <div className="user chip chip--neutral">
-                <div className="user-status" role="presentation"></div>
-                <p className="caption-md">{user.name}</p>
-              </div>
-
-              <button onClick={signout} className="nav__btn--signout body-md">
-                Sign Out
-              </button>
-            </>
+            <div className="nav__user">
+              <Dropdown
+                variant="user"
+                label={user.name}
+                align="end"
+                header={{ title: user.name, subtitle: user.email }}
+                items={userMenuItems}
+              />
+            </div>
           )}
 
           {!isLoading && !user && (
