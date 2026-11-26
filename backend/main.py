@@ -1,4 +1,3 @@
-
 """Dual Eye Q FastAPI backend."""
 
 import os
@@ -30,6 +29,7 @@ from .auth import (
     verify_password,
 )
 from .schemas import (
+    DashboardSummary,
     Eye,
     Image,
     LoginIn,
@@ -39,6 +39,7 @@ from .schemas import (
     Patient,
     PatientDetail,
     PatientIn,
+    PatientSummary,
     Screening,
     ScreeningIn,
     ScreeningSummary,
@@ -235,7 +236,7 @@ def me(user: PostgresCurrentUser):
 
 @app.get(
     "/patients",
-    response_model=list[Patient],
+    response_model=list[PatientSummary],
     tags=["patients"],
 )
 def patients(
@@ -299,6 +300,7 @@ def add_patient(
     patient = service.create_patient(
         conn,
         body.model_dump(),
+        created_by=user["id"],
     )
 
     conn.commit()
@@ -687,6 +689,92 @@ def export_screening(
     return _pdf_response(
         pdf,
         f"{screening_id}_summary.pdf",
+    )
+
+
+# ---------- Users ----------
+
+def own_records(user_id, user):
+    """Allow users to read only their own records."""
+
+    if user_id != user["id"]:
+        raise HTTPException(
+            status_code=403,
+            detail="You can only view your own records",
+        )
+
+
+@app.get(
+    "/users/{user_id}/patients",
+    response_model=list[PatientSummary],
+    tags=["users"],
+)
+def user_patients(
+    user_id: int,
+    conn: PgDb,
+    user: PostgresCurrentUser,
+    query: Optional[str] = None,
+):
+    """Patients the user added or screened, with the latest result per eye."""
+
+    own_records(user_id, user)
+
+    return service.list_patients(
+        conn,
+        query,
+        user_id,
+    )
+
+
+@app.get(
+    "/users/{user_id}/screenings",
+    response_model=list[ScreeningSummary],
+    tags=["users"],
+)
+def user_screenings(
+    user_id: int,
+    conn: PgDb,
+    user: PostgresCurrentUser,
+    query: Optional[str] = None,
+    patient: Optional[str] = None,
+    date: Optional[str] = None,
+    eye: Optional[Eye] = None,
+    result: Optional[
+        Literal["no_concern", "refer"]
+    ] = None,
+):
+    """Screenings run by the user, newest first."""
+
+    own_records(user_id, user)
+
+    return service.list_screenings(
+        conn,
+        query,
+        patient,
+        date,
+        eye,
+        result,
+        user_id,
+    )
+
+
+@app.get(
+    "/users/{user_id}/summary",
+    response_model=DashboardSummary,
+    tags=["users"],
+)
+def user_summary(
+    user_id: int,
+    conn: PgDb,
+    user: PostgresCurrentUser,
+):
+    """Today's counts, patients to follow up, eyes to rescreen and this week's results for the user."""
+
+    own_records(user_id, user)
+
+    return service.dashboard_summary(
+        conn,
+        user_id,
     )
 
 

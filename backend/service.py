@@ -1,4 +1,3 @@
-
 """Business logic for the Dual Eye Q API."""
 
 import os
@@ -7,6 +6,7 @@ import json
 import hashlib
 import logging
 
+from datetime import date, timedelta
 from pathlib import Path
 from urllib.parse import quote
 
@@ -17,6 +17,7 @@ import numpy as np
 from fastapi import HTTPException
 
 from . import db
+from .schemas import age_from_birth_date
 from . import mock_model as model
 from .results import (
     condition_result,
@@ -290,28 +291,113 @@ def get_patient(conn, patient_id):
             f"Patient {patient_id} not found",
         )
 
-    return dict(row)
+    return patient_out(row)
 
 
-def list_patients(conn, query=None):
+def patient_out(row):
+    patient = dict(row)
+    if patient.get("date_of_birth") is not None:
+        patient["age"] = age_from_birth_date(patient["date_of_birth"])
+    return patient
+
+
+PATIENT_SUMMARY_SQL = """
+SELECT
+    p.*,
+    (
+        SELECT MAX(s.created_at)
+        FROM screenings s
+        WHERE s.patient_id = p.id
+    ) AS last_screening_at,
+    (
+        SELECT COUNT(*)
+        FROM screenings s
+        WHERE s.patient_id = p.id
+    ) AS screening_count,
+    r.overall_result AS latest_right,
+    l.overall_result AS latest_left,
+    COALESCE(r.status, 'not_screened') AS right_status,
+    COALESCE(l.status, 'not_screened') AS left_status
+FROM patients p
+LEFT JOIN LATERAL (
+    SELECT s.overall_result,
+        CASE
+            WHEN s.skipped = 1 THEN 'skipped'
+            WHEN EXISTS (
+                SELECT 1 FROM condition_results cr
+                WHERE cr.screening_id = s.id AND cr.result = 'uncertain'
+            ) THEN 'uncertain'
+            ELSE s.overall_result
+        END AS status
+    FROM screenings s
+    WHERE s.patient_id = p.id AND s.eye = 'right'
+    ORDER BY s.created_at DESC, s.id DESC
+    LIMIT 1
+) r ON TRUE
+LEFT JOIN LATERAL (
+    SELECT s.overall_result,
+        CASE
+            WHEN s.skipped = 1 THEN 'skipped'
+            WHEN EXISTS (
+                SELECT 1 FROM condition_results cr
+                WHERE cr.screening_id = s.id AND cr.result = 'uncertain'
+            ) THEN 'uncertain'
+            ELSE s.overall_result
+        END AS status
+    FROM screenings s
+    WHERE s.patient_id = p.id AND s.eye = 'left'
+    ORDER BY s.created_at DESC, s.id DESC
+    LIMIT 1
+) l ON TRUE
+"""
+
+
+def list_patients(conn, query=None, user_id=None):
     """List patients with optional name or ID filtering."""
 
-    sql = "SELECT * FROM patients"
-    params = ()
+    filters = []
+    params = []
 
     if query:
-        sql += (
-            " WHERE full_name ILIKE %s"
-            " OR id ILIKE %s"
+        filters.append(
+            """
+            (
+                p.full_name ILIKE %s
+                OR p.id ILIKE %s
+            )
+            """
         )
 
-        params = (
-            f"%{query}%",
-            f"%{query}%",
+        params.extend([f"%{query}%"] * 2)
+
+    if user_id is not None:
+        filters.append(
+            """
+            (
+                p.created_by = %s
+                OR EXISTS (
+                    SELECT 1
+                    FROM screenings s
+                    WHERE
+                        s.patient_id = p.id
+                        AND s.created_by = %s
+                )
+            )
+            """
+        )
+
+        params.extend([user_id] * 2)
+
+    sql = PATIENT_SUMMARY_SQL
+
+    if filters:
+        sql += (
+            " WHERE "
+            + " AND ".join(filters)
         )
 
     rows = [
-        dict(row)
+        patient_out(row)
         for row in conn.execute(sql, params)
     ]
 
@@ -324,7 +410,7 @@ def list_patients(conn, query=None):
     )
 
 
-def create_patient(conn, data, created_at=None):
+def create_patient(conn, data, created_at=None, created_by=None):
     """Create a patient in PostgreSQL."""
 
     patient_id = db.next_id_postgres(
@@ -343,9 +429,14 @@ def create_patient(conn, data, created_at=None):
             sex,
             phone,
             email,
-            created_at
+            created_at,
+            created_by,
+            date_of_birth,
+            known_eye_conditions,
+            family_history_glaucoma,
+            diabetes
         )
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """,
         (
             patient_id,
@@ -355,6 +446,11 @@ def create_patient(conn, data, created_at=None):
             data.get("phone"),
             data.get("email"),
             created_at or db.now(),
+            created_by,
+            data.get("date_of_birth"),
+            data.get("known_eye_conditions"),
+            data.get("family_history_glaucoma"),
+            data.get("diabetes"),
         ),
     )
 
@@ -1126,10 +1222,13 @@ SELECT
         WHERE
             screening_id = s.id
             AND condition = 'glaucoma'
-    ) AS glaucoma
+    ) AS glaucoma,
+    u.name AS created_by
 FROM screenings s
 JOIN patients p
     ON p.id = s.patient_id
+LEFT JOIN users u
+    ON u.id = s.created_by
 """
 
 
@@ -1140,6 +1239,7 @@ def list_screenings(
     date=None,
     eye=None,
     result=None,
+    created_by=None,
 ):
     """Retrieve screening history with optional filters."""
 
@@ -1188,6 +1288,12 @@ def list_screenings(
         )
         params.append(result)
 
+    if created_by is not None:
+        filters.append(
+            "s.created_by = %s"
+        )
+        params.append(created_by)
+
     sql = SUMMARY_SQL
 
     if filters:
@@ -1215,3 +1321,162 @@ def list_screenings(
         )
 
     return rows
+
+
+# ---------- Dashboard ----------
+
+def has_uncertain(screening):
+    return "uncertain" in (
+        screening["cataract"],
+        screening["glaucoma"],
+    )
+
+
+def latest_per_eye(screenings):
+    latest = {}
+
+    for screening in screenings:
+        key = (
+            screening["patient_id"],
+            screening["eye"],
+        )
+
+        if key not in latest:
+            latest[key] = screening
+
+    return latest
+
+
+def dashboard_summary(conn, user_id):
+    today = db.today()
+    week_start = (
+        date.fromisoformat(today)
+        - timedelta(days=6)
+    ).isoformat()
+
+    mine = list_screenings(
+        conn,
+        created_by=user_id,
+    )
+
+    todays = [
+        item
+        for item in mine
+        if item["created_at"][:10] == today
+    ]
+
+    completed_today = [
+        item
+        for item in todays
+        if not item["skipped"]
+    ]
+
+    my_patient_ids = {
+        patient["id"]
+        for patient in list_patients(
+            conn,
+            user_id=user_id,
+        )
+    }
+
+    latest = latest_per_eye(
+        item
+        for item in list_screenings(conn)
+        if item["patient_id"] in my_patient_ids
+    )
+
+    follow_up = {}
+
+    for (patient_id, eye), item in latest.items():
+        if item["skipped"]:
+            continue
+
+        entry = follow_up.setdefault(
+            patient_id,
+            {
+                "patient_id": patient_id,
+                "patient_name": item["patient_name"],
+                "right": None,
+                "left": None,
+                "uncertain": False,
+                "latest_screening_id": item["id"],
+                "latest_screening_at": item["created_at"],
+            },
+        )
+
+        entry[eye] = item["overall_result"]
+        entry["uncertain"] = entry["uncertain"] or has_uncertain(item)
+
+        if item["created_at"] > entry["latest_screening_at"]:
+            entry["latest_screening_id"] = item["id"]
+            entry["latest_screening_at"] = item["created_at"]
+
+    rescreen = [
+        {
+            "screening_id": item["id"],
+            "patient_id": item["patient_id"],
+            "patient_name": item["patient_name"],
+            "eye": item["eye"],
+            "skip_reason": item["skip_reason"],
+            "skipped_at": item["created_at"],
+        }
+        for item in latest.values()
+        if item["skipped"]
+    ]
+
+    weeks = [
+        item
+        for item in mine
+        if item["created_at"][:10] >= week_start
+        and not item["skipped"]
+    ]
+
+    uncertain_week = sum(
+        1
+        for item in weeks
+        if has_uncertain(item)
+    )
+
+    refer_week = sum(
+        1
+        for item in weeks
+        if item["overall_result"] == "refer"
+        and not has_uncertain(item)
+    )
+
+    return {
+        "today": {
+            "screened": len(completed_today),
+            "referred": sum(
+                1
+                for item in completed_today
+                if item["overall_result"] == "refer"
+            ),
+            "uncertain": sum(
+                1
+                for item in completed_today
+                if has_uncertain(item)
+            ),
+            "skipped": len(todays) - len(completed_today),
+        },
+        "follow_up": sorted(
+            (
+                entry
+                for entry in follow_up.values()
+                if "refer" in (entry["right"], entry["left"])
+            ),
+            key=lambda entry: entry["latest_screening_at"],
+            reverse=True,
+        ),
+        "rescreen": sorted(
+            rescreen,
+            key=lambda entry: entry["skipped_at"],
+            reverse=True,
+        ),
+        "week": {
+            "refer": refer_week,
+            "uncertain": uncertain_week,
+            "no_concern": len(weeks) - refer_week - uncertain_week,
+            "completed": len(weeks),
+        },
+    }
