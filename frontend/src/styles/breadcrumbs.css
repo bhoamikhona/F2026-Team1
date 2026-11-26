@@ -6,21 +6,22 @@
   gap: var(--space-2);
 }
 
-.breadcrumbs__item {
+.breadcrumbs .breadcrumbs__item {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  color: var(--text-secondary);
+  font-size: 1.1rem;
+  color: color-mix(in srgb, var(--text-secondary) 60%, transparent);
 }
 
 .breadcrumbs__item + .breadcrumbs__item::before {
   content: "/";
-  color: var(--border-strong);
+  color: var(--border-default);
 }
 
 .breadcrumbs__link:link,
 .breadcrumbs__link:visited {
-  color: var(--text-secondary);
+  color: color-mix(in srgb, var(--text-secondary) 60%, transparent);
   text-decoration: none;
 }
 
@@ -37,4 +38,5 @@
 
 .breadcrumbs__current {
   color: var(--text-primary);
+  cursor: default;
 }

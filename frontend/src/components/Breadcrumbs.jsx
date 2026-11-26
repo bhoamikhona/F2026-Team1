@@ -9,7 +9,7 @@ function Breadcrumbs({ items }) {
           const isLast = index === items.length - 1;
 
           return (
-            <li key={item.label} className="breadcrumbs__item caption-md">
+            <li key={item.label} className="breadcrumbs__item caption-rg">
               {isLast ? (
                 <span className="breadcrumbs__current" aria-current="page">
                   {item.label}
