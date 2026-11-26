@@ -1,4 +1,3 @@
-
 """Optional demo-data seeding for DUAL EyeQ.
 
 Uses Supabase PostgreSQL and Supabase Storage.
@@ -19,7 +18,7 @@ from .auth import hash_password
 DEMO_USER = {
     "name": "Dr. Emily Geller",
     "role": "clinician",
-    "email": "emily.geller@example.com",
+    "email": "demo.clinician@example.com",
 }
 
 PATIENTS = [
@@ -50,6 +49,65 @@ PATIENTS = [
         "sex": "male",
         "phone": "555-0104",
         "email": "david.brown@example.com",
+    },
+]
+
+DEMO_DOCTORS = [
+    {
+        "name": "Dr. Daniel Huntington",
+        "role": "clinician",
+        "email": "daniel.huntington@example.com",
+        "patients": [
+            {
+                "full_name": "Camilla Gonzalez",
+                "age": 61,
+                "sex": "female",
+                "phone": "555-0201",
+                "email": "camilla.gonzalez@example.com",
+            },
+            {
+                "full_name": "Vineet Mehta",
+                "age": 74,
+                "sex": "male",
+                "phone": "555-0202",
+                "email": "vineet.mehta@example.com",
+            },
+            {
+                "full_name": "Anna Scott",
+                "age": 52,
+                "sex": "female",
+                "phone": "555-0203",
+                "email": "anna.scott@example.com",
+            },
+        ],
+    },
+    {
+        "name": "Dr. Priya Raman",
+        "role": "clinician",
+        "email": "priya.raman@example.com",
+        "patients": [
+            {
+                "full_name": "Charlie Thorne",
+                "age": 66,
+                "sex": "male",
+                "phone": "555-0301",
+                "email": "charlie.thorne@example.com",
+            },
+            {
+                "full_name": "Alison Novak",
+                "age": 70,
+                "sex": "female",
+                "phone": "555-0302",
+                "email": "alison.novak@example.com",
+            },
+            {
+                "full_name": "Claire Fraser",
+                "age": 48,
+                "sex": "female",
+                "phone": "555-0303",
+                "email": "claire.fraser@example.com",
+            },
+        ],
     },
 ]
 
@@ -92,6 +150,72 @@ def _ago(days, hour=10):
     ).isoformat(timespec="seconds")
 
 
+def demo_password():
+    load_dotenv()
+
+    password = os.environ.get(
+        "DUAL_DEMO_PASSWORD"
+    )
+
+    if not password:
+        raise RuntimeError(
+            "DUAL_DEMO_PASSWORD must be configured "
+            "before seeding demo data."
+        )
+
+    return password
+
+
+def add_doctor(conn, doctor, password_hash):
+    existing = conn.execute(
+        "SELECT id FROM users WHERE email = %s",
+        (doctor["email"],),
+    ).fetchone()
+
+    if existing is not None:
+        print(f"{doctor['name']} already exists. Skipping.")
+        return
+
+    user = conn.execute(
+        """
+        INSERT INTO users (
+            name,
+            role,
+            email,
+            password_hash
+        )
+        VALUES (%s, %s, %s, %s)
+        RETURNING id
+        """,
+        (
+            doctor["name"],
+            doctor["role"],
+            doctor["email"],
+            password_hash,
+        ),
+    ).fetchone()
+
+    for patient in doctor["patients"]:
+        service.create_patient(
+            conn,
+            patient,
+            created_at=_ago(14),
+            created_by=user["id"],
+        )
+
+    print(
+        f"Added {doctor['name']} with "
+        f"{len(doctor['patients'])} patients."
+    )
+
+
+def add_doctors(conn):
+    password_hash = hash_password(demo_password())
+
+    for doctor in DEMO_DOCTORS:
+        add_doctor(conn, doctor, password_hash)
+
+
 def seed(conn):
     """Seed demo data only when the users table is empty."""
 
@@ -102,18 +226,6 @@ def seed(conn):
     if existing_user is not None:
         print("Existing users found. Skipping demo seeding.")
         return
-
-    load_dotenv()
-
-    demo_password = os.environ.get(
-        "DUAL_DEMO_PASSWORD"
-    )
-
-    if not demo_password:
-        raise RuntimeError(
-            "DUAL_DEMO_PASSWORD must be configured "
-            "before seeding demo data."
-        )
 
     # Create demo clinician.
     user = conn.execute(
@@ -131,7 +243,7 @@ def seed(conn):
             DEMO_USER["name"],
             DEMO_USER["role"],
             DEMO_USER["email"],
-            hash_password(demo_password),
+            hash_password(demo_password()),
         ),
     ).fetchone()
 
@@ -145,6 +257,7 @@ def seed(conn):
             conn,
             patient,
             created_at=_ago(30),
+            created_by=user_id,
         )
 
         patient_ids[patient["email"]] = created["id"]
@@ -202,6 +315,8 @@ def seed(conn):
             created_at=created_at,
         )
 
+    add_doctors(conn)
+
     print("Demo data seeded successfully.")
 
 
@@ -211,4 +326,10 @@ def init():
     with db.connect_postgres() as conn:
         service.ensure_model_version(conn)
         seed(conn)
+        conn.commit()
+
+
+def init_doctors():
+    with db.connect_postgres() as conn:
+        add_doctors(conn)
         conn.commit()
