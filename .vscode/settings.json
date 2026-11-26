@@ -1,0 +1,40 @@
+{
+  "latex-workshop.latex.autoBuild.run": "onSave",
+  "latex-workshop.latex.outDir": "%DIR%",
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk",
+      "command": "latexmk",
+      "args": [
+        "-pdf",
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "%DOC%"
+      ]
+    },
+    {
+      "name": "export-paper-word",
+      "command": "%DIR%/.venv/bin/python",
+      "args": [
+        "%DIR%/export_word.py"
+      ]
+    }
+  ],
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "DUAL paper PDF and Word",
+      "tools": [
+        "latexmk",
+        "export-paper-word"
+      ]
+    },
+    {
+      "name": "LaTeX PDF",
+      "tools": [
+        "latexmk"
+      ]
+    }
+  ],
+  "latex-workshop.latex.recipe.default": "first"
+}
