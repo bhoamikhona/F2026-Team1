@@ -110,12 +110,32 @@
 }
 
 @media (max-width: 49.375em) {
+  .nav {
+    padding: 0 var(--space-4);
+  }
+
+  .nav-container {
+    padding: 0;
+  }
+
   .nav__logo-text-container {
     display: none;
   }
 }
 
 @media (max-width: 31.25em) {
+  .vertical-line {
+    margin: auto var(--space-3);
+  }
+
+  .nav__list {
+    gap: var(--space-3);
+  }
+
+  .nav__right {
+    gap: var(--space-2);
+  }
+
   .nav__user .dropdown__trigger--user > .caption-md {
     display: none;
   }
